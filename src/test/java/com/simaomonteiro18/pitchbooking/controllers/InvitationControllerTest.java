@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -85,6 +86,44 @@ public class InvitationControllerTest {
                     .andExpect(status().isBadRequest());
 
 
+
+    }
+
+    @Test
+    @DisplayName("Teste a acceptInvitation() com sucesso")
+    public void acceptInvitationWithSuccess() throws Exception {
+
+        organizer.setId(1L);
+        guest.setId(2L);
+
+        reservation.setId(1L);
+
+        Invitation invitation = new Invitation(guest, reservation);
+        invitation.setId(7L);
+
+        when(invitationService.acceptInvitation(7L)).thenReturn(invitation);
+
+        mockMvc.perform(patch("/invitations/{id}/accept", 7L))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    @DisplayName("Teste a rejectInvitation() com sucesso")
+    public void rejectInvitationWithSuccess() throws Exception {
+
+        organizer.setId(1L);
+        guest.setId(2L);
+
+        reservation.setId(1L);
+
+        Invitation invitation = new Invitation(guest, reservation);
+        invitation.setId(7L);
+
+        when(invitationService.rejectInvitation(7L)).thenReturn(invitation);
+
+        mockMvc.perform(patch("/invitations/{id}/reject", 7L))
+                .andExpect(status().isOk());
 
     }
 
