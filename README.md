@@ -54,7 +54,7 @@ efetuar reservas e convidar outros jogadores para essas reservas.
 
 ## Modelo de domínio
 
-![Diagrama UML](docs/Pitch Booking Architecture.drawio.png)
+![Diagrama UML](docs/Pitch%20Booking%20Architecture.drawio.png)
 
 Quatro entidades: `User`, `Pitch`, `Reservation`, `Invitation`. O convite
 (`Invitation`) é a entidade de ligação entre utilizador e reserva, e guarda o
