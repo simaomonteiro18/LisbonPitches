@@ -2,6 +2,9 @@
 
 Plataforma de marcação de campos de futebol, construída em Java e Spring Boot.
 
+🔗 **[API em produção](https://pitchbooking-production.up.railway.app/pitches)**
+— `GET /pitches` devolve a lista de campos já com dados de demonstração.
+
 ## O que resolve
 
 Maior facilidade a encontrar campos de futebol na tua zona, e principalmente a
@@ -77,5 +80,3 @@ estado do convite.
 > "Some people think football is a matter of life and death. I don't like that
 > attitude. I can assure them it is much more serious than that."
 > — Bill Shankly
-
-
