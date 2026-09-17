@@ -3,13 +3,12 @@ package com.simaomonteiro18.pitchbooking.controllers;
 import com.simaomonteiro18.pitchbooking.dtos.UserSummaryDTO;
 import com.simaomonteiro18.pitchbooking.entities.User;
 import com.simaomonteiro18.pitchbooking.mappers.UserMapper;
+import com.simaomonteiro18.pitchbooking.requests.CreateUserRequest;
 import com.simaomonteiro18.pitchbooking.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -26,6 +25,17 @@ public class UserController {
         UserSummaryDTO userSummaryDTO = UserMapper.toDTO(user);
 
         return ResponseEntity.ok().body(userSummaryDTO);
+
+    }
+
+    @PostMapping
+    public ResponseEntity<UserSummaryDTO> createUser(@RequestBody CreateUserRequest request) {
+
+        User user = userService.create(request);
+
+        UserSummaryDTO userSummaryDTO = UserMapper.toDTO(user);
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(userSummaryDTO);
 
     }
 

@@ -9,12 +9,11 @@ import com.simaomonteiro18.pitchbooking.repositories.InvitationRepository;
 import com.simaomonteiro18.pitchbooking.repositories.PitchRepository;
 import com.simaomonteiro18.pitchbooking.repositories.ReservationRepository;
 import com.simaomonteiro18.pitchbooking.repositories.UserRepository;
-import com.simaomonteiro18.pitchbooking.services.InvitationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import com.simaomonteiro18.pitchbooking.services.ReservationService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -37,13 +36,16 @@ public class TestConfig implements CommandLineRunner {
     @Autowired
     private InvitationRepository invitationRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
 
-        User u1 = new User("Simão Monteiro", "simao@gmail.com", "921233459", "Sintra");
-        User u2 = new User("David Monteiro", "david@gmail.com", "967361438", "Agualva-Cacém");
-        User u3 = new User("Michelle Santos", "michelle@gmail.com", "924309573", "Massamá");
-        User u4 = new User("Gonçalo Vaqueiro", "goncalo@gmail.com", "925637323", "São João das Lampas");
+        User u1 = new User("Simão Monteiro", passwordEncoder.encode("simao"), "simao@gmail.com", "921233459", "Sintra");
+        User u2 = new User("David Monteiro", passwordEncoder.encode("david"), "david@gmail.com", "967361438", "Agualva-Cacém");
+        User u3 = new User("Michelle Santos", passwordEncoder.encode("michelle"), "michelle@gmail.com", "924309573", "Massamá");
+        User u4 = new User("Gonçalo Vaqueiro", passwordEncoder.encode("goncalo"), "goncalo@gmail.com", "925637323", "São João das Lampas");
 
         Pitch p1 = new Pitch("Campo nº2 do Complexo Desportivo Real de Massamá", "Massamá", 30.0, PitchType.SEVEN);
         Pitch p2 = new Pitch("Pavilhão Linces de Mafra", "Mafra", 20.0, PitchType.FUTSAL);
