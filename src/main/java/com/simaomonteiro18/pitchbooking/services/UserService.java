@@ -1,9 +1,11 @@
 package com.simaomonteiro18.pitchbooking.services;
 
 import com.simaomonteiro18.pitchbooking.entities.User;
+import com.simaomonteiro18.pitchbooking.exceptions.InvalidCredentialsException;
 import com.simaomonteiro18.pitchbooking.exceptions.ResourceNotFoundException;
 import com.simaomonteiro18.pitchbooking.repositories.UserRepository;
 import com.simaomonteiro18.pitchbooking.requests.CreateUserRequest;
+import com.simaomonteiro18.pitchbooking.requests.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,22 @@ public class UserService {
         userRepository.save(user);
 
         return user;
+
+    }
+
+    public User login(LoginRequest request) {
+
+        User user = userRepository.findByEmail(request.email());
+
+        if (user == null) {
+            throw new InvalidCredentialsException("Credenciais Inválidas.");
+        }
+
+        if (passwordEncoder.matches(request.password(), user.getPassword())) {
+            return user;
+        } else {
+            throw new InvalidCredentialsException("Credenciais Inválidas.");
+        }
 
     }
 
