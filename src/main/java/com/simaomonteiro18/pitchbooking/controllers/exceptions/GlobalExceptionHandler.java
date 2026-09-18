@@ -62,4 +62,14 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(PitchNotBookableException.class)
+    public ResponseEntity<StandardError> pitchNotBookable(PitchNotBookableException e, HttpServletRequest request) {
+
+        String error = "Pitch not Bookable.";
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+
+    }
+
 }

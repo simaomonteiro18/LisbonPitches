@@ -1,5 +1,6 @@
 package com.simaomonteiro18.pitchbooking.entities;
 
+import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
 import com.simaomonteiro18.pitchbooking.entities.enums.PitchType;
 import jakarta.persistence.*;
 
@@ -14,7 +15,10 @@ public class Pitch {
     private Long id;
     private String name;
     private String city;
-    private double pricePerHour;
+    private Double pricePerHour;
+
+    @Enumerated(EnumType.STRING)
+    private PitchAccess pitchAccess;
 
     @Enumerated(EnumType.STRING)
     private PitchType pitchType;
@@ -23,10 +27,11 @@ public class Pitch {
 
     }
 
-    public Pitch(String name, String city, double pricePerHour, PitchType pitchType) {
+    public Pitch(String name, String city, Double pricePerHour, PitchAccess pitchAccess, PitchType pitchType) {
         this.name = name;
         this.city = city;
         this.pricePerHour = pricePerHour;
+        this.pitchAccess = pitchAccess;
         this.pitchType = pitchType;
     }
 
@@ -54,12 +59,20 @@ public class Pitch {
         this.city = city;
     }
 
-    public double getPricePerHour() {
+    public Double getPricePerHour() {
         return pricePerHour;
     }
 
-    public void setPricePerHour(double pricePerHour) {
+    public void setPricePerHour(Double pricePerHour) {
         this.pricePerHour = pricePerHour;
+    }
+
+    public PitchAccess getPitchAccess() {
+        return pitchAccess;
+    }
+
+    public void setPitchAccess(PitchAccess pitchAccess) {
+        this.pitchAccess = pitchAccess;
     }
 
     public PitchType getPitchType() {
@@ -89,6 +102,7 @@ public class Pitch {
                 "name='" + name + '\'' +
                 ", city='" + city + '\'' +
                 ", pricePerHour=" + pricePerHour +
+                ", pitchAccess=" + pitchAccess +
                 ", pitchType=" + pitchType +
                 '}';
     }

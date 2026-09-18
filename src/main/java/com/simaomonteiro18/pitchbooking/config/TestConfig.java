@@ -4,6 +4,7 @@ import com.simaomonteiro18.pitchbooking.entities.Invitation;
 import com.simaomonteiro18.pitchbooking.entities.Pitch;
 import com.simaomonteiro18.pitchbooking.entities.Reservation;
 import com.simaomonteiro18.pitchbooking.entities.User;
+import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
 import com.simaomonteiro18.pitchbooking.entities.enums.PitchType;
 import com.simaomonteiro18.pitchbooking.repositories.InvitationRepository;
 import com.simaomonteiro18.pitchbooking.repositories.PitchRepository;
@@ -47,10 +48,11 @@ public class TestConfig implements CommandLineRunner {
         User u3 = new User("Michelle Santos", passwordEncoder.encode("michelle"), "michelle@gmail.com", "924309573", "Massamá");
         User u4 = new User("Gonçalo Vaqueiro", passwordEncoder.encode("goncalo"), "goncalo@gmail.com", "925637323", "São João das Lampas");
 
-        Pitch p1 = new Pitch("Campo nº2 do Complexo Desportivo Real de Massamá", "Massamá", 30.0, PitchType.SEVEN);
-        Pitch p2 = new Pitch("Pavilhão Linces de Mafra", "Mafra", 20.0, PitchType.FUTSAL);
-        Pitch p3 = new Pitch("Campo nº1 do Complexo Desportivo do Jamor", "Cruz Quebrada", 60.0, PitchType.ELEVEN);
-        Pitch p4 = new Pitch("InFoot", "Mem-Martins", 25.0, PitchType.FIVE);
+        Pitch p1 = new Pitch("Campo nº2 do Complexo Desportivo Real de Massamá", "Massamá", 30.0, PitchAccess.PRIVATE, PitchType.SEVEN);
+        Pitch p2 = new Pitch("Pavilhão Linces de Mafra", "Mafra", 20.0, PitchAccess.PRIVATE, PitchType.FUTSAL);
+        Pitch p3 = new Pitch("Campo nº1 do Complexo Desportivo do Jamor", "Cruz Quebrada", 60.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Pitch p4 = new Pitch("InFoot", "Mem-Martins", 25.0, PitchAccess.PRIVATE, PitchType.FIVE);
+        Pitch p5 = new Pitch("Polidesportivo do Parque 2 de Abril", "Massamá", null, PitchAccess.PUBLIC, PitchType.FIVE);
 
         Reservation r1 = new Reservation(u1, p1, Instant.now(), LocalDateTime.parse("2026-08-26T20:00:00"), LocalDateTime.parse("2026-08-26T22:00:00"));
         Reservation r2 = new Reservation(u4, p4, Instant.now().minus(30, ChronoUnit.MINUTES), LocalDateTime.parse("2026-08-30T16:00:00"), LocalDateTime.parse("2026-08-30T17:00:00"));
@@ -74,7 +76,7 @@ public class TestConfig implements CommandLineRunner {
         
         userRepository.saveAll(Arrays.asList(u1, u2, u3, u4));
 
-        pitchRepository.saveAll(Arrays.asList(p1, p2, p3, p4));
+        pitchRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
 
         reservationRepository.saveAll(Arrays.asList(r1, r2, r3, r4, r5));
 

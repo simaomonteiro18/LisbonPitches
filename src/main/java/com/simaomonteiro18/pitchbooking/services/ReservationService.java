@@ -3,7 +3,9 @@ package com.simaomonteiro18.pitchbooking.services;
 import com.simaomonteiro18.pitchbooking.entities.Pitch;
 import com.simaomonteiro18.pitchbooking.entities.Reservation;
 import com.simaomonteiro18.pitchbooking.entities.User;
+import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
 import com.simaomonteiro18.pitchbooking.exceptions.InvalidTimeException;
+import com.simaomonteiro18.pitchbooking.exceptions.PitchNotBookableException;
 import com.simaomonteiro18.pitchbooking.exceptions.ReservationConflictException;
 import com.simaomonteiro18.pitchbooking.exceptions.ResourceNotFoundException;
 import com.simaomonteiro18.pitchbooking.repositories.PitchRepository;
@@ -37,6 +39,10 @@ public class ReservationService {
 
         Pitch pitch = pitchRepository.findById(pitchId)
                 .orElseThrow(() -> new ResourceNotFoundException(Pitch.class, pitchId));
+
+        if (pitch.getPitchAccess() == PitchAccess.PUBLIC) {
+            throw new PitchNotBookableException("O Campo é público");
+        }
 
         if (startTime.isAfter(endTime)) {
             throw new InvalidTimeException("Hora de início é posterior à de final! Verifique os campos.");
