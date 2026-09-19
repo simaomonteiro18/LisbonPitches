@@ -5,6 +5,7 @@ import com.simaomonteiro18.pitchbooking.entities.Reservation;
 import com.simaomonteiro18.pitchbooking.mappers.ReservationMapper;
 import com.simaomonteiro18.pitchbooking.requests.CreateReservationRequest;
 import com.simaomonteiro18.pitchbooking.services.ReservationService;
+import com.simaomonteiro18.pitchbooking.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,9 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody CreateReservationRequest request) {
 
-        Reservation reservation = reservationService.createReservation(request.userId(), request.pitchId(), request.startTime(), request.endTime());
+        Long userId = AuthUtils.getAuthenticatedUserId();
+
+        Reservation reservation = reservationService.createReservation(userId, request.pitchId(), request.startTime(), request.endTime());
 
         ReservationDTO reservationDTO = ReservationMapper.toDTO(reservation);
 
