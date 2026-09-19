@@ -4,21 +4,27 @@ import com.simaomonteiro18.pitchbooking.entities.Invitation;
 import com.simaomonteiro18.pitchbooking.entities.Pitch;
 import com.simaomonteiro18.pitchbooking.entities.Reservation;
 import com.simaomonteiro18.pitchbooking.entities.User;
+import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
 import com.simaomonteiro18.pitchbooking.entities.enums.PitchType;
 import com.simaomonteiro18.pitchbooking.exceptions.InvalidGuestException;
 import com.simaomonteiro18.pitchbooking.requests.CreateInvitationRequest;
 import com.simaomonteiro18.pitchbooking.services.InvitationService;
+import com.simaomonteiro18.pitchbooking.services.JwtService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -37,10 +43,13 @@ public class InvitationControllerTest {
     @MockitoBean
     private InvitationService invitationService;
 
-    User organizer = new User("Simão", "sm@gmail.com", "912345678", "Sintra");
-    User guest = new User("Mafalda", "mf@gmail.com", "987654321", "Lisboa");
+    @MockitoBean
+    private JwtService jwtService;
 
-    Pitch pitch = new Pitch("Jamor", "Oeiras", 20.0, PitchType.ELEVEN);
+    User organizer = new User("Simão", "12345", "sm@gmail.com", "912345678", "Sintra");
+    User guest = new User("Mafalda", "1234567", "mf@gmail.com", "987654321", "Lisboa");
+
+    Pitch pitch = new Pitch("Jamor", "Oeiras", null, PitchAccess.PUBLIC, PitchType.ELEVEN);
 
     Reservation reservation = new Reservation(organizer, pitch, Instant.now(), LocalDateTime.parse("2026-09-28T16:00:00"), LocalDateTime.parse("2026-09-28T18:00:00"));
 
@@ -53,11 +62,16 @@ public class InvitationControllerTest {
 
         reservation.setId(1L);
 
-        CreateInvitationRequest createInvitationRequest = new CreateInvitationRequest(2L, 1L);
+        CreateInvitationRequest createInvitationRequest = new CreateInvitationRequest(1L);
 
         Invitation invitation = new Invitation(guest, reservation);
 
         when(invitationService.createInvitation(2L, 1L)).thenReturn(invitation);
+
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(2L, null, List.of());
+
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         mockMvc.perform(post("/invitations")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -74,11 +88,16 @@ public class InvitationControllerTest {
 
         reservation.setId(1L);
 
-        CreateInvitationRequest createInvitationRequest = new CreateInvitationRequest(1L, 1L);
+        CreateInvitationRequest createInvitationRequest = new CreateInvitationRequest(1L);
 
         Invitation invitation = new Invitation(organizer, reservation);
 
         when(invitationService.createInvitation(1L, 1L)).thenThrow(InvalidGuestException.class);
+
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(1L, null, List.of());
+
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         mockMvc.perform(post("/invitations")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -124,6 +143,13 @@ public class InvitationControllerTest {
 
         mockMvc.perform(patch("/invitations/{id}/reject", 7L))
                 .andExpect(status().isOk());
+
+    }
+
+    @AfterEach
+    public void cleanAfterTests() {
+        
+        SecurityContextHolder.clearContext();
 
     }
 

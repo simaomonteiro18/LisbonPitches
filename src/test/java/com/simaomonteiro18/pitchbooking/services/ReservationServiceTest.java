@@ -3,6 +3,7 @@ package com.simaomonteiro18.pitchbooking.services;
 import com.simaomonteiro18.pitchbooking.entities.Pitch;
 import com.simaomonteiro18.pitchbooking.entities.Reservation;
 import com.simaomonteiro18.pitchbooking.entities.User;
+import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
 import com.simaomonteiro18.pitchbooking.entities.enums.PitchType;
 import com.simaomonteiro18.pitchbooking.exceptions.InvalidTimeException;
 import com.simaomonteiro18.pitchbooking.exceptions.ReservationConflictException;
@@ -39,11 +40,11 @@ public class ReservationServiceTest {
     @DisplayName("Teste de Duração Negativa")
     void invertedTime() {
 
-        User user = new User("Simão", "sm18@gmail.com", "912345678", "Sintra");
+        User user = new User("Simão", "12345", "sm18@gmail.com", "912345678", "Sintra");
 
         user.setId(1L);
 
-        Pitch pitch = new Pitch("Real", "Massamá", 15.0, PitchType.ELEVEN);
+        Pitch pitch = new Pitch("Real", "Massamá", 25.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
 
         pitch.setId(1L);
 
@@ -59,11 +60,11 @@ public class ReservationServiceTest {
     @DisplayName("Teste de Tempo < 1 hora")
     void insufficientReservationTime() {
 
-        User user = new User("Simão", "sm18@gmail.com", "912345678", "Sintra");
+        User user = new User("Simão", "12345", "sm18@gmail.com", "912345678", "Sintra");
 
         user.setId(1L);
 
-        Pitch pitch = new Pitch("Real", "Massamá", 15.0, PitchType.ELEVEN);
+        Pitch pitch = new Pitch("Real", "Massamá", 25.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
 
         pitch.setId(1L);
 
@@ -79,11 +80,11 @@ public class ReservationServiceTest {
     @DisplayName("Teste de Durações não múltiplas de 60")
     void nonMultipleOf60MinutesDuration() {
 
-        User user = new User("Simão", "sm18@gmail.com", "912345678", "Sintra");
+        User user = new User("Simão", "12345", "sm18@gmail.com", "912345678", "Sintra");
 
         user.setId(1L);
 
-        Pitch pitch = new Pitch("Real", "Massamá", 15.0, PitchType.ELEVEN);
+        Pitch pitch = new Pitch("Real", "Massamá", 25.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
 
         pitch.setId(1L);
 
@@ -99,11 +100,11 @@ public class ReservationServiceTest {
     @DisplayName("Teste de Sobreposição de Reservas")
     void overlappingReservation() {
 
-        User user = new User("Simão", "sm18@gmail.com", "912345678", "Sintra");
+        User user = new User("Simão", "12345", "sm18@gmail.com", "912345678", "Sintra");
 
         user.setId(1L);
 
-        Pitch pitch = new Pitch("Real", "Massamá", 15.0, PitchType.ELEVEN);
+        Pitch pitch = new Pitch("Real", "Massamá", 25.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
 
         pitch.setId(1L);
 
@@ -121,11 +122,11 @@ public class ReservationServiceTest {
     @DisplayName("Teste Positivo de Reserva")
     void createsReservationSuccessfully() {
 
-        User user = new User("Simão", "sm18@gmail.com", "912345678", "Sintra");
+        User user = new User("Simão", "12345", "sm18@gmail.com", "912345678", "Sintra");
 
         user.setId(1L);
 
-        Pitch pitch = new Pitch("Real", "Massamá", 15.0, PitchType.ELEVEN);
+        Pitch pitch = new Pitch("Real", "Massamá", 25.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
 
         pitch.setId(1L);
 

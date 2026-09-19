@@ -5,6 +5,7 @@ import com.simaomonteiro18.pitchbooking.entities.Invitation;
 import com.simaomonteiro18.pitchbooking.entities.Pitch;
 import com.simaomonteiro18.pitchbooking.entities.Reservation;
 import com.simaomonteiro18.pitchbooking.entities.User;
+import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
 import com.simaomonteiro18.pitchbooking.entities.enums.PitchType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,11 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReservationMapperTest {
 
-    User organizer = new User("Simão", "sm18@gmail.com", "912345678", "Sintra");
-    User u1 = new User("Mafalda", "mf@gmail.com", "987654321", "Lisboa");
-    User u2 = new User("Diogo", "dl@gmail.com", "912321324", "Queluz");
+    User organizer = new User("Simão", "12345", "sm18@gmail.com", "912345678", "Sintra");
+    User u1 = new User("Mafalda", "12345", "mf@gmail.com", "987654321", "Lisboa");
+    User u2 = new User("Diogo", "12345", "dl@gmail.com", "912321324", "Queluz");
 
-    Pitch pitch = new Pitch("Sintrense", "Sintra", 20.0, PitchType.ELEVEN);
+    Pitch pitch = new Pitch("Sintrense", "Sintra", 15.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
 
     Reservation reservation = new Reservation(organizer, pitch, Instant.now(), LocalDateTime.parse("2026-09-04T20:00:00"), LocalDateTime.parse("2026-09-04T21:00:00"));
 

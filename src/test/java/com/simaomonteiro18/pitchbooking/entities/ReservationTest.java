@@ -1,5 +1,6 @@
 package com.simaomonteiro18.pitchbooking.entities;
 
+import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
 import com.simaomonteiro18.pitchbooking.entities.enums.PitchType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,15 +11,15 @@ import java.time.LocalDateTime;
 
 public class ReservationTest {
 
-    User u1 = new User("Simão", "sm@gmail.com", "912345678", "Sintra");
-    User u2 = new User("João", "joao.silva@gmail.com", "913456789", "Lisboa");
-    User u3 = new User("Marta", "marta.costa@gmail.com", "914567890", "Cascais");
-    User u4 = new User("Pedro", "pedro.santos@gmail.com", "915678901", "Oeiras");
-    User u5 = new User("Inês", "ines.ferreira@gmail.com", "916789012", "Amadora");
-    User u6 = new User("Diogo", "diogo.rodrigues@gmail.com", "917890123", "Mafra");
-    User u7 = new User("Mafalda", "mafalda.rodrigues@gmail.com", "912846123", "Mafra");
+    User u1 = new User("Simão", "12345", "sm@gmail.com", "912345678", "Sintra");
+    User u2 = new User("João", "12345", "joao.silva@gmail.com", "913456789", "Lisboa");
+    User u3 = new User("Marta", "12345", "marta.costa@gmail.com", "914567890", "Cascais");
+    User u4 = new User("Pedro", "12345", "pedro.santos@gmail.com", "915678901", "Oeiras");
+    User u5 = new User("Inês", "12345", "ines.ferreira@gmail.com", "916789012", "Amadora");
+    User u6 = new User("Diogo", "12345", "diogo.rodrigues@gmail.com", "917890123", "Mafra");
+    User u7 = new User("Mafalda", "12345", "mafalda.rodrigues@gmail.com", "912846123", "Mafra");
 
-    Pitch pitch = new Pitch("Estádio da Luz", "Benfica", 50.0, PitchType.ELEVEN);
+    Pitch pitch = new Pitch("Estádio da Luz", "Benfica", 50.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
 
     Reservation reservation = new Reservation(u1, pitch, Instant.now(), LocalDateTime.parse("2026-08-31T20:00:00"), LocalDateTime.parse("2026-08-31T21:00:00"));
 
