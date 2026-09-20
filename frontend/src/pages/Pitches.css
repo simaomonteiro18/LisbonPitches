@@ -1,0 +1,95 @@
+.pitches {
+  padding: 64px 24px 120px;
+}
+
+.pitches h1 {
+  font-size: 2rem;
+  margin-bottom: 32px;
+}
+
+.pitches__search {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.pitches__search input,
+.pitches__search select {
+  flex: 1;
+  min-width: 220px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--color-white);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.pitches__search select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.pitches__search select option {
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.pitches__search input:focus,
+.pitches__search select:focus {
+  outline: none;
+  border-color: var(--color-grass);
+}
+
+.pitches__search input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.pitches__status {
+  color: var(--color-text-muted);
+}
+
+.pitches__status--error {
+  color: #e07a5f;
+}
+
+.pitches__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.pitch-card {
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+}
+
+.pitch-card h3 {
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+}
+
+.pitch-card__city {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.pitch-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.pitch-card__price {
+  font-weight: 700;
+  color: var(--color-grass-light);
+  font-size: 0.9rem;
+}

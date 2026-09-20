@@ -1,0 +1,13 @@
+.iniciativa__inner {
+  padding: 120px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 720px;
+}
+
+.iniciativa h1 {
+  font-size: 2.2rem;
+  color: var(--color-white);
+}

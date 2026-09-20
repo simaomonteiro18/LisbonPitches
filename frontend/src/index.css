@@ -1,0 +1,108 @@
+:root {
+  --color-grass: #3fae4a;
+  --color-grass-light: #7ed88a;
+  --color-grass-dark: #1f5c2b;
+  --color-black: #05070a;
+  --color-white: #ffffff;
+  --color-text-muted: #aab5ac;
+  --color-border: rgba(255, 255, 255, 0.1);
+
+  font-family: 'Roboto', sans-serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background-color: var(--color-black);
+  background-image: radial-gradient(circle at 20% 0%, rgba(63, 174, 74, 0.18), transparent 45%),
+    radial-gradient(circle at 100% 30%, rgba(63, 174, 74, 0.1), transparent 40%);
+  color: var(--color-white);
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  margin: 0;
+}
+
+p {
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: rgba(63, 174, 74, 0.08);
+  color: var(--color-grass-light);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.btn-primary {
+  display: inline-block;
+  background-color: var(--color-grass);
+  color: var(--color-black);
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 999px;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-grass-light);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  display: inline-block;
+  background-color: transparent;
+  color: var(--color-white);
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 999px;
+  font-size: 1rem;
+  border: 1px solid var(--color-border);
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-grass);
+}
