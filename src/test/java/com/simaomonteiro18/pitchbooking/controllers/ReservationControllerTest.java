@@ -21,6 +21,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ReservationControllerTest {
     CreateReservationRequest request1 = new CreateReservationRequest(1L, LocalDateTime.parse("2026-09-28T18:00:00"), LocalDateTime.parse("2026-09-28T17:00:00"));
 
     User organizer = new User("Simão", "12345", "sm@gmail.com", "912345678", "Sintra");
-    Pitch pitch = new Pitch("Sintrense", "Sintra", 20.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
+    Pitch pitch = new Pitch("Sintrense", "Sintra", BigDecimal.valueOf(20.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
     Reservation reservation = new Reservation(organizer, pitch, Instant.now(), request.startTime(), request.endTime());
 
     @Test

@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -44,7 +45,7 @@ public class ReservationServiceTest {
 
         user.setId(1L);
 
-        Pitch pitch = new Pitch("Real", "Massamá", 25.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Pitch pitch = new Pitch("Real", "Massamá", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
 
         pitch.setId(1L);
 
@@ -64,7 +65,7 @@ public class ReservationServiceTest {
 
         user.setId(1L);
 
-        Pitch pitch = new Pitch("Real", "Massamá", 25.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Pitch pitch = new Pitch("Real", "Massamá", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
 
         pitch.setId(1L);
 
@@ -84,7 +85,7 @@ public class ReservationServiceTest {
 
         user.setId(1L);
 
-        Pitch pitch = new Pitch("Real", "Massamá", 25.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Pitch pitch = new Pitch("Real", "Massamá", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
 
         pitch.setId(1L);
 
@@ -104,7 +105,7 @@ public class ReservationServiceTest {
 
         user.setId(1L);
 
-        Pitch pitch = new Pitch("Real", "Massamá", 25.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Pitch pitch = new Pitch("Real", "Massamá", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
 
         pitch.setId(1L);
 
@@ -126,7 +127,7 @@ public class ReservationServiceTest {
 
         user.setId(1L);
 
-        Pitch pitch = new Pitch("Real", "Massamá", 25.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Pitch pitch = new Pitch("Real", "Massamá", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
 
         pitch.setId(1L);
 

@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class PitchControllerTest {
 
     List<Pitch> pitches = new ArrayList<>();
 
-    Pitch pitch1 = new Pitch("Sintrense", "Sintra", 20.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
-    Pitch pitch2 = new Pitch("Real", "Massamá", 15.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
+    Pitch pitch1 = new Pitch("Sintrense", "Sintra", BigDecimal.valueOf(20.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
+    Pitch pitch2 = new Pitch("Real", "Massamá", BigDecimal.valueOf(15.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
 
     @Test
     @DisplayName("Teste a findAll() pitches com sucesso")

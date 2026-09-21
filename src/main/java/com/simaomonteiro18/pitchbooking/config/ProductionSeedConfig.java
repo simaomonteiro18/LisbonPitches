@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,10 +34,10 @@ public class ProductionSeedConfig implements CommandLineRunner {
         if (pitchRepository.count() == 0) {
 
             User user = new User("Demo User", passwordEncoder.encode("demo"), "demo@pitchbooking.com", "912345678", "Sintra");
-            Pitch p1 = new Pitch("Campo nº2 do Complexo Desportivo Real de Massamá", "Massamá", 30.0, PitchAccess.PRIVATE, PitchType.SEVEN);
-            Pitch p2 = new Pitch("Pavilhão Linces de Mafra", "Mafra", 20.0, PitchAccess.PRIVATE, PitchType.FUTSAL);
-            Pitch p3 = new Pitch("Campo nº1 do Complexo Desportivo do Jamor", "Cruz Quebrada", 60.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
-            Pitch p4 = new Pitch("InFoot", "Mem-Martins", 25.0, PitchAccess.PRIVATE, PitchType.FIVE);
+            Pitch p1 = new Pitch("Campo nº2 do Complexo Desportivo Real de Massamá", "Massamá", BigDecimal.valueOf(30.0), PitchAccess.PRIVATE, PitchType.SEVEN);
+            Pitch p2 = new Pitch("Pavilhão Linces de Mafra", "Mafra", BigDecimal.valueOf(20.0), PitchAccess.PRIVATE, PitchType.FUTSAL);
+            Pitch p3 = new Pitch("Campo nº1 do Complexo Desportivo do Jamor", "Cruz Quebrada", BigDecimal.valueOf(60.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
+            Pitch p4 = new Pitch("InFoot", "Mem-Martins", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.FIVE);
             Pitch p5 = new Pitch("Polidesportivo do Parque 2 de Abril", "Massamá", null, PitchAccess.PUBLIC, PitchType.FIVE);
 
             userRepository.saveAll(List.of(user));

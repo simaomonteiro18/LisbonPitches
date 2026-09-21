@@ -4,6 +4,7 @@ import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
 import com.simaomonteiro18.pitchbooking.entities.enums.PitchType;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -15,7 +16,7 @@ public class Pitch {
     private Long id;
     private String name;
     private String city;
-    private Double pricePerHour;
+    private BigDecimal pricePerHour;
 
     @Enumerated(EnumType.STRING)
     private PitchAccess pitchAccess;
@@ -27,7 +28,7 @@ public class Pitch {
 
     }
 
-    public Pitch(String name, String city, Double pricePerHour, PitchAccess pitchAccess, PitchType pitchType) {
+    public Pitch(String name, String city, BigDecimal pricePerHour, PitchAccess pitchAccess, PitchType pitchType) {
         this.name = name;
         this.city = city;
         this.pricePerHour = pricePerHour;
@@ -59,11 +60,11 @@ public class Pitch {
         this.city = city;
     }
 
-    public Double getPricePerHour() {
+    public BigDecimal getPricePerHour() {
         return pricePerHour;
     }
 
-    public void setPricePerHour(Double pricePerHour) {
+    public void setPricePerHour(BigDecimal pricePerHour) {
         this.pricePerHour = pricePerHour;
     }
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -19,7 +20,7 @@ public class ReservationTest {
     User u6 = new User("Diogo", "12345", "diogo.rodrigues@gmail.com", "917890123", "Mafra");
     User u7 = new User("Mafalda", "12345", "mafalda.rodrigues@gmail.com", "912846123", "Mafra");
 
-    Pitch pitch = new Pitch("Estádio da Luz", "Benfica", 50.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
+    Pitch pitch = new Pitch("Estádio da Luz", "Benfica", BigDecimal.valueOf(50.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
 
     Reservation reservation = new Reservation(u1, pitch, Instant.now(), LocalDateTime.parse("2026-08-31T20:00:00"), LocalDateTime.parse("2026-08-31T21:00:00"));
 
@@ -49,7 +50,7 @@ public class ReservationTest {
 
         assertEquals(4, reservation.invitesAccepted());
 
-        assertEquals(10.0, reservation.pricePerPerson());
+        assertEquals(0, BigDecimal.valueOf(10.0).compareTo(reservation.pricePerPerson()));
 
     }
 

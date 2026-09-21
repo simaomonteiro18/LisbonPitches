@@ -1,5 +1,6 @@
 package com.simaomonteiro18.pitchbooking.dtos;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -11,13 +12,13 @@ public class ReservationDTO {
     private Instant moment;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private double pricePerPerson;
+    private BigDecimal pricePerPerson;
     private int invitesAccepted;
 
     public ReservationDTO() {
     }
 
-    public ReservationDTO(Long id, String organizerName, PitchSummaryDTO pitch, Instant moment, LocalDateTime startTime, LocalDateTime endTime, double pricePerPerson, int invitesAccepted) {
+    public ReservationDTO(Long id, String organizerName, PitchSummaryDTO pitch, Instant moment, LocalDateTime startTime, LocalDateTime endTime, BigDecimal pricePerPerson, int invitesAccepted) {
         this.id = id;
         this.organizerName = organizerName;
         this.pitch = pitch;
@@ -52,7 +53,7 @@ public class ReservationDTO {
         return endTime;
     }
 
-    public double getPricePerPerson() {
+    public BigDecimal getPricePerPerson() {
         return pricePerPerson;
     }
 

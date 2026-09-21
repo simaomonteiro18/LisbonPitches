@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -48,10 +49,10 @@ public class TestConfig implements CommandLineRunner {
         User u3 = new User("Michelle Santos", passwordEncoder.encode("michelle"), "michelle@gmail.com", "924309573", "Massamá");
         User u4 = new User("Gonçalo Vaqueiro", passwordEncoder.encode("goncalo"), "goncalo@gmail.com", "925637323", "São João das Lampas");
 
-        Pitch p1 = new Pitch("Campo nº2 do Complexo Desportivo Real de Massamá", "Massamá", 30.0, PitchAccess.PRIVATE, PitchType.SEVEN);
-        Pitch p2 = new Pitch("Pavilhão Linces de Mafra", "Mafra", 20.0, PitchAccess.PRIVATE, PitchType.FUTSAL);
-        Pitch p3 = new Pitch("Campo nº1 do Complexo Desportivo do Jamor", "Cruz Quebrada", 60.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
-        Pitch p4 = new Pitch("InFoot", "Mem-Martins", 25.0, PitchAccess.PRIVATE, PitchType.FIVE);
+        Pitch p1 = new Pitch("Campo nº2 do Complexo Desportivo Real de Massamá", "Massamá", BigDecimal.valueOf(30.0), PitchAccess.PRIVATE, PitchType.SEVEN);
+        Pitch p2 = new Pitch("Pavilhão Linces de Mafra", "Mafra", BigDecimal.valueOf(20.0), PitchAccess.PRIVATE, PitchType.FUTSAL);
+        Pitch p3 = new Pitch("Campo nº1 do Complexo Desportivo do Jamor", "Cruz Quebrada", BigDecimal.valueOf(60.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Pitch p4 = new Pitch("InFoot", "Mem-Martins", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.FIVE);
         Pitch p5 = new Pitch("Polidesportivo do Parque 2 de Abril", "Massamá", null, PitchAccess.PUBLIC, PitchType.FIVE);
 
         Reservation r1 = new Reservation(u1, p1, Instant.now(), LocalDateTime.parse("2026-08-26T20:00:00"), LocalDateTime.parse("2026-08-26T22:00:00"));

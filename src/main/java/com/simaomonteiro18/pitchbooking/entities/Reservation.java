@@ -3,6 +3,8 @@ package com.simaomonteiro18.pitchbooking.entities;
 import com.simaomonteiro18.pitchbooking.entities.enums.InvitationStatus;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -103,17 +105,13 @@ public class Reservation {
         return (int) accepted;
     }
 
-    public double pricePerPerson() {
+    public BigDecimal pricePerPerson() {
 
         Duration duration = Duration.between(startTime, endTime);
 
         long minutes = duration.toMinutes();
 
-        double decimalTime = minutes / 60.0;
-
-        double totalPrice = decimalTime * pitch.getPricePerHour();
-
-        double finalPrice = totalPrice / (invitesAccepted() + 1);
+        BigDecimal finalPrice = (pitch.getPricePerHour().multiply(BigDecimal.valueOf(minutes))).divide((BigDecimal.valueOf(60).multiply(BigDecimal.valueOf(invitesAccepted() + 1))), 2, RoundingMode.HALF_UP);
 
         return finalPrice;
 

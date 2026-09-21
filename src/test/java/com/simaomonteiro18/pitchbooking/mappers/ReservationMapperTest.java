@@ -10,6 +10,7 @@ import com.simaomonteiro18.pitchbooking.entities.enums.PitchType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -21,7 +22,7 @@ public class ReservationMapperTest {
     User u1 = new User("Mafalda", "12345", "mf@gmail.com", "987654321", "Lisboa");
     User u2 = new User("Diogo", "12345", "dl@gmail.com", "912321324", "Queluz");
 
-    Pitch pitch = new Pitch("Sintrense", "Sintra", 15.0, PitchAccess.PRIVATE, PitchType.ELEVEN);
+    Pitch pitch = new Pitch("Sintrense", "Sintra", BigDecimal.valueOf(15.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
 
     Reservation reservation = new Reservation(organizer, pitch, Instant.now(), LocalDateTime.parse("2026-09-04T20:00:00"), LocalDateTime.parse("2026-09-04T21:00:00"));
 
