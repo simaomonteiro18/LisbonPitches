@@ -82,4 +82,14 @@ public class GlobalExceptionHandler {
         
     }
 
+    @ExceptionHandler(EmailConflictException.class)
+    public ResponseEntity<StandardError> emailConflict(EmailConflictException e, HttpServletRequest request) {
+
+        String error = "Duplicate Email.";
+        HttpStatus status = HttpStatus.CONFLICT;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+
+    }
+
 }

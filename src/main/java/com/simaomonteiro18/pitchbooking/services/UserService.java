@@ -1,12 +1,14 @@
 package com.simaomonteiro18.pitchbooking.services;
 
 import com.simaomonteiro18.pitchbooking.entities.User;
+import com.simaomonteiro18.pitchbooking.exceptions.EmailConflictException;
 import com.simaomonteiro18.pitchbooking.exceptions.InvalidCredentialsException;
 import com.simaomonteiro18.pitchbooking.exceptions.ResourceNotFoundException;
 import com.simaomonteiro18.pitchbooking.repositories.UserRepository;
 import com.simaomonteiro18.pitchbooking.requests.CreateUserRequest;
 import com.simaomonteiro18.pitchbooking.requests.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,11 @@ public class UserService {
 
         User user = new User(request.name(), passwordEncoder.encode(request.password()), request.email(), request.phone(), request.city());
 
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new EmailConflictException("Email já existe.");
+        }
 
         return user;
 
