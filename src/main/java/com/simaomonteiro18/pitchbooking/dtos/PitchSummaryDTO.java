@@ -7,13 +7,13 @@ public class PitchSummaryDTO {
     private Long id;
     private String name;
     private String city;
-    private double pricePerHour;
+    private Double pricePerHour;
     private PitchType type;
 
     public PitchSummaryDTO() {
     }
 
-    public PitchSummaryDTO(Long id, String name, String city, double pricePerHour, PitchType type) {
+    public PitchSummaryDTO(Long id, String name, String city, Double pricePerHour, PitchType type) {
         this.id = id;
         this.name = name;
         this.city = city;
@@ -33,7 +33,7 @@ public class PitchSummaryDTO {
         return city;
     }
 
-    public double getPricePerHour() {
+    public Double getPricePerHour() {
         return pricePerHour;
     }
 
