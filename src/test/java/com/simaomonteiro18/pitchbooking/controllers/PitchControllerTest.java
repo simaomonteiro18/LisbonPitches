@@ -46,7 +46,7 @@ public class PitchControllerTest {
         pitches.add(pitch1);
         pitches.add(pitch2);
 
-        when(pitchService.findAll()).thenReturn(pitches);
+        when(pitchService.search(null, null)).thenReturn(pitches);
         mockMvc.perform(get("/pitches"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2));
@@ -59,7 +59,7 @@ public class PitchControllerTest {
 
         pitches.add(pitch1);
 
-        when(pitchService.findByCity("Sintra")).thenReturn(pitches);
+        when(pitchService.search("Sintra", null)).thenReturn(pitches);
         mockMvc.perform(get("/pitches").param("city", "Sintra"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));

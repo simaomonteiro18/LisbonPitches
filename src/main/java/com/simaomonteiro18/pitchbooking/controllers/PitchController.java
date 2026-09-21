@@ -22,22 +22,9 @@ public class PitchController {
     private PitchService pitchService;
 
     @GetMapping
-    public ResponseEntity<List<PitchSummaryDTO>> findAll() {
+    public ResponseEntity<List<PitchSummaryDTO>> search(@RequestParam(required = false) String city, @RequestParam(required = false) String name) {
 
-        List<Pitch> list = pitchService.findAll();
-
-        List<PitchSummaryDTO> finalListPitches = list.stream()
-                .map(PitchMapper::toDTO)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok().body(finalListPitches);
-
-    }
-
-    @GetMapping(params = "city")
-    public ResponseEntity<List<PitchSummaryDTO>> findByCity(@RequestParam("city") String city) {
-
-        List<Pitch> list = pitchService.findByCity(city);
+        List<Pitch> list = pitchService.search(city, name);
 
         List<PitchSummaryDTO> finalListPitches = list.stream()
                 .map(PitchMapper::toDTO)
