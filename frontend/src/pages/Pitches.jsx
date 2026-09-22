@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { searchPitches } from '../api/pitches'
+import { createReservation } from '../api/reservations'
+import { getSession } from '../auth'
 import './Pitches.css'
 
 const TIPOS = {
@@ -10,12 +13,19 @@ const TIPOS = {
 }
 
 function Pitches() {
+  const navigate = useNavigate()
   const [name, setName] = useState('')
   const [city, setCity] = useState('')
   const [pitches, setPitches] = useState([])
   const [cities, setCities] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  const [reservingId, setReservingId] = useState(null)
+  const [startTime, setStartTime] = useState('')
+  const [endTime, setEndTime] = useState('')
+  const [reservaLoading, setReservaLoading] = useState(false)
+  const [reservaError, setReservaError] = useState(null)
 
   useEffect(() => {
     searchPitches({})
@@ -39,6 +49,32 @@ function Pitches() {
 
     return () => clearTimeout(timeout)
   }, [name, city])
+
+  function abrirFormularioReserva(pitchId) {
+    if (!getSession()) {
+      navigate('/login')
+      return
+    }
+    setReservaError(null)
+    setStartTime('')
+    setEndTime('')
+    setReservingId(reservingId === pitchId ? null : pitchId)
+  }
+
+  async function confirmarReserva(e, pitchId) {
+    e.preventDefault()
+    setReservaLoading(true)
+    setReservaError(null)
+
+    try {
+      const reservation = await createReservation({ pitchId, startTime, endTime })
+      navigate(`/reservas/${reservation.id}`)
+    } catch (err) {
+      setReservaError(err.message)
+    } finally {
+      setReservaLoading(false)
+    }
+  }
 
   return (
     <section className="pitches">
@@ -79,6 +115,43 @@ function Pitches() {
                   {pitch.pricePerHour != null ? `${pitch.pricePerHour} EUR/hora` : 'Sem preço'}
                 </span>
               </div>
+
+              <button
+                type="button"
+                className="btn-ghost pitch-card__reservar"
+                onClick={() => abrirFormularioReserva(pitch.id)}
+              >
+                {reservingId === pitch.id ? 'Cancelar' : 'Reservar'}
+              </button>
+
+              {reservingId === pitch.id && (
+                <form className="pitch-card__form" onSubmit={(e) => confirmarReserva(e, pitch.id)}>
+                  <label>
+                    Início
+                    <input
+                      type="datetime-local"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      required
+                    />
+                  </label>
+                  <label>
+                    Fim
+                    <input
+                      type="datetime-local"
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                      required
+                    />
+                  </label>
+
+                  {reservaError && <p className="pitches__status pitches__status--error">{reservaError}</p>}
+
+                  <button type="submit" className="btn-primary" disabled={reservaLoading}>
+                    {reservaLoading ? 'A confirmar...' : 'Confirmar reserva'}
+                  </button>
+                </form>
+              )}
             </div>
           ))}
         </div>

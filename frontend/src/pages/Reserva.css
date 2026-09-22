@@ -1,0 +1,129 @@
+.reserva {
+  padding: 64px 24px 120px;
+}
+
+.reserva__inner {
+  max-width: 640px;
+}
+
+.reserva h1 {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.reserva__city {
+  margin-bottom: 32px;
+}
+
+.reserva h2 {
+  font-size: 1.3rem;
+  margin: 40px 0 16px;
+}
+
+.reserva__card {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  padding: 8px 24px;
+}
+
+.reserva__campo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.reserva__campo:last-child {
+  border-bottom: none;
+}
+
+.reserva__campo span {
+  color: var(--color-text-muted);
+}
+
+.reserva__campo strong {
+  color: var(--color-white);
+  font-weight: 700;
+}
+
+.reserva__status {
+  color: var(--color-text-muted);
+}
+
+.reserva__status--error {
+  color: #e07a5f;
+}
+
+.reserva__convites {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.convite {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.convite__nome {
+  font-weight: 700;
+  flex: 1;
+  min-width: 120px;
+}
+
+.convite__estado--accepted {
+  color: var(--color-grass-light);
+}
+
+.convite__estado--rejected {
+  color: #e07a5f;
+  border-color: rgba(224, 122, 95, 0.3);
+  background-color: rgba(224, 122, 95, 0.08);
+}
+
+.convite__acoes {
+  display: flex;
+  gap: 10px;
+}
+
+.convite__acoes .btn-primary,
+.convite__acoes .btn-ghost {
+  padding: 8px 18px;
+  font-size: 0.85rem;
+}
+
+.reserva__convidar {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.reserva__convidar input {
+  flex: 1;
+  min-width: 220px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--color-white);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.reserva__convidar input:focus {
+  outline: none;
+  border-color: var(--color-grass);
+}

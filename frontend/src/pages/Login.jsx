@@ -13,6 +13,7 @@ function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [username, setUsername] = useState('')
   const [phone, setPhone] = useState('')
   const [city, setCity] = useState('')
 
@@ -31,7 +32,7 @@ function Login() {
       if (modo === 'login') {
         await entrarComSessao(email, password)
       } else {
-        await registerUser({ name, email, password, phone, city })
+        await registerUser({ name, username, email, password, phone, city })
         await entrarComSessao(email, password)
       }
     } catch (err) {
@@ -69,6 +70,13 @@ function Login() {
                 placeholder="Nome"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
               <input

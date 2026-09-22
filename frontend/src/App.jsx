@@ -6,6 +6,7 @@ import Iniciativa from './pages/Iniciativa'
 import Pitches from './pages/Pitches'
 import Login from './pages/Login'
 import Perfil from './pages/Perfil'
+import Reserva from './pages/Reserva'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/pitches" element={<Pitches />} />
           <Route path="/login" element={<Login />} />
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/reservas/:id" element={<Reserva />} />
         </Routes>
       </main>
       <Footer />
