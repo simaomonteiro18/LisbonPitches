@@ -20,4 +20,6 @@ public interface InvitationRepository extends JpaRepository<Invitation, Long> {
 
     List<Invitation> findByGuestAndStatus(User guest, InvitationStatus status);
 
+    List<Invitation> findByGuest_Id(Long guestId);
+
 }

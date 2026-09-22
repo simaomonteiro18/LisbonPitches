@@ -7,7 +7,7 @@ public class InvitationMapper {
 
     public static InvitationDTO toDTO(Invitation invitation) {
 
-        InvitationDTO invitationDTO = new InvitationDTO(invitation.getId(), invitation.getGuest().getName(), invitation.getReservation().getId(), invitation.getStatus());
+        InvitationDTO invitationDTO = new InvitationDTO(invitation.getId(), invitation.getGuest().getId(), invitation.getGuest().getName(), invitation.getInvitedBy().getId(), invitation.getReservation().getId(), invitation.getStatus());
 
         return invitationDTO;
 

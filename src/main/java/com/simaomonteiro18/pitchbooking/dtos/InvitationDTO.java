@@ -5,16 +5,20 @@ import com.simaomonteiro18.pitchbooking.entities.enums.InvitationStatus;
 public class InvitationDTO {
 
     private Long id;
+    private Long guestId;
     private String guestName;
+    private Long invitedById;
     private Long reservationId;
     private InvitationStatus status;
 
     public InvitationDTO() {
     }
 
-    public InvitationDTO(Long id, String guestName, Long reservationId, InvitationStatus status) {
+    public InvitationDTO(Long id, Long guestId, String guestName, Long invitedById, Long reservationId, InvitationStatus status) {
         this.id = id;
+        this.guestId = guestId;
         this.guestName = guestName;
+        this.invitedById = invitedById;
         this.reservationId = reservationId;
         this.status = status;
     }
@@ -23,8 +27,16 @@ public class InvitationDTO {
         return id;
     }
 
+    public Long getGuestId() {
+        return guestId;
+    }
+
     public String getGuestName() {
         return guestName;
+    }
+
+    public Long getInvitedById() {
+        return invitedById;
     }
 
     public Long getReservationId() {

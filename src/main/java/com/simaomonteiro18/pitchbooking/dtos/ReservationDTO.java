@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public class ReservationDTO {
 
     private Long id;
+    private Long organizerId;
     private String organizerName;
     private PitchSummaryDTO pitch;
     private Instant moment;
@@ -18,8 +19,9 @@ public class ReservationDTO {
     public ReservationDTO() {
     }
 
-    public ReservationDTO(Long id, String organizerName, PitchSummaryDTO pitch, Instant moment, LocalDateTime startTime, LocalDateTime endTime, BigDecimal pricePerPerson, int invitesAccepted) {
+    public ReservationDTO(Long id, Long organizerId, String organizerName, PitchSummaryDTO pitch, Instant moment, LocalDateTime startTime, LocalDateTime endTime, BigDecimal pricePerPerson, int invitesAccepted) {
         this.id = id;
+        this.organizerId = organizerId;
         this.organizerName = organizerName;
         this.pitch = pitch;
         this.moment = moment;
@@ -31,6 +33,10 @@ public class ReservationDTO {
 
     public Long getId() {
         return id;
+    }
+
+    public Long getOrganizerId() {
+        return organizerId;
     }
 
     public String getOrganizerName() {

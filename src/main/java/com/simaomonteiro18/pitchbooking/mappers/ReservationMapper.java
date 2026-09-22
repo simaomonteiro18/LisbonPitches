@@ -10,7 +10,7 @@ public class ReservationMapper {
 
         PitchSummaryDTO pitch = new PitchSummaryDTO(reservation.getPitch().getId(), reservation.getPitch().getName(), reservation.getPitch().getCity(), reservation.getPitch().getPricePerHour(), reservation.getPitch().getPitchType());
 
-        ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), reservation.getOrganizer().getName(), pitch, reservation.getMoment(), reservation.getStartTime(), reservation.getEndTime(), reservation.pricePerPerson(), reservation.invitesAccepted());
+        ReservationDTO reservationDTO = new ReservationDTO(reservation.getId(), reservation.getOrganizer().getId(), reservation.getOrganizer().getName(), pitch, reservation.getMoment(), reservation.getStartTime(), reservation.getEndTime(), reservation.pricePerPerson(), reservation.invitesAccepted());
 
         return reservationDTO;
 

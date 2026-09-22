@@ -99,6 +99,12 @@ public class InvitationService {
 
     }
 
+    public List<Invitation> findInvitationsForGuest(Long callerId) {
+
+        return invitationRepository.findByGuest_Id(callerId);
+
+    }
+
     public void cancelInvitation(Long callerId, Long invitationId) {
 
         Invitation invitation = invitationRepository.findById(invitationId)

@@ -36,6 +36,20 @@ public class InvitationController {
 
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<List<InvitationDTO>> myInvitations() {
+
+        Long callerId = AuthUtils.getAuthenticatedUserId();
+
+        List<InvitationDTO> list = invitationService.findInvitationsForGuest(callerId)
+                .stream()
+                .map(InvitationMapper::toDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(list);
+
+    }
+
     @PostMapping
     public ResponseEntity<InvitationDTO> createInvitation(@RequestBody CreateInvitationRequest request) {
 
