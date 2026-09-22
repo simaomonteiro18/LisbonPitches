@@ -1,5 +1,6 @@
 package com.simaomonteiro18.pitchbooking.controllers;
 
+import com.simaomonteiro18.pitchbooking.dtos.MyReservationsDTO;
 import com.simaomonteiro18.pitchbooking.dtos.ReservationDTO;
 import com.simaomonteiro18.pitchbooking.entities.Reservation;
 import com.simaomonteiro18.pitchbooking.mappers.ReservationMapper;
@@ -35,15 +36,30 @@ public class ReservationController {
     }
 
     @GetMapping(params = "userId")
-    public ResponseEntity<List<ReservationDTO>> reservationsByUser(@RequestParam("userId") Long userId) {
+    public ResponseEntity<MyReservationsDTO> reservationsByUser(@RequestParam("userId") Long userId) {
 
-        List<Reservation> reservations = reservationService.findReservationsByUser(userId);
-
-        List<ReservationDTO> reservationDTOList = reservations.stream()
+        List<ReservationDTO> organized = reservationService.findOrganizedReservations(userId).stream()
                 .map(ReservationMapper::toDTO)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok().body(reservationDTOList);
+        List<ReservationDTO> participating = reservationService.findParticipatingReservations(userId).stream()
+                .map(ReservationMapper::toDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(new MyReservationsDTO(organized, participating));
+
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ReservationDTO> findById(@PathVariable Long id) {
+
+        Long callerId = AuthUtils.getAuthenticatedUserId();
+
+        Reservation reservation = reservationService.findById(callerId, id);
+
+        ReservationDTO reservationDTO = ReservationMapper.toDTO(reservation);
+
+        return ResponseEntity.ok().body(reservationDTO);
 
     }
 

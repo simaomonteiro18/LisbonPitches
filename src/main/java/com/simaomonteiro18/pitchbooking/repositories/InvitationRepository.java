@@ -3,6 +3,7 @@ package com.simaomonteiro18.pitchbooking.repositories;
 import com.simaomonteiro18.pitchbooking.entities.Invitation;
 import com.simaomonteiro18.pitchbooking.entities.Reservation;
 import com.simaomonteiro18.pitchbooking.entities.User;
+import com.simaomonteiro18.pitchbooking.entities.enums.InvitationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +17,7 @@ public interface InvitationRepository extends JpaRepository<Invitation, Long> {
     List<Invitation> getAllInvitationsByReservation(Reservation reservation);
 
     boolean existsByGuest_IdAndReservation(Long guestId, Reservation reservation);
+
+    List<Invitation> findByGuestAndStatus(User guest, InvitationStatus status);
 
 }

@@ -1,13 +1,13 @@
 package com.simaomonteiro18.pitchbooking.services;
 
+import com.simaomonteiro18.pitchbooking.entities.Invitation;
 import com.simaomonteiro18.pitchbooking.entities.Pitch;
 import com.simaomonteiro18.pitchbooking.entities.Reservation;
 import com.simaomonteiro18.pitchbooking.entities.User;
+import com.simaomonteiro18.pitchbooking.entities.enums.InvitationStatus;
 import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
-import com.simaomonteiro18.pitchbooking.exceptions.InvalidTimeException;
-import com.simaomonteiro18.pitchbooking.exceptions.PitchNotBookableException;
-import com.simaomonteiro18.pitchbooking.exceptions.ReservationConflictException;
-import com.simaomonteiro18.pitchbooking.exceptions.ResourceNotFoundException;
+import com.simaomonteiro18.pitchbooking.exceptions.*;
+import com.simaomonteiro18.pitchbooking.repositories.InvitationRepository;
 import com.simaomonteiro18.pitchbooking.repositories.PitchRepository;
 import com.simaomonteiro18.pitchbooking.repositories.ReservationRepository;
 import com.simaomonteiro18.pitchbooking.repositories.UserRepository;
@@ -19,6 +19,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -31,6 +32,9 @@ public class ReservationService {
 
     @Autowired
     private PitchRepository pitchRepository;
+
+    @Autowired
+    private InvitationRepository invitationRepository;
 
     public Reservation createReservation(Long userId, Long pitchId, LocalDateTime startTime, LocalDateTime endTime) {
 
@@ -69,12 +73,40 @@ public class ReservationService {
 
     }
 
-    public List<Reservation> findReservationsByUser(Long userId) {
+    public List<Reservation> findOrganizedReservations(Long userId) {
 
         User user = userRepository.findById(userId)
                         .orElseThrow(() -> new ResourceNotFoundException(User.class, userId));
 
         return reservationRepository.findByOrganizer(user);
+
+    }
+
+    public List<Reservation> findParticipatingReservations(Long userId) {
+
+        User user = userRepository.findById(userId)
+                        .orElseThrow(() -> new ResourceNotFoundException(User.class, userId));
+
+        return invitationRepository.findByGuestAndStatus(user, InvitationStatus.ACCEPTED)
+                .stream()
+                .map(Invitation::getReservation)
+                .collect(Collectors.toList());
+
+    }
+
+    public Reservation findById(Long callerId, Long reservationId) {
+
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ResourceNotFoundException(Reservation.class, reservationId));
+
+        boolean isOrganizer = reservation.getOrganizer().getId().equals(callerId);
+        boolean isGuest = invitationRepository.existsByGuest_IdAndReservation(callerId, reservation);
+
+        if (!isOrganizer && !isGuest) {
+            throw new UserPermissionException("Não tem permissões para realizar esta ação.");
+        }
+
+        return reservation;
 
     }
 
