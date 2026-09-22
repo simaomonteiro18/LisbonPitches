@@ -20,15 +20,19 @@ public class Invitation {
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
+    @ManyToOne
+    private User invitedBy;
+
     @Enumerated(EnumType.STRING)
     private InvitationStatus status = InvitationStatus.PENDING;
 
     public Invitation() {
     }
 
-    public Invitation(User guest, Reservation reservation) {
+    public Invitation(User guest, Reservation reservation, User invitedBy) {
         this.guest = guest;
         this.reservation = reservation;
+        this.invitedBy = invitedBy;
     }
 
     public Long getId() {
@@ -53,6 +57,10 @@ public class Invitation {
 
     public void setReservation(Reservation reservation) {
         this.reservation = reservation;
+    }
+
+    public User getInvitedBy() {
+        return invitedBy;
     }
 
     public InvitationStatus getStatus() {

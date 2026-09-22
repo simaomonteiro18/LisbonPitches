@@ -2,6 +2,7 @@ package com.simaomonteiro18.pitchbooking.controllers;
 
 import com.simaomonteiro18.pitchbooking.dtos.InvitationDTO;
 import com.simaomonteiro18.pitchbooking.entities.Invitation;
+import com.simaomonteiro18.pitchbooking.entities.Reservation;
 import com.simaomonteiro18.pitchbooking.mappers.InvitationMapper;
 import com.simaomonteiro18.pitchbooking.requests.CreateInvitationRequest;
 import com.simaomonteiro18.pitchbooking.services.InvitationService;
@@ -11,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/invitations")
 public class InvitationController {
@@ -18,12 +22,26 @@ public class InvitationController {
     @Autowired
     private InvitationService invitationService;
 
+    @GetMapping
+    public ResponseEntity<List<InvitationDTO>> invitationsByReservation(@RequestParam("reservationId") Long reservationId) {
+
+        Long callerId = AuthUtils.getAuthenticatedUserId();
+
+        List<InvitationDTO> list = invitationService.findInvitationsByReservation(callerId, reservationId)
+                .stream()
+                .map(InvitationMapper::toDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok().body(list);
+
+    }
+
     @PostMapping
     public ResponseEntity<InvitationDTO> createInvitation(@RequestBody CreateInvitationRequest request) {
 
         Long userId = AuthUtils.getAuthenticatedUserId();
 
-        Invitation invitation = invitationService.createInvitation(userId, request.reservationId());
+        Invitation invitation = invitationService.createInvitation(userId, request.identifier(), request.reservationId());
 
         InvitationDTO invitationDTO = InvitationMapper.toDTO(invitation);
 
@@ -34,7 +52,9 @@ public class InvitationController {
     @PatchMapping("/{id}/accept")
     public ResponseEntity<InvitationDTO> acceptInvitation(@PathVariable Long id) {
 
-        Invitation invitationToAccept = invitationService.acceptInvitation(id);
+        Long callerId = AuthUtils.getAuthenticatedUserId();
+
+        Invitation invitationToAccept = invitationService.acceptInvitation(callerId, id);
 
         InvitationDTO invitationAcceptedDTO = InvitationMapper.toDTO(invitationToAccept);
 
@@ -45,12 +65,25 @@ public class InvitationController {
     @PatchMapping("/{id}/reject")
     public ResponseEntity<InvitationDTO> rejectInvitation(@PathVariable Long id) {
 
-        Invitation invitationToReject = invitationService.rejectInvitation(id);
+        Long callerId = AuthUtils.getAuthenticatedUserId();
+
+        Invitation invitationToReject = invitationService.rejectInvitation(callerId, id);
 
         InvitationDTO invitationRejectedDTO = InvitationMapper.toDTO(invitationToReject);
 
         return ResponseEntity.status(HttpStatus.OK).body(invitationRejectedDTO);
 
     }
-    
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteInvitation(@PathVariable Long id) {
+
+        Long callerId = AuthUtils.getAuthenticatedUserId();
+
+        invitationService.cancelInvitation(callerId, id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
+    }
+
 }

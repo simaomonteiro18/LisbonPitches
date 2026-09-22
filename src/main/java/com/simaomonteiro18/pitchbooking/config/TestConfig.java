@@ -61,12 +61,12 @@ public class TestConfig implements CommandLineRunner {
         Reservation r4 = new Reservation(u2, p2, Instant.now().minus(45, ChronoUnit.MINUTES), LocalDateTime.parse("2026-08-28T16:00:00"), LocalDateTime.parse("2026-08-28T18:00:00"));
         Reservation r5 = new Reservation(u3, p1, Instant.now().minus(1, ChronoUnit.HOURS), LocalDateTime.parse("2026-08-27T21:00:00"), LocalDateTime.parse("2026-08-27T23:00:00"));
 
-        Invitation i1 = new Invitation(u4, r1);
-        Invitation i2 = new Invitation(u1, r2);
-        Invitation i3 = new Invitation(u3, r3);
-        Invitation i4 = new Invitation(u2, r1);
-        Invitation i5 = new Invitation(u4, r4);
-        Invitation i6 = new Invitation(u3, r1);
+        Invitation i1 = new Invitation(u4, r1, u4);
+        Invitation i2 = new Invitation(u1, r2, u1);
+        Invitation i3 = new Invitation(u3, r3, u3);
+        Invitation i4 = new Invitation(u2, r1, u2);
+        Invitation i5 = new Invitation(u4, r4, u4);
+        Invitation i6 = new Invitation(u3, r1, u3);
 
         i1.accept();
         i2.reject();

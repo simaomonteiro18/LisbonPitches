@@ -92,4 +92,24 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(UserPermissionException.class)
+    public ResponseEntity<StandardError> userPermission(UserPermissionException e, HttpServletRequest request) {
+
+        String error = "User without permission.";
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+
+    }
+    
+    @ExceptionHandler(UsernameConflictException.class)
+    public ResponseEntity<StandardError> usernameConflict(UsernameConflictException e, HttpServletRequest request) {
+
+        String error = "Duplicate Username.";
+        HttpStatus status = HttpStatus.CONFLICT;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+
+    }
+
 }
