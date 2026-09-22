@@ -1,2 +1,0 @@
-[phases.build]
-cmds = ["./mvnw -DoutputFile=target/mvn-dependency-list.log -B -Dmaven.test.skip=true clean dependency:list install -Pproduction"]
