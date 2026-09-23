@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { searchPitches } from '../api/pitches'
 import { createReservation } from '../api/reservations'
 import { getSession } from '../auth'
@@ -107,50 +107,58 @@ function Pitches() {
         <div className="pitches__grid">
           {pitches.map((pitch) => (
             <div className="pitch-card" key={pitch.id}>
-              <h3>{pitch.name}</h3>
-              <p className="pitch-card__city">{pitch.city}</p>
-              <div className="pitch-card__footer">
-                <span className="badge">{TIPOS[pitch.type] ?? pitch.type}</span>
-                <span className="pitch-card__price">
-                  {pitch.pricePerHour != null ? `${pitch.pricePerHour} EUR/hora` : 'Sem preço'}
-                </span>
-              </div>
+              <Link to={`/pitches/${pitch.id}`} className="pitch-card__link">
+                <h3>{pitch.name}</h3>
+                <p className="pitch-card__city">{pitch.city}</p>
+                <div className="pitch-card__footer">
+                  <span className="badge">{TIPOS[pitch.type] ?? pitch.type}</span>
+                  {pitch.pitchAccess !== 'PUBLIC' && (
+                    <span className="pitch-card__price">
+                      {pitch.pricePerHour != null ? `${pitch.pricePerHour} EUR/hora` : 'Sem preço'}
+                    </span>
+                  )}
+                </div>
+              </Link>
 
-              <button
-                type="button"
-                className="btn-ghost pitch-card__reservar"
-                onClick={() => abrirFormularioReserva(pitch.id)}
-              >
-                {reservingId === pitch.id ? 'Cancelar' : 'Reservar'}
-              </button>
-
-              {reservingId === pitch.id && (
-                <form className="pitch-card__form" onSubmit={(e) => confirmarReserva(e, pitch.id)}>
-                  <label>
-                    Início
-                    <input
-                      type="datetime-local"
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                      required
-                    />
-                  </label>
-                  <label>
-                    Fim
-                    <input
-                      type="datetime-local"
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                      required
-                    />
-                  </label>
-
-                  {reservaError && <p className="pitches__status pitches__status--error">{reservaError}</p>}
-
-                  <button type="submit" className="btn-primary" disabled={reservaLoading}>
-                    {reservaLoading ? 'A confirmar...' : 'Confirmar reserva'}
+              {pitch.pitchAccess !== 'PUBLIC' && (
+                <>
+                  <button
+                    type="button"
+                    className="btn-ghost pitch-card__reservar"
+                    onClick={() => abrirFormularioReserva(pitch.id)}
+                  >
+                    {reservingId === pitch.id ? 'Cancelar' : 'Reservar'}
                   </button>
-                </form>
+
+                  {reservingId === pitch.id && (
+                    <form className="pitch-card__form" onSubmit={(e) => confirmarReserva(e, pitch.id)}>
+                      <label>
+                        Início
+                        <input
+                          type="datetime-local"
+                          value={startTime}
+                          onChange={(e) => setStartTime(e.target.value)}
+                          required
+                        />
+                      </label>
+                      <label>
+                        Fim
+                        <input
+                          type="datetime-local"
+                          value={endTime}
+                          onChange={(e) => setEndTime(e.target.value)}
+                          required
+                        />
+                      </label>
+
+                      {reservaError && <p className="pitches__status pitches__status--error">{reservaError}</p>}
+
+                      <button type="submit" className="btn-primary" disabled={reservaLoading}>
+                        {reservaLoading ? 'A confirmar...' : 'Confirmar reserva'}
+                      </button>
+                    </form>
+                  )}
+                </>
               )}
             </div>
           ))}

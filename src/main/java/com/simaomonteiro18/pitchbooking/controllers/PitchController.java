@@ -1,5 +1,6 @@
 package com.simaomonteiro18.pitchbooking.controllers;
 
+import com.simaomonteiro18.pitchbooking.dtos.PitchDetailDTO;
 import com.simaomonteiro18.pitchbooking.dtos.PitchSummaryDTO;
 import com.simaomonteiro18.pitchbooking.entities.Pitch;
 import com.simaomonteiro18.pitchbooking.mappers.PitchMapper;
@@ -7,6 +8,7 @@ import com.simaomonteiro18.pitchbooking.services.PitchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +33,17 @@ public class PitchController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok().body(finalListPitches);
+
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PitchDetailDTO> findById(@PathVariable Long id) {
+
+        Pitch pitch = pitchService.findById(id);
+
+        PitchDetailDTO pitchDetailDTO = PitchMapper.toDetailDTO(pitch);
+
+        return ResponseEntity.ok().body(pitchDetailDTO);
 
     }
 

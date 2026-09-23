@@ -2,6 +2,7 @@ package com.simaomonteiro18.pitchbooking.services;
 
 import com.simaomonteiro18.pitchbooking.entities.Pitch;
 import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
+import com.simaomonteiro18.pitchbooking.exceptions.ResourceNotFoundException;
 import com.simaomonteiro18.pitchbooking.repositories.PitchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,11 @@ public class PitchService {
         } else {
             return pitchRepository.findByPitchAccess(PitchAccess.PUBLIC);
         }
+    }
+
+    public Pitch findById(Long id) {
+        return pitchRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(Pitch.class, id));
     }
 
 }

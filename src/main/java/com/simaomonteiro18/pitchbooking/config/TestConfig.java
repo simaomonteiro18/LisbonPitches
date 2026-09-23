@@ -55,6 +55,26 @@ public class TestConfig implements CommandLineRunner {
         Pitch p4 = new Pitch("InFoot", "Mem-Martins", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.FIVE);
         Pitch p5 = new Pitch("Polidesportivo do Parque 2 de Abril", "Massamá", null, PitchAccess.PUBLIC, PitchType.FIVE);
 
+        p1.setAddress("Massamá, Sintra");
+        p1.setLatitude(38.7526);
+        p1.setLongitude(-9.2926);
+
+        p2.setAddress("Mafra");
+        p2.setLatitude(38.9357);
+        p2.setLongitude(-9.3271);
+
+        p3.setAddress("Cruz Quebrada-Dafundo, Oeiras");
+        p3.setLatitude(38.7002);
+        p3.setLongitude(-9.2335);
+
+        p4.setAddress("Mem-Martins, Sintra");
+        p4.setLatitude(38.7944);
+        p4.setLongitude(-9.3389);
+
+        p5.setAddress("Massamá, Sintra");
+        p5.setLatitude(38.75753901531081);
+        p5.setLongitude(-9.27677864288426);
+
         Reservation r1 = new Reservation(u1, p1, Instant.now(), LocalDateTime.parse("2026-08-26T20:00:00"), LocalDateTime.parse("2026-08-26T22:00:00"));
         Reservation r2 = new Reservation(u4, p4, Instant.now().minus(30, ChronoUnit.MINUTES), LocalDateTime.parse("2026-08-30T16:00:00"), LocalDateTime.parse("2026-08-30T17:00:00"));
         Reservation r3 = new Reservation(u4, p3, Instant.now().minus(20, ChronoUnit.MINUTES), LocalDateTime.parse("2026-09-01T16:00:00"), LocalDateTime.parse("2026-09-01T19:00:00"));

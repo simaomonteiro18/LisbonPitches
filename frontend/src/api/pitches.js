@@ -14,3 +14,13 @@ export async function searchPitches({ name, city } = {}) {
 
   return response.json()
 }
+
+export async function getPitchById(id) {
+  const response = await fetch(`${API_URL}/pitches/${id}`)
+
+  if (!response.ok) {
+    throw new Error('Não foi possível obter o campo.')
+  }
+
+  return response.json()
+}
