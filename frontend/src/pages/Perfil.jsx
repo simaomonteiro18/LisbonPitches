@@ -113,6 +113,10 @@ function Perfil() {
                 <strong>{user.name}</strong>
               </div>
               <div className="perfil__campo">
+                <span>Username</span>
+                <strong>{user.username}</strong>
+              </div>
+              <div className="perfil__campo">
                 <span>Email</span>
                 <strong>{user.email}</strong>
               </div>

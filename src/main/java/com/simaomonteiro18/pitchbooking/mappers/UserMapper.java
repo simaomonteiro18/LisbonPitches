@@ -7,7 +7,7 @@ public class UserMapper {
 
     public static UserSummaryDTO toDTO(User user) {
 
-        UserSummaryDTO userSummaryDTO = new UserSummaryDTO(user.getId(), user.getName(), user.getEmail(), user.getPhone(), user.getCity());
+        UserSummaryDTO userSummaryDTO = new UserSummaryDTO(user.getId(), user.getName(), user.getUsername(), user.getEmail(), user.getPhone(), user.getCity());
 
         return userSummaryDTO;
 

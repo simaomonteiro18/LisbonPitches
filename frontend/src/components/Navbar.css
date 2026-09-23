@@ -50,3 +50,14 @@
     display: none;
   }
 }
+
+.navbar__perfil {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--color-grass);
+  color: var(--color-black);
+}

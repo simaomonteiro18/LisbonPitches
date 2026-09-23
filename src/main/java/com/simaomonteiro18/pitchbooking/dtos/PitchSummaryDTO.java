@@ -1,5 +1,6 @@
 package com.simaomonteiro18.pitchbooking.dtos;
 
+import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
 import com.simaomonteiro18.pitchbooking.entities.enums.PitchType;
 
 import java.math.BigDecimal;
@@ -11,16 +12,18 @@ public class PitchSummaryDTO {
     private String city;
     private BigDecimal pricePerHour;
     private PitchType type;
+    private PitchAccess pitchAccess;
 
     public PitchSummaryDTO() {
     }
 
-    public PitchSummaryDTO(Long id, String name, String city, BigDecimal pricePerHour, PitchType type) {
+    public PitchSummaryDTO(Long id, String name, String city, BigDecimal pricePerHour, PitchType type, PitchAccess pitchAccess) {
         this.id = id;
         this.name = name;
         this.city = city;
         this.pricePerHour = pricePerHour;
         this.type = type;
+        this.pitchAccess = pitchAccess;
     }
 
     public Long getId() {
@@ -41,6 +44,10 @@ public class PitchSummaryDTO {
 
     public PitchType getType() {
         return type;
+    }
+
+    public PitchAccess getPitchAccess() {
+        return pitchAccess;
     }
 
 }
