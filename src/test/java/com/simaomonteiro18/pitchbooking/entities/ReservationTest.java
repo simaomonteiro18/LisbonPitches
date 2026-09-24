@@ -24,12 +24,12 @@ public class ReservationTest {
 
     Reservation reservation = new Reservation(u1, pitch, Instant.now(), LocalDateTime.parse("2026-08-31T20:00:00"), LocalDateTime.parse("2026-08-31T21:00:00"));
 
-    Invitation i1 = new Invitation(u2, reservation);
-    Invitation i2 = new Invitation(u3, reservation);
-    Invitation i3 = new Invitation(u4, reservation);
-    Invitation i4 = new Invitation(u5, reservation);
-    Invitation i5 = new Invitation(u6, reservation);
-    Invitation i6 = new Invitation(u7, reservation);
+    Invitation i1 = new Invitation(u2, reservation, u1);
+    Invitation i2 = new Invitation(u3, reservation, u1);
+    Invitation i3 = new Invitation(u4, reservation, u1);
+    Invitation i4 = new Invitation(u5, reservation, u1);
+    Invitation i5 = new Invitation(u6, reservation, u1);
+    Invitation i6 = new Invitation(u7, reservation, u1);
 
     @Test
     @DisplayName("Convites")

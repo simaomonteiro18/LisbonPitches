@@ -46,8 +46,8 @@ public class InvitationControllerTest {
     @MockitoBean
     private JwtService jwtService;
 
-    User organizer = new User("Simão", "12345", "sm@gmail.com", "912345678", "Sintra");
-    User guest = new User("Mafalda", "1234567", "mf@gmail.com", "987654321", "Lisboa");
+    User organizer = new User("Simão", "simaomonteiro", "12345", "sm@gmail.com", "912345678", "Sintra");
+    User guest = new User("Mafalda", "mafalda", "1234567", "mf@gmail.com", "987654321", "Lisboa");
 
     Pitch pitch = new Pitch("Jamor", "Oeiras", null, PitchAccess.PUBLIC, PitchType.ELEVEN);
 
@@ -62,11 +62,11 @@ public class InvitationControllerTest {
 
         reservation.setId(1L);
 
-        CreateInvitationRequest createInvitationRequest = new CreateInvitationRequest(1L);
+        CreateInvitationRequest createInvitationRequest = new CreateInvitationRequest(1L, guest.getUsername());
 
-        Invitation invitation = new Invitation(guest, reservation);
+        Invitation invitation = new Invitation(guest, reservation, organizer);
 
-        when(invitationService.createInvitation(2L, 1L)).thenReturn(invitation);
+        when(invitationService.createInvitation(2L, guest.getUsername(), 1L)).thenReturn(invitation);
 
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(2L, null, List.of());
@@ -88,11 +88,11 @@ public class InvitationControllerTest {
 
         reservation.setId(1L);
 
-        CreateInvitationRequest createInvitationRequest = new CreateInvitationRequest(1L);
+        CreateInvitationRequest createInvitationRequest = new CreateInvitationRequest(1L, guest.getUsername());
 
-        Invitation invitation = new Invitation(organizer, reservation);
+        Invitation invitation = new Invitation(guest, reservation, organizer);
 
-        when(invitationService.createInvitation(1L, 1L)).thenThrow(InvalidGuestException.class);
+        when(invitationService.createInvitation(1L, guest.getUsername(), 1L)).thenThrow(InvalidGuestException.class);
 
         UsernamePasswordAuthenticationToken authToken =
                 new UsernamePasswordAuthenticationToken(1L, null, List.of());
@@ -117,10 +117,15 @@ public class InvitationControllerTest {
 
         reservation.setId(1L);
 
-        Invitation invitation = new Invitation(guest, reservation);
+        Invitation invitation = new Invitation(guest, reservation, organizer);
         invitation.setId(7L);
 
-        when(invitationService.acceptInvitation(7L)).thenReturn(invitation);
+        when(invitationService.acceptInvitation(1L, 7L)).thenReturn(invitation);
+
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(1L, null, List.of());
+
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         mockMvc.perform(patch("/invitations/{id}/accept", 7L))
                 .andExpect(status().isOk());
@@ -136,10 +141,15 @@ public class InvitationControllerTest {
 
         reservation.setId(1L);
 
-        Invitation invitation = new Invitation(guest, reservation);
+        Invitation invitation = new Invitation(guest, reservation, organizer);
         invitation.setId(7L);
 
-        when(invitationService.rejectInvitation(7L)).thenReturn(invitation);
+        when(invitationService.rejectInvitation(1L, 7L)).thenReturn(invitation);
+
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(1L, null, List.of());
+
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         mockMvc.perform(patch("/invitations/{id}/reject", 7L))
                 .andExpect(status().isOk());

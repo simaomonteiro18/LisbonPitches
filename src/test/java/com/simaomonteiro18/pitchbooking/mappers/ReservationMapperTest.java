@@ -26,8 +26,8 @@ public class ReservationMapperTest {
 
     Reservation reservation = new Reservation(organizer, pitch, Instant.now(), LocalDateTime.parse("2026-09-04T20:00:00"), LocalDateTime.parse("2026-09-04T21:00:00"));
 
-    Invitation i1 = new Invitation(u1, reservation);
-    Invitation i2 = new Invitation(u2, reservation);
+    Invitation i1 = new Invitation(u1, reservation, organizer);
+    Invitation i2 = new Invitation(u2, reservation, organizer);
 
     @Test
     @DisplayName("Teste de Conversão para DTO")
