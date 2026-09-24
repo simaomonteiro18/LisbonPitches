@@ -18,4 +18,8 @@ public interface PitchRepository extends JpaRepository<Pitch, Long> {
 
     List<Pitch> findByCityAndNameContainingIgnoreCaseAndPitchAccess(String city, String name, PitchAccess pitchAccess);
 
+    List<Pitch> findByFeaturedTrueAndPitchAccess(PitchAccess pitchAccess);
+
+    boolean existsByName(String name);
+
 }

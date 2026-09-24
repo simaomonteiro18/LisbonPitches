@@ -47,4 +47,22 @@ public class PitchController {
 
     }
 
+    @GetMapping("/featured")
+    public ResponseEntity<List<PitchDetailDTO>> findByFeaturedTrue() {
+
+        List<PitchDetailDTO> pitches = pitchService.findFeatured();
+
+        return ResponseEntity.ok().body(pitches);
+
+    }
+
+    @GetMapping("/map")
+    public ResponseEntity<List<PitchDetailDTO>> findAllForMap() {
+
+        List<PitchDetailDTO> pitches = pitchService.findAllForMap();
+
+        return ResponseEntity.ok().body(pitches);
+
+    }
+
 }

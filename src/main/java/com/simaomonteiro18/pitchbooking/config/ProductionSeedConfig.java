@@ -37,7 +37,7 @@ public class ProductionSeedConfig implements CommandLineRunner {
             Pitch p1 = new Pitch("Campo nº2 do Complexo Desportivo Real de Massamá", "Massamá", BigDecimal.valueOf(30.0), PitchAccess.PRIVATE, PitchType.SEVEN);
             Pitch p2 = new Pitch("Pavilhão Linces de Mafra", "Mafra", BigDecimal.valueOf(20.0), PitchAccess.PRIVATE, PitchType.FUTSAL);
             Pitch p3 = new Pitch("Campo nº1 do Complexo Desportivo do Jamor", "Cruz Quebrada", BigDecimal.valueOf(60.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
-            Pitch p4 = new Pitch("InFoot", "Mem-Martins", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.FIVE);
+            Pitch p4 = new Pitch("InFoot", "Mem-Martins", BigDecimal.valueOf(51.0), PitchAccess.PRIVATE, PitchType.FIVE);
             Pitch p5 = new Pitch("Polidesportivo do Parque 2 de Abril", "Massamá", null, PitchAccess.PUBLIC, PitchType.FIVE);
 
             p1.setAddress("Massamá, Sintra");
@@ -53,8 +53,9 @@ public class ProductionSeedConfig implements CommandLineRunner {
             p3.setLongitude(-9.2335);
 
             p4.setAddress("Mem-Martins, Sintra");
-            p4.setLatitude(38.7944);
-            p4.setLongitude(-9.3389);
+            p4.setLatitude(38.781961899519814);
+            p4.setLongitude(-9.350213670258649);
+            p4.setImageUrl("https://infoot.pt/wp-content/uploads/2018/12/foto-campos-2.jpg");
 
             p5.setAddress("Massamá, Sintra");
             p5.setLatitude(38.75753901531081);

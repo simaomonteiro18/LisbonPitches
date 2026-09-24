@@ -78,8 +78,10 @@
 
 .pitch__mapa {
   width: 100%;
+  height: 320px;
   border-radius: 16px;
   border: 1px solid var(--color-border);
+  overflow: hidden;
 }
 
 .pitch__reservar {
@@ -87,10 +89,45 @@
   margin-top: 32px;
 }
 
+.pitch__form {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 320px;
+}
+
+.pitch__form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.pitch__form input {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background-color: rgba(255, 255, 255, 0.03);
+  color: var(--color-white);
+  font-family: inherit;
+}
+
+.pitch__form input:focus {
+  outline: none;
+  border-color: var(--color-grass);
+}
+
 .pitch__mapa-link {
-  display: block;
-  border-radius: 16px;
-  transition: opacity 0.15s ease;
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--color-grass-light);
+  font-size: 0.9rem;
+}
+
+.pitch__mapa-link:hover {
+  text-decoration: underline;
 }
 
 .pitch__mapa-link:hover {

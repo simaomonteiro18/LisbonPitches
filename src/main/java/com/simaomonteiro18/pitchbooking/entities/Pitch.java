@@ -24,9 +24,11 @@ public class Pitch {
     @Enumerated(EnumType.STRING)
     private PitchType pitchType;
 
+    private boolean featured;
     private String address;
     private Double latitude;
     private Double longitude;
+    @Column(length = 1000)
     private String imageUrl;
 
     public Pitch() {
@@ -87,6 +89,14 @@ public class Pitch {
 
     public void setPitchType(PitchType pitchType) {
         this.pitchType = pitchType;
+    }
+
+    public boolean isFeatured() {
+        return featured;
+    }
+
+    public void setFeatured(boolean featured) {
+        this.featured = featured;
     }
 
     public String getAddress() {

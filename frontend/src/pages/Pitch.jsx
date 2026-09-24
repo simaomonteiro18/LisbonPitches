@@ -1,6 +1,10 @@
-import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import mapboxgl from 'mapbox-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
 import { getPitchById } from '../api/pitches'
+import { createReservation } from '../api/reservations'
+import { getSession } from '../auth'
 import './Pitch.css'
 
 const TIPOS = {
@@ -17,12 +21,8 @@ const ACESSOS = {
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
 
-function mapaUrl(latitude, longitude) {
-  if (!MAPBOX_TOKEN || latitude == null || longitude == null) {
-    return null
-  }
-
-  return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/pin-l+16a34a(${longitude},${latitude})/${longitude},${latitude},13,0/640x320@2x?access_token=${MAPBOX_TOKEN}`
+if (MAPBOX_TOKEN) {
+  mapboxgl.accessToken = MAPBOX_TOKEN
 }
 
 function googleMapsUrl(latitude, longitude) {
@@ -35,10 +35,20 @@ function googleMapsUrl(latitude, longitude) {
 
 function Pitch() {
   const { id } = useParams()
+  const navigate = useNavigate()
 
   const [pitch, setPitch] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+
+  const [reserving, setReserving] = useState(false)
+  const [startTime, setStartTime] = useState('')
+  const [endTime, setEndTime] = useState('')
+  const [reservaLoading, setReservaLoading] = useState(false)
+  const [reservaError, setReservaError] = useState(null)
+
+  const mapaContainerRef = useRef(null)
+  const mapaRef = useRef(null)
 
   useEffect(() => {
     setLoading(true)
@@ -49,6 +59,56 @@ function Pitch() {
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [id])
+
+  useEffect(() => {
+    if (!pitch || !MAPBOX_TOKEN || pitch.latitude == null || pitch.longitude == null || !mapaContainerRef.current) {
+      return
+    }
+
+    mapaRef.current = new mapboxgl.Map({
+      container: mapaContainerRef.current,
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [pitch.longitude, pitch.latitude],
+      zoom: 14,
+    })
+
+    mapaRef.current.addControl(new mapboxgl.NavigationControl(), 'top-right')
+
+    new mapboxgl.Marker({ color: '#3fae4a' })
+      .setLngLat([pitch.longitude, pitch.latitude])
+      .addTo(mapaRef.current)
+
+    return () => {
+      mapaRef.current?.remove()
+      mapaRef.current = null
+    }
+  }, [pitch])
+
+  function abrirFormularioReserva() {
+    if (!getSession()) {
+      navigate('/login')
+      return
+    }
+    setReservaError(null)
+    setStartTime('')
+    setEndTime('')
+    setReserving((prev) => !prev)
+  }
+
+  async function confirmarReserva(e) {
+    e.preventDefault()
+    setReservaLoading(true)
+    setReservaError(null)
+
+    try {
+      const reservation = await createReservation({ pitchId: pitch.id, startTime, endTime })
+      navigate(`/reservas/${reservation.id}`)
+    } catch (err) {
+      setReservaError(err.message)
+    } finally {
+      setReservaLoading(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -70,7 +130,7 @@ function Pitch() {
     )
   }
 
-  const mapa = mapaUrl(pitch.latitude, pitch.longitude)
+  const temMapa = Boolean(MAPBOX_TOKEN) && pitch.latitude != null && pitch.longitude != null
 
   return (
     <section className="pitch">
@@ -108,23 +168,57 @@ function Pitch() {
         </div>
 
         <h2>Localização</h2>
-        {mapa ? (
-          <a
-            href={googleMapsUrl(pitch.latitude, pitch.longitude)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pitch__mapa-link"
-          >
-            <img className="pitch__mapa" src={mapa} alt={`Localização de ${pitch.name}, abre no Google Maps`} />
-          </a>
+        {temMapa ? (
+          <>
+            <div ref={mapaContainerRef} className="pitch__mapa" />
+            <a
+              href={googleMapsUrl(pitch.latitude, pitch.longitude)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pitch__mapa-link"
+            >
+              Abrir no Google Maps
+            </a>
+          </>
         ) : (
           <p className="pitch__status">Localização não disponível.</p>
         )}
 
         {pitch.pitchAccess !== 'PUBLIC' && (
-          <Link to="/pitches" className="btn-primary pitch__reservar">
-            Reservar na lista de campos
-          </Link>
+          <>
+            <button type="button" className="btn-primary pitch__reservar" onClick={abrirFormularioReserva}>
+              {reserving ? 'Cancelar' : 'Reservar'}
+            </button>
+
+            {reserving && (
+              <form className="pitch__form" onSubmit={confirmarReserva}>
+                <label>
+                  Início
+                  <input
+                    type="datetime-local"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    required
+                  />
+                </label>
+                <label>
+                  Fim
+                  <input
+                    type="datetime-local"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    required
+                  />
+                </label>
+
+                {reservaError && <p className="pitch__status pitch__status--error">{reservaError}</p>}
+
+                <button type="submit" className="btn-primary" disabled={reservaLoading}>
+                  {reservaLoading ? 'A confirmar...' : 'Confirmar reserva'}
+                </button>
+              </form>
+            )}
+          </>
         )}
       </div>
     </section>

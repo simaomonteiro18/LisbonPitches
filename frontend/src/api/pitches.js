@@ -15,6 +15,26 @@ export async function searchPitches({ name, city } = {}) {
   return response.json()
 }
 
+export async function getFeaturedPitches() {
+  const response = await fetch(`${API_URL}/pitches/featured`)
+
+  if (!response.ok) {
+    throw new Error('Não foi possível obter os campos em destaque.')
+  }
+
+  return response.json()
+}
+
+export async function getAllPitchesForMap() {
+  const response = await fetch(`${API_URL}/pitches/map`)
+
+  if (!response.ok) {
+    throw new Error('Não foi possível obter os campos para o mapa.')
+  }
+
+  return response.json()
+}
+
 export async function getPitchById(id) {
   const response = await fetch(`${API_URL}/pitches/${id}`)
 
