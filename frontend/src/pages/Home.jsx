@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import './Home.css'
+
+const CONTACT_EMAIL = 'sasmonteiro07@gmail.com'
 
 const passos = [
   {
@@ -20,6 +23,19 @@ const passos = [
 ]
 
 function Home() {
+  const [nomeCampo, setNomeCampo] = useState('')
+  const [localizacao, setLocalizacao] = useState('')
+  const [notas, setNotas] = useState('')
+
+  function enviarSugestao(e) {
+    e.preventDefault()
+
+    const assunto = `Sugestão de campo - ${nomeCampo}`
+    const corpo = `Campo: ${nomeCampo}\nLocalização: ${localizacao}\n\n${notas}`
+
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`
+  }
+
   return (
     <>
       <section className="hero">
@@ -56,6 +72,54 @@ function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="sugerir-campo">
+        <div className="container sugerir-campo__inner">
+          <div className="sugerir-campo__texto">
+            <h2>Falta o teu campo aqui?</h2>
+            <p>
+              Se costumas jogar num campo que ainda não está na lista,
+              diz-nos qual é e tratamos de o adicionar.
+            </p>
+          </div>
+
+          <form className="sugerir-campo__form" onSubmit={enviarSugestao}>
+            <label>
+              Nome do campo
+              <input
+                type="text"
+                value={nomeCampo}
+                onChange={(e) => setNomeCampo(e.target.value)}
+                required
+              />
+            </label>
+
+            <label>
+              Localização
+              <input
+                type="text"
+                value={localizacao}
+                onChange={(e) => setLocalizacao(e.target.value)}
+                placeholder="Cidade ou morada"
+                required
+              />
+            </label>
+
+            <label>
+              Notas (opcional)
+              <textarea
+                value={notas}
+                onChange={(e) => setNotas(e.target.value)}
+                rows={3}
+              />
+            </label>
+
+            <button type="submit" className="btn-primary">
+              Enviar sugestão
+            </button>
+          </form>
         </div>
       </section>
     </>
