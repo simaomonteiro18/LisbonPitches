@@ -19,28 +19,8 @@ public class PitchService {
     @Autowired
     private PitchRepository pitchRepository;
 
-    public List<Pitch> findByPitchAccess() {
-        return pitchRepository.findByPitchAccess(PitchAccess.PUBLIC);
-    }
-
-    public List<Pitch> findByCityAndPitchAccess(String city){
-        return pitchRepository.findByCityAndPitchAccess(city, PitchAccess.PUBLIC);
-    }
-
-    public List<Pitch> findByName(String name) {
-        return pitchRepository.findByNameContainingIgnoreCaseAndPitchAccess(name, PitchAccess.PUBLIC);
-    }
-
-    public List<Pitch> search(String city, String name) {
-        if (city != null && name != null) {
-            return pitchRepository.findByCityAndNameContainingIgnoreCaseAndPitchAccess(city, name, PitchAccess.PUBLIC);
-        } else if (city != null) {
-            return pitchRepository.findByCityAndPitchAccess(city, PitchAccess.PUBLIC);
-        } else if (name != null) {
-            return pitchRepository.findByNameContainingIgnoreCaseAndPitchAccess(name, PitchAccess.PUBLIC);
-        } else {
-            return pitchRepository.findByPitchAccess(PitchAccess.PUBLIC);
-        }
+    public List<Pitch> search(String city, String name, PitchAccess pitchAccess) {
+        return pitchRepository.search(city, name, pitchAccess);
     }
 
     public Pitch findById(Long id) {

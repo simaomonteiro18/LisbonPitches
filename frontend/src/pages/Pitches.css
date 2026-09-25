@@ -30,6 +30,7 @@
 .pitches__search select {
   appearance: none;
   cursor: pointer;
+  flex: 0 1 220px;
 }
 
 .pitches__search select option {
@@ -83,12 +84,20 @@
 .pitch-card__footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
   margin-top: auto;
   padding-top: 20px;
 }
 
+.badge--privado {
+  background-color: rgba(224, 122, 95, 0.12);
+  color: #e0a05f;
+  border-color: rgba(224, 122, 95, 0.3);
+}
+
 .pitch-card__price {
+  margin: 10px 0 0;
   font-weight: 700;
   color: var(--color-grass-light);
   font-size: 0.9rem;
@@ -139,5 +148,7 @@
 .pitch-card__link {
   color: inherit;
   text-decoration: none;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }

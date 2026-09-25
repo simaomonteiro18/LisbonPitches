@@ -3,6 +3,7 @@ package com.simaomonteiro18.pitchbooking.controllers;
 import com.simaomonteiro18.pitchbooking.dtos.PitchDetailDTO;
 import com.simaomonteiro18.pitchbooking.dtos.PitchSummaryDTO;
 import com.simaomonteiro18.pitchbooking.entities.Pitch;
+import com.simaomonteiro18.pitchbooking.entities.enums.PitchAccess;
 import com.simaomonteiro18.pitchbooking.mappers.PitchMapper;
 import com.simaomonteiro18.pitchbooking.services.PitchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,9 @@ public class PitchController {
     private PitchService pitchService;
 
     @GetMapping
-    public ResponseEntity<List<PitchSummaryDTO>> search(@RequestParam(required = false) String city, @RequestParam(required = false) String name) {
+    public ResponseEntity<List<PitchSummaryDTO>> search(@RequestParam(required = false) String city, @RequestParam(required = false) String name, @RequestParam(required = false) PitchAccess pitchAccess) {
 
-        List<Pitch> list = pitchService.search(city, name);
+        List<Pitch> list = pitchService.search(city, name, pitchAccess);
 
         List<PitchSummaryDTO> finalListPitches = list.stream()
                 .map(PitchMapper::toDTO)

@@ -12,10 +12,16 @@ const TIPOS = {
   FUTSAL: 'Futsal',
 }
 
+const ACESSOS = {
+  PUBLIC: 'Publico',
+  PRIVATE: 'Privado',
+}
+
 function Pitches() {
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [city, setCity] = useState('')
+  const [pitchAccess, setPitchAccess] = useState('')
   const [pitches, setPitches] = useState([])
   const [cities, setCities] = useState([])
   const [loading, setLoading] = useState(true)
@@ -41,14 +47,14 @@ function Pitches() {
       setLoading(true)
       setError(null)
 
-      searchPitches({ name, city })
+      searchPitches({ name, city, pitchAccess })
         .then(setPitches)
         .catch(() => setError('Não foi possível carregar os campos. Tenta outra vez.'))
         .finally(() => setLoading(false))
     }, 350)
 
     return () => clearTimeout(timeout)
-  }, [name, city])
+  }, [name, city, pitchAccess])
 
   function abrirFormularioReserva(pitchId) {
     if (!getSession()) {
@@ -96,6 +102,11 @@ function Pitches() {
               </option>
             ))}
           </select>
+          <select value={pitchAccess} onChange={(e) => setPitchAccess(e.target.value)}>
+            <option value="">Publicos e privados</option>
+            <option value="PUBLIC">So publicos</option>
+            <option value="PRIVATE">So privados</option>
+          </select>
         </div>
 
         {loading && <p className="pitches__status">A carregar...</p>}
@@ -112,15 +123,18 @@ function Pitches() {
                 <p className="pitch-card__city">{pitch.city}</p>
                 <div className="pitch-card__footer">
                   <span className="badge">{TIPOS[pitch.type] ?? pitch.type}</span>
-                  {pitch.pitchAccess !== 'PUBLIC' && (
-                    <span className="pitch-card__price">
-                      {pitch.pricePerHour != null ? `${pitch.pricePerHour} EUR/hora` : 'Sem preço'}
-                    </span>
-                  )}
+                  <span className={`badge badge--acesso ${pitch.pitchAccess === 'PRIVATE' ? 'badge--privado' : ''}`}>
+                    {ACESSOS[pitch.pitchAccess] ?? pitch.pitchAccess}
+                  </span>
                 </div>
+                {pitch.pitchAccess !== 'PUBLIC' && (
+                  <p className="pitch-card__price">
+                    {pitch.pricePerHour != null ? `A partir de: ${pitch.pricePerHour} EUR/hora` : 'Sem preço'}
+                  </p>
+                )}
               </Link>
 
-              {pitch.pitchAccess !== 'PUBLIC' && (
+              {pitch.reservable && (
                 <>
                   <button
                     type="button"

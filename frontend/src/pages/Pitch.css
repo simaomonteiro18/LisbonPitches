@@ -68,6 +68,32 @@
   font-weight: 700;
 }
 
+.pitch__contacto {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.02);
+  padding: 8px 24px 20px;
+  margin-top: 24px;
+}
+
+.pitch__contacto h2 {
+  margin: 16px 0;
+}
+
+.pitch__contacto p {
+  margin: 8px 0;
+  color: var(--color-text-muted);
+}
+
+.pitch__contacto a {
+  color: var(--color-grass-light);
+  text-decoration: none;
+}
+
+.pitch__contacto a:hover {
+  text-decoration: underline;
+}
+
 .pitch__status {
   color: var(--color-text-muted);
 }

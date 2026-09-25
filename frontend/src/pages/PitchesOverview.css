@@ -105,6 +105,14 @@
   color: #666;
 }
 
+.pitches-overview__popup-meta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-grass);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
 .pitches-overview__popup-btn {
   margin-top: 6px;
   display: inline-block;

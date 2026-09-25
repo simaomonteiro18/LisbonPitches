@@ -25,6 +25,9 @@ public class Pitch {
     private PitchType pitchType;
 
     private boolean featured;
+    private boolean reservable;
+    private String contactPhone;
+    private String contactEmail;
     private String address;
     private Double latitude;
     private Double longitude;
@@ -97,6 +100,30 @@ public class Pitch {
 
     public void setFeatured(boolean featured) {
         this.featured = featured;
+    }
+
+    public boolean isReservable() {
+        return reservable;
+    }
+
+    public void setReservable(boolean reservable) {
+        this.reservable = reservable;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
     }
 
     public String getAddress() {

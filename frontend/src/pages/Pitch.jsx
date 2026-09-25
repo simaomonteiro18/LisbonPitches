@@ -158,7 +158,7 @@ function Pitch() {
           {pitch.pitchAccess !== 'PUBLIC' && (
             <div className="pitch__campo">
               <span>Preço por hora</span>
-              <strong>{pitch.pricePerHour != null ? `${pitch.pricePerHour} EUR` : 'Sem preço'}</strong>
+              <strong>{pitch.pricePerHour != null ? `A partir de: ${pitch.pricePerHour} EUR` : 'Sem preço'}</strong>
             </div>
           )}
           <div className="pitch__campo">
@@ -166,6 +166,22 @@ function Pitch() {
             <strong>{pitch.city}</strong>
           </div>
         </div>
+
+        {pitch.pitchAccess !== 'PUBLIC' && (pitch.contactPhone || pitch.contactEmail) && (
+          <div className="pitch__contacto">
+            <h2>Contacto</h2>
+            {pitch.contactPhone && (
+              <p>
+                Telefone: <a href={`tel:${pitch.contactPhone}`}>{pitch.contactPhone}</a>
+              </p>
+            )}
+            {pitch.contactEmail && (
+              <p>
+                Email: <a href={`mailto:${pitch.contactEmail}`}>{pitch.contactEmail}</a>
+              </p>
+            )}
+          </div>
+        )}
 
         <h2>Localização</h2>
         {temMapa ? (
@@ -184,7 +200,11 @@ function Pitch() {
           <p className="pitch__status">Localização não disponível.</p>
         )}
 
-        {pitch.pitchAccess !== 'PUBLIC' && (
+        {pitch.pitchAccess === 'PRIVATE' && !pitch.reservable && (
+          <p className="pitch__status">Este campo ainda não tem reserva online disponível, contacta diretamente.</p>
+        )}
+
+        {pitch.reservable && (
           <>
             <button type="button" className="btn-primary pitch__reservar" onClick={abrirFormularioReserva}>
               {reserving ? 'Cancelar' : 'Reservar'}

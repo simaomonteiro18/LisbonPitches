@@ -12,6 +12,11 @@ const TIPOS = {
   FUTSAL: 'Futsal',
 }
 
+const ACESSOS = {
+  PUBLIC: 'Publico',
+  PRIVATE: 'Privado',
+}
+
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
 
 if (MAPBOX_TOKEN) {
@@ -71,12 +76,16 @@ function PitchesOverview() {
         ? `<img src="${escapeHtml(pitch.imageUrl)}" alt="${escapeHtml(pitch.name)}" class="pitches-overview__popup-imagem" />`
         : ''
 
+      const tipoLabel = TIPOS[pitch.type] ?? pitch.type
+      const acessoLabel = ACESSOS[pitch.pitchAccess] ?? pitch.pitchAccess
+
       const popupHtml = `
         <div class="pitches-overview__popup">
           ${imagemHtml}
           <div class="pitches-overview__popup-info">
             <strong>${escapeHtml(pitch.name)}</strong>
             <span>${escapeHtml(pitch.city)}</span>
+            <span class="pitches-overview__popup-meta">${escapeHtml(tipoLabel)} - ${escapeHtml(acessoLabel)}</span>
             <a href="/pitches/${pitch.id}" class="pitches-overview__popup-btn">Ver campo</a>
           </div>
         </div>

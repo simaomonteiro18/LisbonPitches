@@ -13,17 +13,19 @@ public class PitchSummaryDTO {
     private BigDecimal pricePerHour;
     private PitchType type;
     private PitchAccess pitchAccess;
+    private boolean reservable;
 
     public PitchSummaryDTO() {
     }
 
-    public PitchSummaryDTO(Long id, String name, String city, BigDecimal pricePerHour, PitchType type, PitchAccess pitchAccess) {
+    public PitchSummaryDTO(Long id, String name, String city, BigDecimal pricePerHour, PitchType type, PitchAccess pitchAccess, boolean reservable) {
         this.id = id;
         this.name = name;
         this.city = city;
         this.pricePerHour = pricePerHour;
         this.type = type;
         this.pitchAccess = pitchAccess;
+        this.reservable = reservable;
     }
 
     public Long getId() {
@@ -48,6 +50,10 @@ public class PitchSummaryDTO {
 
     public PitchAccess getPitchAccess() {
         return pitchAccess;
+    }
+
+    public boolean isReservable() {
+        return reservable;
     }
 
 }

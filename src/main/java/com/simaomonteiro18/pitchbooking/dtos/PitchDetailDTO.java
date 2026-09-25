@@ -13,6 +13,9 @@ public class PitchDetailDTO {
     private BigDecimal pricePerHour;
     private PitchType type;
     private PitchAccess pitchAccess;
+    private boolean reservable;
+    private String contactPhone;
+    private String contactEmail;
     private String address;
     private Double latitude;
     private Double longitude;
@@ -21,13 +24,16 @@ public class PitchDetailDTO {
     public PitchDetailDTO() {
     }
 
-    public PitchDetailDTO(Long id, String name, String city, BigDecimal pricePerHour, PitchType type, PitchAccess pitchAccess, String address, Double latitude, Double longitude, String imageUrl) {
+    public PitchDetailDTO(Long id, String name, String city, BigDecimal pricePerHour, PitchType type, PitchAccess pitchAccess, boolean reservable, String contactPhone, String contactEmail, String address, Double latitude, Double longitude, String imageUrl) {
         this.id = id;
         this.name = name;
         this.city = city;
         this.pricePerHour = pricePerHour;
         this.type = type;
         this.pitchAccess = pitchAccess;
+        this.reservable = reservable;
+        this.contactPhone = contactPhone;
+        this.contactEmail = contactEmail;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -56,6 +62,18 @@ public class PitchDetailDTO {
 
     public PitchAccess getPitchAccess() {
         return pitchAccess;
+    }
+
+    public boolean isReservable() {
+        return reservable;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
     }
 
     public String getAddress() {
