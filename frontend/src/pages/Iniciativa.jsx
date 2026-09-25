@@ -5,12 +5,12 @@ function Iniciativa() {
     <section className="iniciativa">
       <div className="container iniciativa__inner">
         <span className="badge">A nossa história</span>
-        <h1>Porque criei o Pitch Booking</h1>
+        <h1>Porque criei o LisbonPitches</h1>
         <p>
           A ideia nasceu de um problema real: marcar um campo para jogar a
           bola com os amigos era sempre uma dor de cabeça, entre grupos de
           WhatsApp, chamadas para vários campos, e a dúvida de saber quais
-          estavam mesmo disponíveis. O Pitch Booking nasceu para resolver
+          estavam mesmo disponíveis. O LisbonPitches nasceu para resolver
           exatamente isso, um sítio único onde é possível descobrir campos
           perto de ti sem complicações.
         </p>

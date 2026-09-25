@@ -40,12 +40,12 @@ function Home() {
     <>
       <section className="hero">
         <div className="container hero__inner">
-          <span className="badge">Pitch Booking</span>
+          <span className="badge">LisbonPitches</span>
           <h1>
             Cansado de perder horas à procura de campos de futebol?
           </h1>
           <p>
-            O Pitch Booking junta num só sítio os campos perto de ti, para
+            O LisbonPitches junta num só sítio os campos perto de ti, para
             nunca mais perderes tempo a mandar mensagens a perguntar onde é
             que se pode jogar.
           </p>

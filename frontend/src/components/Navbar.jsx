@@ -15,8 +15,8 @@ function Navbar() {
         </nav>
 
         <Link to="/" className="navbar__logo">
-          {/* substituir por <img src={logo} alt="Pitch Booking" /> quando o ficheiro existir */}
-          Pitch<span>Booking</span>
+          {/* substituir por <img src={logo} alt="LisbonPitches" /> quando o ficheiro existir */}
+          Lisbon<span>Pitches</span>
         </Link>
 
         <nav className="navbar__links navbar__links--right">

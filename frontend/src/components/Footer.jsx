@@ -6,7 +6,7 @@ function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <div className="footer__col">
-          <span className="footer__logo">Pitch<span>Booking</span></span>
+          <span className="footer__logo">Lisbon<span>Pitches</span></span>
         </div>
 
         <div className="footer__col">
@@ -25,7 +25,7 @@ function Footer() {
       </div>
 
       <div className="container footer__bottom">
-        <span>&copy; 2026 Pitch Booking</span>
+        <span>&copy; 2026 LisbonPitches</span>
         <a href="https://www.linkedin.com/in/sim%C3%A3o-monteiro-62866a278/" target="_blank" rel="noreferrer">
           Simão Monteiro
         </a>

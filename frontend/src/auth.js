@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'pitchbooking_session'
+const STORAGE_KEY = 'lisbonpitches_session'
 
 export function saveSession(token, user) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ token, user }))

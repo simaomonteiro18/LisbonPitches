@@ -1,4 +1,4 @@
-# Pitch Booking
+# LisbonPitches
 
 Plataforma de marcação de campos de futebol, construída em Java e Spring Boot.
 
@@ -41,7 +41,7 @@ efetuar reservas e convidar outros jogadores para essas reservas.
    ```
    ./mvnw spring-boot:run
    ```
-   (ou abre o projecto numa IDE e corre a classe `PitchbookingApplication`)
+   (ou abre o projecto numa IDE e corre a classe `LisbonPitchesApplication`)
 4. O perfil `test` já vem activo por defeito, com H2 em memória e dados de
    exemplo inseridos automaticamente
 5. A aplicação sobe em `http://localhost:8080`
@@ -50,14 +50,14 @@ efetuar reservas e convidar outros jogadores para essas reservas.
 
 1. Com o Docker a correr, arranca um container de PostgreSQL:
    ```
-   docker run --name pitchbooking-db -e POSTGRES_PASSWORD=<password> -e POSTGRES_DB=pitchbooking -p 5433:5432 -v pitchbooking-data:/var/lib/postgresql/data -d postgres:16
+   docker run --name lisbonpitches-db -e POSTGRES_PASSWORD=<password> -e POSTGRES_DB=lisbonpitches -p 5433:5432 -v lisbonpitches-data:/var/lib/postgresql/data -d postgres:16
    ```
 2. Muda `spring.profiles.active` para `prod` no `application.properties`
 3. Corre a aplicação
 
 ## Modelo de domínio
 
-![Diagrama UML](docs/Pitch%20Booking%20Architecture.drawio.png)
+![Diagrama UML](docs/LisbonPitches%20Architecture.drawio.png)
 
 Quatro entidades: `User`, `Pitch`, `Reservation`, `Invitation`. O convite
 (`Invitation`) é a entidade de ligação entre utilizador e reserva, e guarda o
