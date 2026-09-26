@@ -18,7 +18,7 @@ public interface PitchRepository extends JpaRepository<Pitch, Long> {
 
     @Query("SELECT p FROM Pitch p WHERE " +
             "(:city IS NULL OR p.city = :city) AND " +
-            "(:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) AND " +
+            "(:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(CAST(:name AS string)), '%')) AND " +
             "(:pitchAccess IS NULL OR p.pitchAccess = :pitchAccess)")
     List<Pitch> search(@Param("city") String city, @Param("name") String name, @Param("pitchAccess") PitchAccess pitchAccess);
 
