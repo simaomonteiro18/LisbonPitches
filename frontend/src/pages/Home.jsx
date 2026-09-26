@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import './Home.css'
 
 const CONTACT_EMAIL = 'sasmonteiro07@gmail.com'
@@ -23,17 +23,48 @@ const passos = [
 ]
 
 function Home() {
+  const location = useLocation()
   const [nomeCampo, setNomeCampo] = useState('')
   const [localizacao, setLocalizacao] = useState('')
   const [notas, setNotas] = useState('')
+  const [estadoEnvio, setEstadoEnvio] = useState('idle')
 
-  function enviarSugestao(e) {
+  useEffect(() => {
+    if (location.hash === '#sugerir-campo') {
+      document.getElementById('sugerir-campo')?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [location])
+
+  async function enviarSugestao(e) {
     e.preventDefault()
+    setEstadoEnvio('enviando')
 
-    const assunto = `Sugestão de campo - ${nomeCampo}`
-    const corpo = `Campo: ${nomeCampo}\nLocalização: ${localizacao}\n\n${notas}`
+    try {
+      const resposta = await fetch(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          _subject: `Sugestão de campo - ${nomeCampo}`,
+          Campo: nomeCampo,
+          Localização: localizacao,
+          Notas: notas || '(sem notas)',
+        }),
+      })
 
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`
+      if (!resposta.ok) {
+        throw new Error('Falha ao enviar')
+      }
+
+      setEstadoEnvio('sucesso')
+      setNomeCampo('')
+      setLocalizacao('')
+      setNotas('')
+    } catch {
+      setEstadoEnvio('erro')
+    }
   }
 
   return (
@@ -75,7 +106,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="sugerir-campo">
+      <section className="sugerir-campo" id="sugerir-campo">
         <div className="container sugerir-campo__inner">
           <div className="sugerir-campo__texto">
             <h2>Falta o teu campo aqui?</h2>
@@ -116,9 +147,21 @@ function Home() {
               />
             </label>
 
-            <button type="submit" className="btn-primary">
-              Enviar sugestão
+            <button type="submit" className="btn-primary" disabled={estadoEnvio === 'enviando'}>
+              {estadoEnvio === 'enviando' ? 'A enviar...' : 'Enviar sugestão'}
             </button>
+
+            {estadoEnvio === 'sucesso' && (
+              <p className="sugerir-campo__aviso sugerir-campo__aviso--sucesso">
+                Sugestão enviada, obrigado!
+              </p>
+            )}
+
+            {estadoEnvio === 'erro' && (
+              <p className="sugerir-campo__aviso sugerir-campo__aviso--erro">
+                Não foi possível enviar agora. Tenta novamente ou escreve para {CONTACT_EMAIL}.
+              </p>
+            )}
           </form>
         </div>
       </section>

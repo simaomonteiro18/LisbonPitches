@@ -122,6 +122,24 @@
   border-color: var(--color-grass);
 }
 
+.sugerir-campo__form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.sugerir-campo__aviso {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.sugerir-campo__aviso--sucesso {
+  color: var(--color-grass-light);
+}
+
+.sugerir-campo__aviso--erro {
+  color: #e0a05f;
+}
+
 @media (max-width: 768px) {
   .sugerir-campo__inner {
     grid-template-columns: 1fr;
