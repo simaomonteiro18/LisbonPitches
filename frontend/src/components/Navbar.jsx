@@ -8,29 +8,30 @@ function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="container navbar__inner">
-        <nav className="navbar__links navbar__links--left">
-          <Link to="/pitches">Pitches</Link>
-          <Link to="/iniciativa">Iniciativa</Link>
-        </nav>
+      <div className="container">
+        <div className="navbar__inner">
+          <Link to="/pitches" className="navbar__link">Pitches</Link>
 
-        <Link to="/" className="navbar__logo">
-          {/* substituir por <img src={logo} alt="LisbonPitches" /> quando o ficheiro existir */}
-          Lisbon<span>Pitches</span>
-        </Link>
+          <Link to="/" className="navbar__logo">
+            {/* substituir por <img src={logo} alt="LisbonPitches" /> quando o ficheiro existir */}
+            Lisbon<span>Pitches</span>
+          </Link>
 
-        <nav className="navbar__links navbar__links--right">
-          {session ? (
-            <Link to="/perfil" className="navbar__perfil" aria-label="Perfil">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-              </svg>
-            </Link>
-          ) : (
-            <Link to="/login" className="navbar__login">Login / Registo</Link>
-          )}
-        </nav>
+          <div className="navbar__right">
+            <Link to="/iniciativa" className="navbar__link">Iniciativa</Link>
+            {session && (
+              <Link to="/perfil" className="navbar__perfil" aria-label="Perfil">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+                </svg>
+              </Link>
+            )}
+            {/* Login/Registo escondido do menu de proposito: sem campos com reserva online real ainda,
+                a autenticacao nao desbloqueia funcionalidade para um visitante novo. A rota /login
+                continua a funcionar normalmente, so nao esta em destaque. */}
+          </div>
+        </div>
       </div>
     </header>
   )

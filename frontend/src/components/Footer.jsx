@@ -14,7 +14,6 @@ function Footer() {
           <Link to="/">Home</Link>
           <Link to="/iniciativa">Iniciativa</Link>
           <Link to="/pitches">Pitches</Link>
-          <Link to="/login">Login / Registo</Link>
         </div>
 
         <div className="footer__col">
