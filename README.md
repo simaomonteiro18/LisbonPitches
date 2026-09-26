@@ -4,7 +4,7 @@ Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana d
 
 **53 campos reais catalogados · 16 endpoints REST · 4 entidades · 26 testes (JUnit 5, Mockito, MockMvc)**
 
-🔗 **[API em produção](https://pitchbooking-production.up.railway.app/pitches)**
+🔗 **[API em produção](https://lisbonpitches-production.up.railway.app/pitches)**
 — `GET /pitches` devolve a lista de campos. (O domínio de produção ainda
 reflete o nome antigo do projeto, `pitchbooking`; será atualizado se o
 serviço vier a ser renomeado no Railway.)
