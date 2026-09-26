@@ -42,7 +42,7 @@ public class PitchService {
 
     public List<PitchDetailDTO> findAllForMap() {
 
-        List<Pitch> pitches = pitchRepository.findByPitchAccess(PitchAccess.PUBLIC);
+        List<Pitch> pitches = pitchRepository.findAll();
 
         List<PitchDetailDTO> pitchDetailDTOS = pitches.stream()
                 .map(PitchMapper::toDetailDTO)

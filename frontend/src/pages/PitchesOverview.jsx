@@ -13,7 +13,7 @@ const TIPOS = {
 }
 
 const ACESSOS = {
-  PUBLIC: 'Publico',
+  PUBLIC: 'Público',
   PRIVATE: 'Privado',
 }
 
@@ -73,7 +73,7 @@ function PitchesOverview() {
       bounds.extend(coordenadas)
 
       const imagemHtml = pitch.imageUrl
-        ? `<img src="${escapeHtml(pitch.imageUrl)}" alt="${escapeHtml(pitch.name)}" class="pitches-overview__popup-imagem" />`
+        ? `<img src="${escapeHtml(pitch.imageUrl)}" alt="${escapeHtml(pitch.name)}" class="pitches-overview__popup-imagem" onerror="this.remove()" />`
         : ''
 
       const tipoLabel = TIPOS[pitch.type] ?? pitch.type
@@ -91,7 +91,9 @@ function PitchesOverview() {
         </div>
       `
 
-      new mapboxgl.Marker({ color: '#3fae4a' })
+      const markerColor = pitch.pitchAccess === 'PRIVATE' ? '#e0a05f' : '#3fae4a'
+
+      new mapboxgl.Marker({ color: markerColor })
         .setLngLat(coordenadas)
         .setPopup(new mapboxgl.Popup({ offset: 24 }).setHTML(popupHtml))
         .addTo(map)
@@ -135,10 +137,16 @@ function PitchesOverview() {
           ))}
         </div>
 
-        <h2>Mapa de todos os campos</h2>
+        <h2>Mapa de Campos</h2>
 
         {MAPBOX_TOKEN ? (
-          <div ref={mapaContainerRef} className="pitches-overview__mapa" />
+          <div className="pitches-overview__mapa-wrapper">
+            <div ref={mapaContainerRef} className="pitches-overview__mapa" />
+            <div className="pitches-overview__legenda">
+              <span className="badge">Público</span>
+              <span className="badge badge--privado">Privado</span>
+            </div>
+          </div>
         ) : (
           <p className="pitches-overview__status">Mapa indisponível.</p>
         )}

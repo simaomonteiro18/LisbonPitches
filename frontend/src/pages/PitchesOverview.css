@@ -125,3 +125,27 @@
 .pitches-overview__popup-btn:hover {
   text-decoration: underline;
 }
+
+.pitches-overview__mapa-wrapper {
+  position: relative;
+}
+
+.pitches-overview__legenda {
+  position: absolute;
+  top: 12px;
+  right: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 1;
+}
+
+.pitches-overview__legenda .badge {
+  background-color: rgba(20, 20, 20, 0.85);
+}
+
+.pitches-overview__legenda .badge--privado {
+  background-color: rgba(20, 20, 20, 0.85);
+  color: #e0a05f;
+  border-color: rgba(224, 122, 95, 0.3);
+}

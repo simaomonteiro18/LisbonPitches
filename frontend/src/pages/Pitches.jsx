@@ -13,7 +13,7 @@ const TIPOS = {
 }
 
 const ACESSOS = {
-  PUBLIC: 'Publico',
+  PUBLIC: 'Público',
   PRIVATE: 'Privado',
 }
 
@@ -103,9 +103,9 @@ function Pitches() {
             ))}
           </select>
           <select value={pitchAccess} onChange={(e) => setPitchAccess(e.target.value)}>
-            <option value="">Publicos e privados</option>
-            <option value="PUBLIC">So publicos</option>
-            <option value="PRIVATE">So privados</option>
+            <option value="">Públicos e privados</option>
+            <option value="PUBLIC">Só públicos</option>
+            <option value="PRIVATE">Só privados</option>
           </select>
         </div>
 
