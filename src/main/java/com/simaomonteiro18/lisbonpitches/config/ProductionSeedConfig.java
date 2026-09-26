@@ -34,23 +34,8 @@ public class ProductionSeedConfig implements CommandLineRunner {
         if (pitchRepository.count() == 0) {
 
             User user = new User("Demo User", passwordEncoder.encode("demo"), "demo@lisbonpitches.com", "912345678", "Sintra");
-            Pitch p1 = new Pitch("Campo nº2 do Complexo Desportivo Real de Massamá", "Massamá", BigDecimal.valueOf(30.0), PitchAccess.PRIVATE, PitchType.SEVEN);
-            Pitch p2 = new Pitch("Pavilhão Linces de Mafra", "Mafra", BigDecimal.valueOf(20.0), PitchAccess.PRIVATE, PitchType.FUTSAL);
-            Pitch p3 = new Pitch("Campo nº1 do Complexo Desportivo do Jamor", "Cruz Quebrada", BigDecimal.valueOf(60.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
             Pitch p4 = new Pitch("InFoot", "Mem-Martins", BigDecimal.valueOf(50.0), PitchAccess.PRIVATE, PitchType.FIVE);
             Pitch p5 = new Pitch("Polidesportivo do Parque 2 de Abril", "Massamá", null, PitchAccess.PUBLIC, PitchType.FIVE);
-
-            p1.setAddress("Massamá, Sintra");
-            p1.setLatitude(38.7526);
-            p1.setLongitude(-9.2926);
-
-            p2.setAddress("Mafra");
-            p2.setLatitude(38.9357);
-            p2.setLongitude(-9.3271);
-
-            p3.setAddress("Cruz Quebrada-Dafundo, Oeiras");
-            p3.setLatitude(38.7002);
-            p3.setLongitude(-9.2335);
 
             p4.setAddress("Mem-Martins, Sintra");
             p4.setLatitude(38.78195225049205);
@@ -58,6 +43,7 @@ public class ProductionSeedConfig implements CommandLineRunner {
             p4.setImageUrl("https://www.aircourts.com/uploads/courts/courts_1639_1540486381.JPG");
             p4.setContactPhone("966 629 383");
             p4.setContactEmail("geral@infoot.pt");
+            p4.setReservable(true);
 
             p5.setAddress("Massamá, Sintra");
             p5.setLatitude(38.75753901531081);
@@ -65,7 +51,7 @@ public class ProductionSeedConfig implements CommandLineRunner {
 
             userRepository.saveAll(List.of(user));
 
-            pitchRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
+            pitchRepository.saveAll(Arrays.asList(p4, p5));
 
         }
     }
