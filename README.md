@@ -1,5 +1,7 @@
 # LisbonPitches
 
+[![CI](https://github.com/simaomonteiro18/LisbonPitches/actions/workflows/ci.yml/badge.svg)](https://github.com/simaomonteiro18/LisbonPitches/actions/workflows/ci.yml)
+
 Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana de Lisboa, construída em Java/Spring Boot no backend e React/Vite no frontend.
 
 **53 campos reais catalogados · 16 endpoints REST · 4 entidades · 26 testes (JUnit 5, Mockito, MockMvc)**
