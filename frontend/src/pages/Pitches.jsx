@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { searchPitches } from '../api/pitches'
+import { getAllPitchesForMap, searchPitches } from '../api/pitches'
 import { createReservation } from '../api/reservations'
 import { getSession } from '../auth'
 import './Pitches.css'
@@ -17,12 +17,16 @@ const ACESSOS = {
   PRIVATE: 'Privado',
 }
 
+const PAGE_SIZE = 12
+
 function Pitches() {
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [city, setCity] = useState('')
   const [pitchAccess, setPitchAccess] = useState('')
   const [pitches, setPitches] = useState([])
+  const [page, setPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
   const [cities, setCities] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -34,7 +38,7 @@ function Pitches() {
   const [reservaError, setReservaError] = useState(null)
 
   useEffect(() => {
-    searchPitches({})
+    getAllPitchesForMap()
       .then((all) => {
         const uniqueCities = [...new Set(all.map((pitch) => pitch.city))].sort()
         setCities(uniqueCities)
@@ -47,14 +51,17 @@ function Pitches() {
       setLoading(true)
       setError(null)
 
-      searchPitches({ name, city, pitchAccess })
-        .then(setPitches)
+      searchPitches({ name, city, pitchAccess, page, size: PAGE_SIZE })
+        .then((data) => {
+          setPitches(data.content)
+          setTotalPages(data.totalPages)
+        })
         .catch(() => setError('Não foi possível carregar os campos. Tenta outra vez.'))
         .finally(() => setLoading(false))
     }, 350)
 
     return () => clearTimeout(timeout)
-  }, [name, city, pitchAccess])
+  }, [name, city, pitchAccess, page])
 
   function abrirFormularioReserva(pitchId) {
     if (!getSession()) {
@@ -92,9 +99,18 @@ function Pitches() {
             type="text"
             placeholder="Pesquisar por nome"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value)
+              setPage(0)
+            }}
           />
-          <select value={city} onChange={(e) => setCity(e.target.value)}>
+          <select
+            value={city}
+            onChange={(e) => {
+              setCity(e.target.value)
+              setPage(0)
+            }}
+          >
             <option value="">Todas as cidades</option>
             {cities.map((cityOption) => (
               <option key={cityOption} value={cityOption}>
@@ -102,7 +118,13 @@ function Pitches() {
               </option>
             ))}
           </select>
-          <select value={pitchAccess} onChange={(e) => setPitchAccess(e.target.value)}>
+          <select
+            value={pitchAccess}
+            onChange={(e) => {
+              setPitchAccess(e.target.value)
+              setPage(0)
+            }}
+          >
             <option value="">Públicos e privados</option>
             <option value="PUBLIC">Só públicos</option>
             <option value="PRIVATE">Só privados</option>
@@ -177,6 +199,30 @@ function Pitches() {
             </div>
           ))}
         </div>
+
+        {totalPages > 1 && (
+          <div className="pitches__pagination">
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 0}
+            >
+              Anterior
+            </button>
+            <span>
+              Página {page + 1} de {totalPages}
+            </span>
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => setPage(page + 1)}
+              disabled={page >= totalPages - 1}
+            >
+              Seguinte
+            </button>
+          </div>
+        )}
       </div>
     </section>
   )

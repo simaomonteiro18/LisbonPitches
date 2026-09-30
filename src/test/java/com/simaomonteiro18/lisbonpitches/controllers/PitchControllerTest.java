@@ -5,12 +5,14 @@ import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchType;
 import com.simaomonteiro18.lisbonpitches.services.JwtService;
 import com.simaomonteiro18.lisbonpitches.services.PitchService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -47,10 +50,10 @@ public class PitchControllerTest {
         pitches.add(pitch1);
         pitches.add(pitch2);
 
-        when(pitchService.search(null, null, null)).thenReturn(pitches);
+        when(pitchService.search(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(Pageable.class))).thenReturn(new PageImpl<>(pitches));
         mockMvc.perform(get("/pitches"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.content.length()").value(2));
 
     }
 
@@ -60,10 +63,10 @@ public class PitchControllerTest {
 
         pitches.add(pitch1);
 
-        when(pitchService.search("Sintra", null, null)).thenReturn(pitches);
+        when(pitchService.search(eq("Sintra"), Mockito.any(), Mockito.any(), Mockito.any(Pageable.class))).thenReturn(new PageImpl<>(pitches));
         mockMvc.perform(get("/pitches").param("city", "Sintra"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1));
+                .andExpect(jsonPath("$.content.length()").value(1));
 
     }
 

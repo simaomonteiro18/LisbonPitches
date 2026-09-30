@@ -7,6 +7,8 @@ import com.simaomonteiro18.lisbonpitches.exceptions.ResourceNotFoundException;
 import com.simaomonteiro18.lisbonpitches.mappers.PitchMapper;
 import com.simaomonteiro18.lisbonpitches.repositories.PitchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +21,8 @@ public class PitchService {
     @Autowired
     private PitchRepository pitchRepository;
 
-    public List<Pitch> search(String city, String name, PitchAccess pitchAccess) {
-        return pitchRepository.search(city, name, pitchAccess);
+    public Page<Pitch> search(String city, String name, PitchAccess pitchAccess, Pageable pageable) {
+        return pitchRepository.search(city, name, pitchAccess, pageable);
     }
 
     public Pitch findById(Long id) {

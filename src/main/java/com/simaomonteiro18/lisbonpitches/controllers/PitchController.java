@@ -7,6 +7,8 @@ import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
 import com.simaomonteiro18.lisbonpitches.mappers.PitchMapper;
 import com.simaomonteiro18.lisbonpitches.services.PitchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/pitches")
@@ -25,13 +26,11 @@ public class PitchController {
     private PitchService pitchService;
 
     @GetMapping
-    public ResponseEntity<List<PitchSummaryDTO>> search(@RequestParam(required = false) String city, @RequestParam(required = false) String name, @RequestParam(required = false) PitchAccess pitchAccess) {
+    public ResponseEntity<Page<PitchSummaryDTO>> search(@RequestParam(required = false) String city, @RequestParam(required = false) String name, @RequestParam(required = false) PitchAccess pitchAccess, Pageable pageable) {
 
-        List<Pitch> list = pitchService.search(city, name, pitchAccess);
+        Page<Pitch> list = pitchService.search(city, name, pitchAccess, pageable);
 
-        List<PitchSummaryDTO> finalListPitches = list.stream()
-                .map(PitchMapper::toDTO)
-                .collect(Collectors.toList());
+        Page<PitchSummaryDTO> finalListPitches = list.map(PitchMapper::toDTO);
 
         return ResponseEntity.ok().body(finalListPitches);
 

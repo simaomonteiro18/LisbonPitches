@@ -2,6 +2,8 @@ package com.simaomonteiro18.lisbonpitches.repositories;
 
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +22,6 @@ public interface PitchRepository extends JpaRepository<Pitch, Long> {
             "(:city IS NULL OR p.city = :city) AND " +
             "(:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(CAST(:name AS string)), '%')) AND " +
             "(:pitchAccess IS NULL OR p.pitchAccess = :pitchAccess)")
-    List<Pitch> search(@Param("city") String city, @Param("name") String name, @Param("pitchAccess") PitchAccess pitchAccess);
+    Page<Pitch> search(@Param("city") String city, @Param("name") String name, @Param("pitchAccess") PitchAccess pitchAccess, Pageable pageable);
 
 }

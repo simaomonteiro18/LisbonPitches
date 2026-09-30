@@ -1,10 +1,12 @@
 const API_URL = import.meta.env.VITE_API_URL
 
-export async function searchPitches({ name, city, pitchAccess } = {}) {
+export async function searchPitches({ name, city, pitchAccess, page, size } = {}) {
   const params = new URLSearchParams()
   if (name) params.set('name', name)
   if (city) params.set('city', city)
   if (pitchAccess) params.set('pitchAccess', pitchAccess)
+  if (page != null) params.set('page', page)
+  if (size != null) params.set('size', size)
 
   const query = params.toString()
   const response = await fetch(`${API_URL}/pitches${query ? `?${query}` : ''}`)
