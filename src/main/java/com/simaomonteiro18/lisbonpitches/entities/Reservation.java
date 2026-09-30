@@ -58,7 +58,7 @@ public class Reservation {
         return organizer;
     }
 
-    public void setOrganizer(User user) {
+    public void setOrganizer(User organizer) {
         this.organizer = organizer;
     }
 
