@@ -64,8 +64,36 @@
   text-align: center;
 }
 
+.login__form .btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .login__error {
   color: #e07a5f;
   font-size: 0.9rem;
   margin: 0;
+}
+
+.login__requisitos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.login__requisitos li::before {
+  content: '○ ';
+}
+
+.login__requisitos li.ok {
+  color: var(--color-grass);
+}
+
+.login__requisitos li.ok::before {
+  content: '✓ ';
 }

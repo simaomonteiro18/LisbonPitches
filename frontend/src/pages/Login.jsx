@@ -42,6 +42,16 @@ function Login() {
     }
   }
 
+  // mesmas regras do backend (letras e digitos unicode)
+  const requisitos = [
+    { texto: 'Pelo menos 8 caracteres', ok: password.length >= 8 },
+    { texto: 'Uma letra maiúscula', ok: /\p{Lu}/u.test(password) },
+    { texto: 'Uma letra minúscula', ok: /\p{Ll}/u.test(password) },
+    { texto: 'Um número', ok: /\p{Nd}/u.test(password) },
+    { texto: 'Um símbolo', ok: /[^\p{L}\p{Nd}]/u.test(password) },
+  ]
+  const passwordForte = requisitos.every((r) => r.ok)
+
   return (
     <section className="login">
       <div className="container login__inner">
@@ -110,10 +120,23 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          {modo === 'registo' && (
+            <ul className="login__requisitos">
+              {requisitos.map((r) => (
+                <li key={r.texto} className={r.ok ? 'ok' : ''}>
+                  {r.texto}
+                </li>
+              ))}
+            </ul>
+          )}
 
           {error && <p className="login__error">{error}</p>}
 
-          <button type="submit" className="btn-primary" disabled={loading}>
+          <button
+            type="submit"
+            className="btn-primary"
+            disabled={loading || (modo === 'registo' && !passwordForte)}
+          >
             {loading ? 'Aguarda...' : modo === 'login' ? 'Entrar' : 'Criar conta'}
           </button>
         </form>
