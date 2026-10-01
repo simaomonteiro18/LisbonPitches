@@ -4,7 +4,7 @@
 
 Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana de Lisboa, construída em Java/Spring Boot no backend e React/Vite no frontend.
 
-**53 campos reais catalogados · 16 endpoints REST · 4 entidades · 26 testes (JUnit 5, Mockito, MockMvc)**
+**53 campos reais catalogados · 16 endpoints REST · 4 entidades · 30 testes (JUnit 5, Mockito, MockMvc)**
 
 🔗 **[API em produção](https://lisbonpitches-production.up.railway.app/pitches)**
 — `GET /pitches` devolve a lista de campos.
