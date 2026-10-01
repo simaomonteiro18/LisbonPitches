@@ -112,4 +112,14 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(WeakPasswordException.class)
+    public ResponseEntity<StandardError> weakPassword(WeakPasswordException e, HttpServletRequest request) {
+
+        String error = "Weak Password (Follow the instructions given)";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+
+    }
+
 }
