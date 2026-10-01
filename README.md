@@ -61,6 +61,14 @@ mais campos recolhidos à mão ou submissões de utilizadores.
 - **Sugestão de novos campos**, direto da Home, entregue por email via
   FormSubmit (sem backend próprio).
 
+## Documentação da API
+
+A API está documentada com OpenAPI (springdoc) e pode ser explorada e testada diretamente no Swagger UI:
+
+https://lisbonpitches-production.up.railway.app/swagger-ui.html
+
+Os endpoints protegidos aceitam o token JWT através do botão "Authorize".
+
 ### Nota sobre o login
 
 Registo/login está implementado (Spring Security + JWT, password com
