@@ -7,6 +7,7 @@ import com.simaomonteiro18.lisbonpitches.exceptions.ResourceNotFoundException;
 import com.simaomonteiro18.lisbonpitches.mappers.PitchMapper;
 import com.simaomonteiro18.lisbonpitches.repositories.PitchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,7 @@ public class PitchService {
         
     }
 
+    @Cacheable("pitchMap")
     public List<PitchDetailDTO> findAllForMap() {
 
         List<Pitch> pitches = pitchRepository.findAll();
