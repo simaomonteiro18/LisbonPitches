@@ -50,6 +50,7 @@ public class LoginRateLimitFilterTest {
 
         assertEquals(429, response.getStatus());
         assertEquals("900", response.getHeader("Retry-After"));
+        assertEquals("UTF-8", response.getCharacterEncoding());   // nova
         assertFalse(chainCalled.get());
 
     }

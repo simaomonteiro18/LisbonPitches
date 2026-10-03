@@ -42,7 +42,7 @@ public class LoginRateLimitFilter extends OncePerRequestFilter {
         if (counter != null && counter.get() >= MAX_ATTEMPTS) {
             response.setStatus(429);
             response.setHeader("Retry-After", "900");
-            response.setContentType("application/json");
+            response.setContentType("application/json;charset=UTF-8");
             String body = """
         {"timeStamp":"%s","status":429,"error":"Too Many Requests.","message":"Demasiadas tentativas. Tenta novamente daqui a 15 minutos.","path":"%s"}
         """.formatted(Instant.now(), request.getRequestURI());
