@@ -4,7 +4,7 @@
 
 Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana de Lisboa, construída em Java/Spring Boot no backend e React/Vite no frontend.
 
-**53 campos reais catalogados · 16 endpoints REST · 4 entidades · 30 testes (JUnit 5, Mockito, MockMvc)**
+**53 campos reais catalogados · 16 endpoints REST · 4 entidades · 37 testes (JUnit 5, Mockito, MockMvc)**
 
 🔗 **[API em produção](https://lisbonpitches-production.up.railway.app/pitches)**
 — `GET /pitches` devolve a lista de campos.
@@ -58,6 +58,15 @@ mais campos recolhidos à mão ou submissões de utilizadores.
   todos os 16 endpoints exceto os públicos (`/pitches`, `/pitches/{id}`,
   `/users`, `/login`), sem destaque na navegação por agora — ver nota
   abaixo.
+- **Rate limiting no login**: no máximo 5 tentativas falhadas por IP em 15
+  minutos; à seguinte a API responde `429 Too Many Requests` com o header
+  `Retry-After`. Implementado num filtro (`LoginRateLimitFilter`) com
+  contadores em memória (Caffeine), por isso reiniciam num novo deploy.
+- **Password forte no registo**: mínimo de 8 caracteres com maiúscula,
+  minúscula, número e símbolo, validada no backend (`400` a indicar o que
+  falta) e com os requisitos mostrados em tempo real no formulário.
+- **Cache** da lista de campos do mapa (`/pitches/map`) com Caffeine, com
+  validade de 10 minutos.
 - **Sugestão de novos campos**, direto da Home, entregue por email via
   FormSubmit (sem backend próprio).
 
@@ -87,9 +96,10 @@ mais campos passarem a suportar reserva online real.
 - Spring Boot
 - Spring Security + JWT
 - Spring Data JPA / Hibernate
+- Caffeine (cache e rate limiting)
 - PostgreSQL (produção) e H2 (desenvolvimento)
 - Docker
-- JUnit 5, Mockito, MockMvc — 26 testes em 11 classes, três camadas
+- JUnit 5, Mockito, MockMvc — 37 testes em 12 classes, três camadas
   (unidade, mocks e integração HTTP)
 - Maven
 
