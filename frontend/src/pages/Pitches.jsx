@@ -54,7 +54,7 @@ function Pitches() {
       searchPitches({ name, city, pitchAccess, page, size: PAGE_SIZE })
         .then((data) => {
           setPitches(data.content)
-          setTotalPages(data.totalPages)
+          setTotalPages(data.page?.totalPages ?? data.totalPages)
         })
         .catch(() => setError('Não foi possível carregar os campos. Tenta outra vez.'))
         .finally(() => setLoading(false))

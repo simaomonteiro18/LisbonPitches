@@ -55,7 +55,9 @@ public class PitchControllerTest {
         when(pitchService.search(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(Pageable.class))).thenReturn(new PageImpl<>(pitches));
         mockMvc.perform(get("/pitches"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content.length()").value(2));
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.page.totalElements").value(2))
+                .andExpect(jsonPath("$.page.totalPages").value(1));
 
     }
 

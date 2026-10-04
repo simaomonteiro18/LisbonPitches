@@ -9,6 +9,7 @@ import com.simaomonteiro18.lisbonpitches.services.PitchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,13 +27,13 @@ public class PitchController {
     private PitchService pitchService;
 
     @GetMapping
-    public ResponseEntity<Page<PitchSummaryDTO>> search(@RequestParam(required = false) String city, @RequestParam(required = false) String name, @RequestParam(required = false) PitchAccess pitchAccess, Pageable pageable) {
+    public PagedModel<PitchSummaryDTO> search(@RequestParam(required = false) String city, @RequestParam(required = false) String name, @RequestParam(required = false) PitchAccess pitchAccess, Pageable pageable) {
 
         Page<Pitch> list = pitchService.search(city, name, pitchAccess, pageable);
 
-        Page<PitchSummaryDTO> finalListPitches = list.map(PitchMapper::toDTO);
+        PagedModel<PitchSummaryDTO> finalListPitches = new PagedModel<PitchSummaryDTO>(list.map(PitchMapper::toDTO));
 
-        return ResponseEntity.ok().body(finalListPitches);
+        return finalListPitches;
 
     }
 
