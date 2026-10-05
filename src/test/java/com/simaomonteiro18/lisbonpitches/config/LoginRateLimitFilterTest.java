@@ -123,4 +123,29 @@ public class LoginRateLimitFilterTest {
 
     }
 
+    private MockHttpServletResponse sendLoginWithoutHeader(String remoteAddr, FilterChain chain) throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/login");
+        request.setRemoteAddr(remoteAddr);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        filter.doFilter(request, response, chain);
+        return response;
+    }
+
+    @Test
+    @DisplayName("Login sem X-Forwarded-For")
+    public void loginWithoutHeader() throws Exception {
+
+        FilterChain chain = (req, res) -> {
+            ((HttpServletResponse) res).setStatus(401);
+        };
+
+        for (int i = 0; i < 5; i++) {
+            sendLoginWithoutHeader("10.0.0.1", chain);
+        }
+
+        assertEquals(429, sendLoginWithoutHeader("10.0.0.1", chain).getStatus());
+        assertEquals(401, sendLoginWithoutHeader("10.0.0.2", chain).getStatus());
+
+    }
+
 }
