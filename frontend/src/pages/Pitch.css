@@ -111,7 +111,8 @@
 }
 
 .pitch__reservar {
-  display: inline-block;
+  display: block;
+  width: fit-content;
   margin-top: 32px;
 }
 
