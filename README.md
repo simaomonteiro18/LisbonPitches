@@ -4,10 +4,10 @@
 
 Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana de Lisboa, construída em Java/Spring Boot no backend e React/Vite no frontend.
 
-**53 campos reais catalogados · 16 endpoints REST · 4 entidades · 37 testes (JUnit 5, Mockito, MockMvc)**
+**53 campos reais catalogados · 16 endpoints REST · 4 entidades · 39 testes (JUnit 5, Mockito, MockMvc, TestRestTemplate)**
 
 🔗 **[API em produção](https://lisbonpitches-production.up.railway.app/pitches)**
-— `GET /pitches` devolve a lista de campos.
+— `GET /pitches` devolve uma página de campos (parâmetros `page`, `size` e `sort`, com filtros opcionais por `city`, `name` e `pitchAccess`).
 
 ## O que resolve
 
@@ -65,6 +65,10 @@ mais campos recolhidos à mão ou submissões de utilizadores.
 - **Password forte no registo**: mínimo de 8 caracteres com maiúscula,
   minúscula, número e símbolo, validada no backend (`400` a indicar o que
   falta) e com os requisitos mostrados em tempo real no formulário.
+- **Paginação** em `GET /pitches` (`page`, `size`, `sort`), usada na página
+  de pesquisa do frontend.
+- **CI** no GitHub Actions: os testes correm a cada push (ver o badge no
+  topo).
 - **Cache** da lista de campos do mapa (`/pitches/map`) com Caffeine, com
   validade de 10 minutos.
 - **Sugestão de novos campos**, direto da Home, entregue por email via
@@ -99,8 +103,9 @@ mais campos passarem a suportar reserva online real.
 - Caffeine (cache e rate limiting)
 - PostgreSQL (produção) e H2 (desenvolvimento)
 - Docker
-- JUnit 5, Mockito, MockMvc — 37 testes em 12 classes, três camadas
-  (unidade, mocks e integração HTTP)
+- JUnit 5, Mockito, MockMvc, TestRestTemplate — 39 testes em 13 classes,
+  três camadas (unidade, mocks e integração HTTP, incluindo um teste com
+  servidor real)
 - Maven
 
 **Frontend**
