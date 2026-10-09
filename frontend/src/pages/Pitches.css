@@ -33,6 +33,11 @@
   flex: 0 1 220px;
 }
 
+.pitches__search select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .pitches__search select option {
   background-color: var(--color-black);
   color: var(--color-white);
