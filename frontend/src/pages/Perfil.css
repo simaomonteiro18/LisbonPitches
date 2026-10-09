@@ -14,7 +14,7 @@
 .perfil__card {
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-surface);
   padding: 8px 24px;
   margin-bottom: 28px;
 }
@@ -36,7 +36,7 @@
 }
 
 .perfil__campo strong {
-  color: var(--color-white);
+  color: var(--color-text);
   font-weight: 700;
 }
 
@@ -59,7 +59,7 @@
 }
 
 .perfil__tabs button.active {
-  color: var(--color-white);
+  color: var(--color-text);
   border-bottom-color: var(--color-grass);
 }
 
@@ -73,7 +73,7 @@
   margin-left: 6px;
   border-radius: 999px;
   background-color: var(--color-grass);
-  color: var(--color-black);
+  color: var(--color-on-accent);
   font-size: 0.7rem;
   font-weight: 700;
 }
@@ -88,7 +88,7 @@
 }
 
 .perfil__status--error {
-  color: #e07a5f;
+  color: var(--color-error);
 }
 
 .perfil__lista-reservas {
@@ -107,7 +107,7 @@
   padding: 16px 20px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-surface);
 }
 
 .perfil__lista-reservas a span {
@@ -132,7 +132,7 @@
   padding: 16px 20px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-surface);
 }
 
 .convite__link {
@@ -141,11 +141,11 @@
 }
 
 .convite__estado--accepted {
-  color: var(--color-grass-light);
+  color: var(--color-accent-text);
 }
 
 .convite__estado--rejected {
-  color: #e07a5f;
+  color: var(--color-error);
   border-color: rgba(224, 122, 95, 0.3);
   background-color: rgba(224, 122, 95, 0.08);
 }

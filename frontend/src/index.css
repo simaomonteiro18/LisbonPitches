@@ -2,13 +2,38 @@
   --color-grass: #3fae4a;
   --color-grass-light: #7ed88a;
   --color-grass-dark: #1f5c2b;
-  --color-black: #05070a;
-  --color-white: #ffffff;
+  --color-bg: #05070a;
+  --color-text: #ffffff;
   --color-text-muted: #aab5ac;
   --color-border: rgba(255, 255, 255, 0.1);
+  --color-surface: rgba(255, 255, 255, 0.02);
+  --color-surface-input: rgba(255, 255, 255, 0.03);
+  --color-link: #3fae4a;
+  --color-accent-text: #7ed88a;
+  --color-on-accent: #05070a;
+  --color-warning: #e0a05f;
+  --color-error: #e07a5f;
+  --color-glow-1: rgba(63, 174, 74, 0.18);
+  --color-glow-2: rgba(63, 174, 74, 0.1);
 
   font-family: 'Roboto', sans-serif;
   color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --color-bg: #e8e2d3;
+  --color-text: #1b1a17;
+  --color-text-muted: #5e5a4e;
+  --color-border: rgba(40, 30, 10, 0.2);
+  --color-surface: rgba(255, 255, 255, 0.45);
+  --color-surface-input: rgba(255, 255, 255, 0.7);
+  --color-link: #1f6b2e;
+  --color-accent-text: #1f6b2e;
+  --color-warning: #8a4f0f;
+  --color-error: #a23b22;
+  --color-glow-1: rgba(63, 174, 74, 0.2);
+  --color-glow-2: rgba(63, 174, 74, 0.12);
+  color-scheme: light;
 }
 
 * {
@@ -22,10 +47,10 @@ html, body, #root {
 body {
   margin: 0;
   min-width: 320px;
-  background-color: var(--color-black);
-  background-image: radial-gradient(circle at 20% 0%, rgba(63, 174, 74, 0.18), transparent 45%),
-    radial-gradient(circle at 100% 30%, rgba(63, 174, 74, 0.1), transparent 40%);
-  color: var(--color-white);
+  background-color: var(--color-bg);
+  background-image: radial-gradient(circle at 20% 0%, var(--color-glow-1), transparent 45%),
+    radial-gradient(circle at 100% 30%, var(--color-glow-2), transparent 40%);
+  color: var(--color-text);
 }
 
 .app {
@@ -71,7 +96,7 @@ button {
   border-radius: 999px;
   border: 1px solid var(--color-border);
   background-color: rgba(63, 174, 74, 0.08);
-  color: var(--color-grass-light);
+  color: var(--color-accent-text);
   font-size: 0.85rem;
   font-weight: 500;
 }
@@ -79,7 +104,7 @@ button {
 .btn-primary {
   display: inline-block;
   background-color: var(--color-grass);
-  color: var(--color-black);
+  color: var(--color-on-accent);
   font-weight: 700;
   padding: 14px 32px;
   border-radius: 999px;
@@ -95,7 +120,7 @@ button {
 .btn-ghost {
   display: inline-block;
   background-color: transparent;
-  color: var(--color-white);
+  color: var(--color-text);
   font-weight: 700;
   padding: 14px 32px;
   border-radius: 999px;

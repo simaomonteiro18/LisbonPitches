@@ -12,19 +12,19 @@
   padding: 12px 24px;
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--color-surface-input);
   backdrop-filter: blur(8px);
 }
 
 .navbar__logo {
   font-weight: 900;
   font-size: 1.3rem;
-  color: var(--color-white);
+  color: var(--color-text);
   white-space: nowrap;
 }
 
 .navbar__logo span {
-  color: var(--color-grass);
+  color: var(--color-link);
 }
 
 .navbar__link {
@@ -52,5 +52,5 @@
   height: 38px;
   border-radius: 50%;
   background-color: var(--color-grass);
-  color: var(--color-black);
+  color: var(--color-on-accent);
 }

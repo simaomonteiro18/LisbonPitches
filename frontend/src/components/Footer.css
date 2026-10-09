@@ -18,7 +18,7 @@
 }
 
 .footer__col h4 {
-  color: var(--color-white);
+  color: var(--color-text);
   font-size: 0.95rem;
   margin-bottom: 4px;
 }
@@ -29,17 +29,17 @@
 }
 
 .footer__col a:hover {
-  color: var(--color-grass);
+  color: var(--color-link);
 }
 
 .footer__logo {
   font-weight: 900;
   font-size: 1.2rem;
-  color: var(--color-white);
+  color: var(--color-text);
 }
 
 .footer__logo span {
-  color: var(--color-grass);
+  color: var(--color-link);
 }
 
 .footer__bottom {
@@ -53,7 +53,7 @@
 }
 
 .footer__bottom a:hover {
-  color: var(--color-grass);
+  color: var(--color-link);
 }
 
 @media (max-width: 640px) {

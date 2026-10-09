@@ -23,7 +23,7 @@
 .reserva__card {
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-surface);
   padding: 8px 24px;
 }
 
@@ -44,7 +44,7 @@
 }
 
 .reserva__campo strong {
-  color: var(--color-white);
+  color: var(--color-text);
   font-weight: 700;
 }
 
@@ -53,7 +53,7 @@
 }
 
 .reserva__status--error {
-  color: #e07a5f;
+  color: var(--color-error);
 }
 
 .reserva__convites {
@@ -73,7 +73,7 @@
   padding: 16px 20px;
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-surface);
 }
 
 .convite__nome {
@@ -83,11 +83,11 @@
 }
 
 .convite__estado--accepted {
-  color: var(--color-grass-light);
+  color: var(--color-accent-text);
 }
 
 .convite__estado--rejected {
-  color: #e07a5f;
+  color: var(--color-error);
   border-color: rgba(224, 122, 95, 0.3);
   background-color: rgba(224, 122, 95, 0.08);
 }
@@ -117,8 +117,8 @@
   padding: 14px 18px;
   border-radius: 999px;
   border: 1px solid var(--color-border);
-  background-color: rgba(255, 255, 255, 0.03);
-  color: var(--color-white);
+  background-color: var(--color-surface-input);
+  color: var(--color-text);
   font-size: 1rem;
   font-family: inherit;
 }

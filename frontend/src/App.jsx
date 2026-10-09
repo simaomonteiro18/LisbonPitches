@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ThemeToggle from './components/ThemeToggle'
 import Home from './pages/Home'
 import Iniciativa from './pages/Iniciativa'
 import Pitches from './pages/Pitches'
@@ -27,6 +28,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+      <ThemeToggle />
     </div>
   )
 }

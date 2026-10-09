@@ -14,7 +14,7 @@
 }
 
 .pitch__voltar:hover {
-  color: var(--color-white);
+  color: var(--color-text);
 }
 
 .pitch__imagem {
@@ -43,7 +43,7 @@
 .pitch__card {
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-surface);
   padding: 8px 24px;
 }
 
@@ -64,14 +64,14 @@
 }
 
 .pitch__campo strong {
-  color: var(--color-white);
+  color: var(--color-text);
   font-weight: 700;
 }
 
 .pitch__contacto {
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-surface);
   padding: 8px 24px 20px;
   margin-top: 24px;
 }
@@ -86,7 +86,7 @@
 }
 
 .pitch__contacto a {
-  color: var(--color-grass-light);
+  color: var(--color-accent-text);
   text-decoration: none;
 }
 
@@ -99,7 +99,7 @@
 }
 
 .pitch__status--error {
-  color: #e07a5f;
+  color: var(--color-error);
 }
 
 .pitch__mapa {
@@ -136,8 +136,8 @@
   padding: 10px 14px;
   border-radius: 10px;
   border: 1px solid var(--color-border);
-  background-color: rgba(255, 255, 255, 0.03);
-  color: var(--color-white);
+  background-color: var(--color-surface-input);
+  color: var(--color-text);
   font-family: inherit;
 }
 
@@ -149,7 +149,7 @@
 .pitch__mapa-link {
   display: inline-block;
   margin-top: 12px;
-  color: var(--color-grass-light);
+  color: var(--color-accent-text);
   font-size: 0.9rem;
 }
 

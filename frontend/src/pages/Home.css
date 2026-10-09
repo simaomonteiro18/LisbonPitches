@@ -10,7 +10,7 @@
 .hero h1 {
   font-size: 2.6rem;
   line-height: 1.25;
-  color: var(--color-white);
+  color: var(--color-text);
 }
 
 .hero p {
@@ -44,11 +44,11 @@
   padding: 28px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--color-surface);
 }
 
 .passo__numero {
-  color: var(--color-grass);
+  color: var(--color-link);
   font-weight: 900;
   font-size: 1.4rem;
 }
@@ -110,8 +110,8 @@
   padding: 10px 14px;
   border-radius: 10px;
   border: 1px solid var(--color-border);
-  background-color: rgba(255, 255, 255, 0.03);
-  color: var(--color-white);
+  background-color: var(--color-surface-input);
+  color: var(--color-text);
   font-family: inherit;
   resize: vertical;
 }
@@ -133,11 +133,11 @@
 }
 
 .sugerir-campo__aviso--sucesso {
-  color: var(--color-grass-light);
+  color: var(--color-accent-text);
 }
 
 .sugerir-campo__aviso--erro {
-  color: #e0a05f;
+  color: var(--color-warning);
 }
 
 @media (max-width: 768px) {
