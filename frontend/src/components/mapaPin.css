@@ -1,0 +1,103 @@
+/* pin dos mapas; a queda so arranca quando um ascendente recebe .mapa-pins--a-cair */
+.mapa-pin {
+  width: 32px;
+  height: 46px;
+  cursor: pointer;
+}
+
+.mapa-pin--publico {
+  --pin-cor: #3fae4a;
+}
+
+.mapa-pin--privado {
+  --pin-cor: #e0a05f;
+}
+
+.mapa-pin__queda {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.mapa-pins--a-cair .mapa-pin__queda {
+  animation: pin-cair 0.7s var(--ease-spring) var(--atraso) both;
+}
+
+@keyframes pin-cair {
+  0% {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mapa-pin__corpo {
+  display: block;
+  transform-origin: 50% 100%;
+  transition: transform var(--dur-base) var(--ease-spring);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
+}
+
+.mapa-pin__corpo path {
+  fill: var(--pin-cor);
+}
+
+.mapa-pin__corpo circle {
+  fill: #05070a;
+}
+
+.mapa-pin:hover .mapa-pin__corpo,
+.mapa-pin--ativo .mapa-pin__corpo {
+  transform: scale(1.3);
+}
+
+.mapa-pin--ativo {
+  z-index: 2;
+}
+
+.mapa-pin__anel {
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 24px;
+  height: 24px;
+  margin-left: -12px;
+  border: 2px solid var(--pin-cor);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scaleY(0.4);
+}
+
+.mapa-pin--ativo .mapa-pin__anel {
+  animation: pin-anel 1.4s var(--ease-out) infinite;
+}
+
+@keyframes pin-anel {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.6, 0.24);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.4, 0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapa-pin__queda,
+  .mapa-pins--a-cair .mapa-pin__queda {
+    opacity: 1;
+    animation: none;
+  }
+
+  .mapa-pin--ativo .mapa-pin__anel {
+    animation: none;
+  }
+}
