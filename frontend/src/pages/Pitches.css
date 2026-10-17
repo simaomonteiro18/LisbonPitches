@@ -7,50 +7,153 @@
   margin-bottom: 32px;
 }
 
-.pitches__search {
+/* barra de filtros em vidro */
+.pitches__filtros {
   display: flex;
-  gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 40px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 28px;
+  background-color: var(--color-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-.pitches__search input,
-.pitches__search select {
+.pitches__filtros input,
+.pitches__filtros select {
   flex: 1;
-  min-width: 220px;
-  padding: 14px 18px;
+  min-width: 200px;
+  padding: 12px 18px;
   border-radius: 999px;
   border: 1px solid var(--color-border);
   background-color: var(--color-surface-input);
   color: var(--color-text);
   font-size: 1rem;
   font-family: inherit;
+  transition: border-color var(--dur-fast) var(--ease-out);
 }
 
-.pitches__search select {
+.pitches__filtros select {
   appearance: none;
   cursor: pointer;
-  flex: 0 1 220px;
+  flex: 0 1 200px;
 }
 
-.pitches__search select:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.pitches__search select option {
+.pitches__filtros select option {
   background-color: var(--color-bg);
   color: var(--color-text);
 }
 
-.pitches__search input:focus,
-.pitches__search select:focus {
+.pitches__filtros input:focus,
+.pitches__filtros select:focus {
   outline: none;
   border-color: var(--color-grass);
 }
 
-.pitches__search input::placeholder {
+.pitches__filtros input::placeholder {
   color: var(--color-text-muted);
+}
+
+/* seletor de acesso com indicador a deslizar */
+.pitches__acesso {
+  display: flex;
+  flex: 0 0 auto;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background-color: var(--color-surface-input);
+}
+
+.pitches__acesso-opcao {
+  position: relative;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.pitches__acesso-opcao:hover:not(:disabled),
+.pitches__acesso-opcao--ativa {
+  color: var(--color-text);
+}
+
+.pitches__acesso-opcao--ativa {
+  color: var(--color-on-accent);
+}
+
+.pitches__acesso-opcao:hover.pitches__acesso-opcao--ativa {
+  color: var(--color-on-accent);
+}
+
+.pitches__acesso-opcao:focus-visible {
+  outline: 2px solid var(--color-grass);
+  outline-offset: 2px;
+}
+
+.pitches__acesso-opcao:disabled {
+  cursor: not-allowed;
+}
+
+.pitches__acesso:has(:disabled) {
+  opacity: 0.6;
+}
+
+.pitches__acesso-indicador {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background-color: var(--color-grass);
+}
+
+.pitches__acesso-texto {
+  position: relative;
+}
+
+/* resumo: total e limpar filtros */
+.pitches__resumo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  margin: 20px 0 24px;
+  scroll-margin-top: 24px;
+}
+
+.pitches__total {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.pitches__total .contador {
+  color: var(--color-accent-text);
+  font-weight: 900;
+  font-size: 1.2rem;
+}
+
+.pitches__limpar {
+  padding: 8px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: none;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.pitches__limpar:hover,
+.pitches__limpar:focus-visible {
+  border-color: var(--color-grass);
 }
 
 .pitches__status {
@@ -61,19 +164,118 @@
   color: var(--color-error);
 }
 
+/* estados vazio e erro */
+.pitches__aviso {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 56px 24px;
+  border: 1px dashed var(--color-border);
+  border-radius: 16px;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.pitches__aviso p {
+  margin: 0;
+}
+
+.pitches__aviso--erro p {
+  color: var(--color-error);
+}
+
+.pitches__aviso-pin path {
+  fill: var(--color-grass);
+  opacity: 0.5;
+}
+
+.pitches__aviso-pin circle {
+  fill: var(--color-bg);
+}
+
+/* resultados: ficam visiveis mas esbatidos enquanto chega a nova pesquisa */
+.pitches__resultados {
+  position: relative;
+}
+
+.pitches__resultados .pitches__grid {
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.pitches__resultados--a-atualizar .pitches__grid {
+  opacity: 0.5;
+}
+
+.pitches__progresso {
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.pitches__progresso::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--color-grass), transparent);
+  transform: translateX(-100%);
+  animation: pitches-progresso 1s var(--ease-in-out) infinite;
+}
+
+@keyframes pitches-progresso {
+  to { transform: translateX(100%); }
+}
+
 .pitches__grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
 }
 
+.pitches__item {
+  display: flex;
+}
+
 .pitch-card {
+  position: relative;
+  flex: 1;
   padding: 24px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
   background-color: var(--color-surface);
   display: flex;
   flex-direction: column;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+/* brilho no hover numa camada propria para so animar opacidade */
+.pitch-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 12px 32px -12px var(--color-glow-1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.pitch-card:hover::before,
+.pitch-card:focus-within::before {
+  opacity: 1;
+}
+
+.pitch-card:hover,
+.pitch-card:focus-within {
+  transform: translateY(-4px);
+  border-color: var(--color-grass);
 }
 
 .pitch-card h3 {
@@ -158,6 +360,61 @@
   flex: 1;
 }
 
+.pitch-card__link:focus-visible {
+  outline: 2px solid var(--color-grass);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* esqueletos com a altura de um cartao para nada saltar */
+.pitches__esqueleto {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 190px;
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background-color: var(--color-surface);
+}
+
+.pitches__esqueleto span {
+  display: block;
+  height: 14px;
+  border-radius: 999px;
+  background-color: var(--color-surface-input);
+}
+
+.pitches__esqueleto span:nth-child(1) {
+  width: 70%;
+  height: 18px;
+}
+
+.pitches__esqueleto span:nth-child(2) {
+  width: 45%;
+}
+
+.pitches__esqueleto span:nth-child(3) {
+  width: 160px;
+  height: 30px;
+  margin-top: auto;
+}
+
+.pitches__esqueleto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--color-glow-2), transparent);
+  transform: translateX(-100%);
+  animation: pitches-esqueleto 1.4s var(--ease-in-out) infinite;
+}
+
+@keyframes pitches-esqueleto {
+  to { transform: translateX(100%); }
+}
+
 .pitches__pagination {
   display: flex;
   align-items: center;
@@ -170,4 +427,45 @@
 .pitches__pagination button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.pitches__pagina-numero {
+  display: inline-block;
+  min-width: 1.5ch;
+  color: var(--color-text);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.pitches__pagina-numero span {
+  display: inline-block;
+}
+
+@media (max-width: 640px) {
+  .pitches__filtros {
+    border-radius: 20px;
+  }
+
+  .pitches__filtros input,
+  .pitches__filtros select,
+  .pitches__acesso {
+    flex: 1 1 100%;
+  }
+
+  .pitches__acesso-opcao {
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pitch-card:hover,
+  .pitch-card:focus-within {
+    transform: none;
+  }
+
+  .pitches__esqueleto::after,
+  .pitches__progresso::after {
+    animation: none;
+  }
 }
