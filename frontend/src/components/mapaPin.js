@@ -1,6 +1,19 @@
 import { getTheme } from '../theme'
 import './mapaPin.css'
 
+let mapboxPromessa = null
+
+// o mapbox e a parte mais pesada do site: so e descarregado quando um mapa vai mesmo aparecer
+export function carregarMapbox() {
+  if (!mapboxPromessa) {
+    mapboxPromessa = import('mapbox-gl').then(({ default: mapboxgl }) => {
+      mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
+      return mapboxgl
+    })
+  }
+  return mapboxPromessa
+}
+
 const ESTILOS_MAPA = {
   dark: 'mapbox://styles/mapbox/dark-v11',
   light: 'mapbox://styles/mapbox/light-v11',

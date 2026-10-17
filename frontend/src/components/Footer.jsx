@@ -11,14 +11,14 @@ function Footer() {
         </div>
 
         <div className="footer__col">
-          <h4>Páginas</h4>
+          <h2 className="footer__titulo">Páginas</h2>
           <Link to="/">Início</Link>
           <Link to="/pitches">Campos</Link>
           <Link to="/iniciativa">Iniciativa</Link>
         </div>
 
         <div className="footer__col">
-          <h4>Contacto</h4>
+          <h2 className="footer__titulo">Contacto</h2>
           <a href="https://github.com/simaomonteiro18" target="_blank" rel="noreferrer">GitHub</a>
           <a href="https://www.linkedin.com/in/sim%C3%A3o-monteiro-62866a278/" target="_blank" rel="noreferrer">LinkedIn</a>
         </div>

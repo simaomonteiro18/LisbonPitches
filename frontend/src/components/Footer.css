@@ -17,7 +17,7 @@
   gap: 10px;
 }
 
-.footer__col h4 {
+.footer__titulo {
   color: var(--color-text);
   font-size: 0.95rem;
   margin-bottom: 4px;
@@ -73,6 +73,13 @@
 
 .footer__bottom a:hover {
   color: var(--color-link);
+}
+
+/* o botao do tema fica fixo no canto: em ecras sem margem lateral suficiente, o texto nao passa por baixo dele */
+@media (max-width: 1280px) {
+  .footer__bottom {
+    padding-right: 88px;
+  }
 }
 
 @media (max-width: 640px) {

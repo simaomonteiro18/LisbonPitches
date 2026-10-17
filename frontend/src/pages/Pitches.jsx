@@ -323,7 +323,7 @@ function Pitches() {
                     >
                       <div className="pitch-card">
                         <Link to={`/pitches/${pitch.id}`} className="pitch-card__link">
-                          <h3>{pitch.name}</h3>
+                          <h2>{pitch.name}</h2>
                           <p className="pitch-card__city">{pitch.city}</p>
                           <div className="pitch-card__footer">
                             <span className="badge">{TIPOS[pitch.type] ?? pitch.type}</span>

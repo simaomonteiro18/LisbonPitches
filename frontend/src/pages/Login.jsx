@@ -95,6 +95,8 @@ function Login() {
                 <input
                   type="text"
                   placeholder="Nome"
+                  aria-label="Nome"
+                  autoComplete="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -102,6 +104,8 @@ function Login() {
                 <input
                   type="text"
                   placeholder="Username"
+                  aria-label="Username"
+                  autoComplete="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
@@ -109,6 +113,8 @@ function Login() {
                 <input
                   type="text"
                   placeholder="Telemóvel"
+                  aria-label="Telemóvel"
+                  autoComplete="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
@@ -116,6 +122,8 @@ function Login() {
                 <input
                   type="text"
                   placeholder="Cidade"
+                  aria-label="Cidade"
+                  autoComplete="address-level2"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   required
@@ -126,6 +134,8 @@ function Login() {
             <input
               type="email"
               placeholder="Email"
+              aria-label="Email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -133,6 +143,8 @@ function Login() {
             <input
               type="password"
               placeholder="Password"
+              aria-label="Password"
+              autoComplete={modo === 'login' ? 'current-password' : 'new-password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

@@ -68,6 +68,7 @@
 
 .pitches__acesso-opcao {
   position: relative;
+  min-height: 40px;
   padding: 8px 16px;
   border: none;
   border-radius: 999px;
@@ -278,7 +279,7 @@
   border-color: var(--color-grass);
 }
 
-.pitch-card h3 {
+.pitch-card h2 {
   font-size: 1.15rem;
   margin-bottom: 4px;
 }
@@ -451,10 +452,14 @@
   .pitches__filtros select,
   .pitches__acesso {
     flex: 1 1 100%;
+    min-width: 0;
   }
 
+  /* as tres opcoes dividem a largura toda, mesmo a 360px */
   .pitches__acesso-opcao {
     flex: 1;
+    min-width: 0;
+    padding: 8px 6px;
   }
 }
 

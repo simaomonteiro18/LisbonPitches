@@ -96,6 +96,39 @@ main {
   overflow-anchor: none;
 }
 
+/* foco vai para o conteudo ao mudar de pagina; so o leitor de ecra precisa de saber */
+main:focus {
+  outline: none;
+}
+
+/* escondido ate receber foco pelo teclado */
+.saltar-conteudo {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 50;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background-color: var(--color-grass);
+  color: var(--color-on-accent);
+  font-weight: 700;
+  transform: translateY(-160%);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.saltar-conteudo:focus {
+  transform: translateY(0);
+}
+
+/* reserva o espaco enquanto o codigo da pagina chega; o footer so aparece com a pagina na posicao final */
+.pagina__a-carregar {
+  min-height: 100vh;
+}
+
+.app:has(.pagina__a-carregar) .footer {
+  visibility: hidden;
+}
+
 /* a navbar e fixa: o conteudo comeca por baixo dela, exceto na Home onde flutua sobre o hero */
 .app:not(:has(.hero)) main {
   padding-top: var(--altura-navbar, 100px);

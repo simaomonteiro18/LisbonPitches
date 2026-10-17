@@ -142,8 +142,8 @@
 .navbar__hamburguer {
   display: none;
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: transparent;
   color: var(--color-text);
@@ -151,7 +151,7 @@
 
 .navbar__hamburguer span {
   position: absolute;
-  left: 11px;
+  left: 13px;
   width: 18px;
   height: 2px;
   border-radius: 2px;
@@ -160,15 +160,15 @@
 }
 
 .navbar__hamburguer span:nth-child(1) {
-  top: 13px;
+  top: 15px;
 }
 
 .navbar__hamburguer span:nth-child(2) {
-  top: 19px;
+  top: 21px;
 }
 
 .navbar__hamburguer span:nth-child(3) {
-  top: 25px;
+  top: 27px;
 }
 
 .navbar__hamburguer[aria-expanded='true'] span:nth-child(1) {
@@ -269,7 +269,7 @@
   }
 
   .navbar__inner {
-    /* 12px + 11px de folga do icone igualam os 22px do logo */
-    padding: 8px 12px 8px 22px;
+    /* 9px + 13px de folga do icone igualam os 22px do logo */
+    padding: 6px 9px 6px 22px;
   }
 }

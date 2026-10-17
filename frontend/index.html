@@ -5,9 +5,29 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="LisbonPitches - encontra campos de futebol perto de ti" />
+    <meta name="theme-color" content="#05070a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#e8e2d3" media="(prefers-color-scheme: light)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LisbonPitches" />
+    <meta property="og:title" content="LisbonPitches" />
+    <meta property="og:description" content="Encontra campos de futebol perto de ti, num só sítio." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="pt_PT" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <!-- a fonte carrega sem bloquear a primeira pintura; ate la usa a fonte do sistema -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap"
+      onload="this.onload = null; this.rel = 'stylesheet'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    </noscript>
     <title>LisbonPitches</title>
     <script>
       try {
