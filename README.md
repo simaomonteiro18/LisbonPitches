@@ -9,6 +9,14 @@ Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana d
 🔗 **[API em produção](https://lisbonpitches-production.up.railway.app/pitches)**
 — `GET /pitches` devolve uma página de campos (parâmetros `page`, `size` e `sort`, com filtros opcionais por `city`, `name` e `pitchAccess`).
 
+## Foco do projeto
+
+O foco do LisbonPitches é o backend: a API em Java/Spring Boot, o modelo de
+domínio, a segurança com JWT e os testes. O frontend em React existe para
+demonstrar a API de ponta a ponta. O redesign visual (animações, mapas e
+adaptação a telemóvel) foi feito com apoio de IA, a partir das minhas
+decisões de produto e de design.
+
 ## O que resolve
 
 Encontrar campos de futebol reais na AML — públicos (acesso livre) e
