@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Logotipo from './Logotipo'
 import './Footer.css'
 
 function Footer() {
@@ -6,14 +7,14 @@ function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <div className="footer__col">
-          <span className="footer__logo">Lisbon<span>Pitches</span></span>
+          <Logotipo className="footer__logo" />
         </div>
 
         <div className="footer__col">
           <h4>Páginas</h4>
-          <Link to="/">Home</Link>
+          <Link to="/">Início</Link>
+          <Link to="/pitches">Campos</Link>
           <Link to="/iniciativa">Iniciativa</Link>
-          <Link to="/pitches">Pitches</Link>
         </div>
 
         <div className="footer__col">

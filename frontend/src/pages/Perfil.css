@@ -54,13 +54,24 @@
   font-weight: 700;
   padding: 12px 4px;
   margin-right: 24px;
-  border-bottom: 2px solid transparent;
   font-size: 0.95rem;
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
+.perfil__tabs button:hover,
 .perfil__tabs button.active {
   color: var(--color-text);
-  border-bottom-color: var(--color-grass);
+}
+
+/* sublinhado verde que desliza entre as tabs */
+.perfil__tab-indicador {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background-color: var(--color-grass);
 }
 
 .perfil__badge-count {
@@ -159,4 +170,39 @@
 .convite__acoes .btn-ghost {
   padding: 8px 18px;
   font-size: 0.85rem;
+}
+
+/* esqueletos com a altura de uma linha da lista */
+.perfil__esqueletos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.perfil__esqueleto {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 56px;
+  border-radius: 12px;
+  background-color: var(--color-surface-input);
+}
+
+.perfil__esqueleto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--color-glow-2), transparent);
+  transform: translateX(-100%);
+  animation: perfil-esqueleto 1.4s var(--ease-in-out) infinite;
+}
+
+@keyframes perfil-esqueleto {
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .perfil__esqueleto::after {
+    animation: none;
+  }
 }

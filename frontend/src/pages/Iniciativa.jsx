@@ -1,4 +1,7 @@
 import { Link } from 'react-router-dom'
+import { motion, useReducedMotion } from 'motion/react'
+import { aoVer, durations, easings, revelar } from '../motion'
+import Contador from '../components/Contador'
 import './Iniciativa.css'
 
 const etapas = [
@@ -23,62 +26,104 @@ const etapas = [
 ]
 
 const numeros = [
-  { valor: '50+', legenda: 'Campos catalogados na área de Lisboa' },
-  { valor: '100%', legenda: 'Dados reais, confirmados campo a campo' },
+  { valor: 50, sufixo: '+', legenda: 'Campos catalogados na área de Lisboa' },
+  { valor: 100, sufixo: '%', legenda: 'Dados reais, confirmados campo a campo' },
 ]
 
+// o topo entra logo ao abrir a pagina, um elemento de cada vez
+const entrarTopo = {
+  escondido: { opacity: 0, y: 24 },
+  visivel: (atraso = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: durations.slow, ease: easings.out, delay: atraso },
+  }),
+}
+
 function Iniciativa() {
+  const reduzir = useReducedMotion()
+  const inicio = reduzir ? false : 'escondido'
+
   return (
     <>
       <section className="iniciativa-hero">
-        <div className="container iniciativa-hero__inner">
-          <span className="badge">A nossa história</span>
-          <h1>Porque criei o LisbonPitches</h1>
-          <p>
+        <motion.div
+          className="container iniciativa-hero__inner"
+          initial={inicio}
+          animate="visivel"
+        >
+          <motion.span className="badge" variants={entrarTopo} custom={0.1}>
+            A nossa história
+          </motion.span>
+          <motion.h1 variants={entrarTopo} custom={0.18}>
+            Porque criei o LisbonPitches
+          </motion.h1>
+          <motion.p variants={entrarTopo} custom={0.3}>
             A ideia nasceu de um problema real: marcar um campo para jogar à
             bola com os amigos era sempre uma dor de cabeça, entre grupos de
             WhatsApp, chamadas para vários campos, e a dúvida de saber quais
             estavam mesmo disponíveis. O LisbonPitches nasceu para resolver
             exatamente isso, um sítio único onde é possível descobrir campos
             perto de ti sem complicações.
-          </p>
-          <p>
+          </motion.p>
+          <motion.p variants={entrarTopo} custom={0.4}>
             Este projeto é também o meu percurso a aprender a construir
             software a sério, do backend em Java e Spring Boot até a este
             frontend, com o objetivo de o transformar numa ferramenta que
             outras pessoas possam mesmo usar.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </section>
 
       <section className="iniciativa-numeros">
-        <div className="container iniciativa-numeros__grid">
-          {numeros.map((item) => (
-            <div className="iniciativa-numero" key={item.legenda}>
-              <span className="iniciativa-numero__valor">{item.valor}</span>
+        <motion.div
+          className="container iniciativa-numeros__grid"
+          initial={inicio}
+          whileInView="visivel"
+          viewport={aoVer}
+        >
+          {numeros.map((item, i) => (
+            <motion.div className="iniciativa-numero" key={item.legenda} variants={revelar} custom={i * 0.12}>
+              <span className="iniciativa-numero__valor">
+                <Contador valor={item.valor} />
+                {item.sufixo}
+              </span>
               <p>{item.legenda}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       <section className="iniciativa-timeline">
         <div className="container">
-          <h2>Como o projeto tem evoluído</h2>
-          <div className="iniciativa-timeline__grid">
-            {etapas.map((etapa) => (
-              <div className="passo" key={etapa.numero}>
+          <motion.h2 initial={inicio} whileInView="visivel" viewport={aoVer} variants={revelar}>
+            Como o projeto tem evoluído
+          </motion.h2>
+          <motion.div
+            className="iniciativa-timeline__grid"
+            initial={inicio}
+            whileInView="visivel"
+            viewport={aoVer}
+          >
+            {etapas.map((etapa, i) => (
+              <motion.div className="passo" key={etapa.numero} variants={revelar} custom={i * 0.12}>
                 <span className="passo__numero">{etapa.numero}</span>
                 <h3>{etapa.titulo}</h3>
                 <p>{etapa.texto}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       <section className="iniciativa-cta">
-        <div className="container iniciativa-cta__inner">
+        <motion.div
+          className="container iniciativa-cta__inner"
+          initial={inicio}
+          whileInView="visivel"
+          viewport={aoVer}
+          variants={revelar}
+        >
           <h2>Queres ver o que já está disponível?</h2>
           <p>
             Explora os campos já catalogados ou sugere um que ainda não
@@ -92,7 +137,7 @@ function Iniciativa() {
               Sugerir um campo
             </Link>
           </div>
-        </div>
+        </motion.div>
       </section>
     </>
   )

@@ -19,6 +19,7 @@
 }
 
 .login__tabs button {
+  position: relative;
   flex: 1;
   padding: 10px;
   border-radius: 999px;
@@ -28,8 +29,19 @@
 }
 
 .login__tabs button.active {
-  background-color: var(--color-grass);
   color: var(--color-on-accent);
+}
+
+/* indicador verde que desliza entre as tabs */
+.login__tab-indicador {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background-color: var(--color-grass);
+}
+
+.login__tab-texto {
+  position: relative;
 }
 
 .login__form {

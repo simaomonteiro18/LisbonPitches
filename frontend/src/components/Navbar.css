@@ -1,58 +1,142 @@
+/* fixa no topo; esconde-se ao descer e volta ao subir */
 .navbar {
-  position: relative;
-  z-index: 20;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
   padding: 20px 0;
+  pointer-events: none;
+}
+
+.navbar__inner,
+.navbar__menu,
+.navbar__fundo {
+  pointer-events: auto;
 }
 
 .navbar__container {
   position: relative;
 }
 
+/* todos os elementos da pilula com o mesmo espaco entre si */
 .navbar__inner {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   gap: 28px;
-  max-width: 620px;
+  max-width: 680px;
   margin: 0 auto;
   padding: 12px 24px;
   border: 1px solid var(--color-border);
   border-radius: 999px;
   background-color: var(--color-surface-input);
   backdrop-filter: blur(8px);
+  position: relative;
+  isolation: isolate;
+  transform-origin: 50% 0;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+/* depois do topo: mais compacta, vidro mais opaco e sombra, numa camada que so muda de opacidade */
+.navbar__inner::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.45), 0 0 40px var(--color-glow-2);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.navbar--compacta .navbar__inner {
+  transform: scale(0.95);
+}
+
+.navbar--compacta .navbar__inner::before {
+  opacity: 1;
 }
 
 .navbar__logo {
-  font-weight: 900;
+  display: flex;
   font-size: 1.3rem;
-  color: var(--color-text);
-  white-space: nowrap;
+  border-radius: 8px;
 }
 
-.navbar__logo span {
-  color: var(--color-link);
+.navbar__logo:hover .logotipo__simbolo {
+  transform: scale(1.06);
 }
 
 .navbar__link {
+  position: relative;
   font-weight: 500;
   white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
+.navbar__link:hover,
+.navbar__link--ativo {
+  color: var(--color-accent-text);
+}
+
+.navbar__link:focus-visible {
+  outline: 2px solid var(--color-grass);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.navbar__sublinhado {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 2px;
+  border-radius: 2px;
+  background-color: var(--color-grass);
+}
+
+/* os grupos nao contam para o espacamento: cada link e um elemento da pilula */
+.navbar__esquerda,
 .navbar__right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+  display: contents;
 }
 
-.navbar__perfil {
+/* conta: contorno sem sessao, cheio com sessao */
+.navbar__conta {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 38px;
   height: 38px;
+  border: 1px solid var(--color-border);
   border-radius: 50%;
+  color: var(--color-text);
+  transition:
+    transform var(--dur-base) var(--ease-spring),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.navbar__conta:hover {
+  border-color: var(--color-grass);
+  color: var(--color-accent-text);
+  transform: scale(1.08);
+}
+
+.navbar__conta--sessao {
+  border-color: transparent;
   background-color: var(--color-grass);
   color: var(--color-on-accent);
+}
+
+.navbar__conta--sessao:hover {
+  color: var(--color-on-accent);
+}
+
+.navbar__conta--ativa {
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-grass);
 }
 
 .navbar__hamburguer {
@@ -147,6 +231,10 @@
   background-color: var(--color-surface-input);
 }
 
+.navbar__menu-link[aria-current='page'] {
+  color: var(--color-accent-text);
+}
+
 .navbar__menu-link:hover span {
   transform: translateX(4px);
 }
@@ -160,9 +248,20 @@
 }
 
 @media (max-width: 640px) {
+  /* no telemovel a conta fica no menu (Entrar ou registar / Perfil) */
+  .navbar__esquerda,
   .navbar__link,
-  .navbar__perfil {
+  .navbar__conta {
     display: none;
+  }
+
+  .navbar__inner {
+    gap: 8px;
+  }
+
+  /* o logotipo fica a esquerda e a conta encostada ao menu */
+  .navbar__logo {
+    margin-right: auto;
   }
 
   .navbar__hamburguer {

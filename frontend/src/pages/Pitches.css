@@ -125,7 +125,7 @@
   gap: 16px;
   min-height: 44px;
   margin: 20px 0 24px;
-  scroll-margin-top: 24px;
+  scroll-margin-top: calc(var(--altura-navbar, 100px) + 8px);
 }
 
 .pitches__total {

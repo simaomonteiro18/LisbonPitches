@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'motion/react'
 import { loginUser, registerUser } from '../api/auth'
 import { saveSession } from '../auth'
+import { durations, easings } from '../motion'
 import './Login.css'
 
 function Login() {
@@ -56,90 +58,106 @@ function Login() {
     <section className="login">
       <div className="container login__inner">
         <div className="login__tabs">
-          <button
-            className={modo === 'login' ? 'active' : ''}
-            onClick={() => setModo('login')}
-            type="button"
-          >
-            Login
-          </button>
-          <button
-            className={modo === 'registo' ? 'active' : ''}
-            onClick={() => setModo('registo')}
-            type="button"
-          >
-            Registo
-          </button>
+          {[
+            { valor: 'login', texto: 'Login' },
+            { valor: 'registo', texto: 'Registo' },
+          ].map((opcao) => (
+            <button
+              key={opcao.valor}
+              className={modo === opcao.valor ? 'active' : ''}
+              onClick={() => setModo(opcao.valor)}
+              type="button"
+              aria-pressed={modo === opcao.valor}
+            >
+              {modo === opcao.valor && (
+                <motion.span
+                  layoutId="login-tab-indicador"
+                  className="login__tab-indicador"
+                  transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+                />
+              )}
+              <span className="login__tab-texto">{opcao.texto}</span>
+            </button>
+          ))}
         </div>
 
-        <form onSubmit={handleSubmit} className="login__form">
-          {modo === 'registo' && (
-            <>
-              <input
-                type="text"
-                placeholder="Nome"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Telemóvel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-              />
-              <input
-                type="text"
-                placeholder="Cidade"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                required
-              />
-            </>
-          )}
-
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          {modo === 'registo' && (
-            <ul className="login__requisitos">
-              {requisitos.map((r) => (
-                <li key={r.texto} className={r.ok ? 'ok' : ''}>
-                  {r.texto}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {error && <p className="login__error">{error}</p>}
-
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={loading || (modo === 'registo' && !passwordForte)}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.form
+            key={modo}
+            onSubmit={handleSubmit}
+            className="login__form"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: durations.base, ease: easings.out } }}
+            exit={{ opacity: 0, y: -8, transition: { duration: durations.fast, ease: easings.out } }}
           >
-            {loading ? 'Aguarda...' : modo === 'login' ? 'Entrar' : 'Criar conta'}
-          </button>
-        </form>
+            {modo === 'registo' && (
+              <>
+                <input
+                  type="text"
+                  placeholder="Nome"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Telemóvel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Cidade"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  required
+                />
+              </>
+            )}
+
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {modo === 'registo' && (
+              <ul className="login__requisitos">
+                {requisitos.map((r) => (
+                  <li key={r.texto} className={r.ok ? 'ok' : ''}>
+                    {r.texto}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {error && <p className="login__error">{error}</p>}
+
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={loading || (modo === 'registo' && !passwordForte)}
+            >
+              {loading ? 'Aguarda...' : modo === 'login' ? 'Entrar' : 'Criar conta'}
+            </button>
+          </motion.form>
+        </AnimatePresence>
       </div>
     </section>
   )

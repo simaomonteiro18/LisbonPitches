@@ -1,0 +1,38 @@
+.logotipo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  font-weight: 900;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.logotipo__texto span {
+  color: var(--color-link);
+}
+
+.logotipo__simbolo {
+  display: block;
+  flex-shrink: 0;
+  width: auto;
+  height: 1.7em;
+  overflow: visible;
+  transition: transform var(--dur-base) var(--ease-spring);
+}
+
+.logotipo__campo {
+  fill: none;
+  stroke: var(--color-grass);
+  stroke-width: 6;
+}
+
+.logotipo__cabos {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.logotipo__ponte {
+  fill: currentColor;
+}
