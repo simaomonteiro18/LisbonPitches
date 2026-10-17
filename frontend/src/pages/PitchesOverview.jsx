@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, useReducedMotion } from 'motion/react'
-import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { getFeaturedPitches, getAllPitchesForMap } from '../api/pitches'
 import { aoVer, revelar } from '../motion'
 import CartaoInclinado from '../components/CartaoInclinado'
 import Contador from '../components/Contador'
-import { criarPin, estiloMapa, seguirTema } from '../components/mapaPin'
+import { carregarMapbox, criarPin, estiloMapa, seguirTema } from '../components/mapaPin'
 import './PitchesOverview.css'
 
 const TIPOS = {
@@ -23,10 +22,6 @@ const ACESSOS = {
 }
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
-
-if (MAPBOX_TOKEN) {
-  mapboxgl.accessToken = MAPBOX_TOKEN
-}
 
 const VISTA_GERAL = { padding: 60, maxZoom: 13 }
 
@@ -71,73 +66,85 @@ function PitchesOverview() {
       return
     }
 
-    const map = new mapboxgl.Map({
-      container: mapaContainerRef.current,
-      style: estiloMapa(),
-      center: [mapPitches[0].longitude, mapPitches[0].latitude],
-      zoom: 10,
-    })
-    mapaRef.current = map
+    let cancelado = false
+    let limpar = null
 
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right')
-    map.on('load', () => setMapaCarregado(true))
+    carregarMapbox().then((mapboxgl) => {
+      if (cancelado || !mapaContainerRef.current) return
 
-    const comCoordenadas = mapPitches.filter((p) => p.latitude != null && p.longitude != null)
-    const bounds = new mapboxgl.LngLatBounds()
-    comCoordenadas.forEach((p) => bounds.extend([p.longitude, p.latitude]))
-    limitesRef.current = bounds.isEmpty() ? null : bounds
+      const map = new mapboxgl.Map({
+        container: mapaContainerRef.current,
+        style: estiloMapa(),
+        center: [mapPitches[0].longitude, mapPitches[0].latitude],
+        zoom: 10,
+      })
+      mapaRef.current = map
 
-    // os pins caem do centro para fora, em onda
-    const centro = bounds.isEmpty() ? null : bounds.getCenter()
-    const distancia = (p) =>
-      centro ? Math.hypot(p.longitude - centro.lng, p.latitude - centro.lat) : 0
-    const ordem = [...comCoordenadas].sort((a, b) => distancia(a) - distancia(b))
-    const passo = Math.min(0.08, 1.4 / Math.max(ordem.length, 1))
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right')
+      map.on('load', () => setMapaCarregado(true))
 
-    const pins = pinsRef.current
-    ordem.forEach((pitch, i) => {
-      const coordenadas = [pitch.longitude, pitch.latitude]
+      const comCoordenadas = mapPitches.filter((p) => p.latitude != null && p.longitude != null)
+      const bounds = new mapboxgl.LngLatBounds()
+      comCoordenadas.forEach((p) => bounds.extend([p.longitude, p.latitude]))
+      limitesRef.current = bounds.isEmpty() ? null : bounds
 
-      const imagemHtml = pitch.imageUrl
-        ? `<img src="${escapeHtml(pitch.imageUrl)}" alt="${escapeHtml(pitch.name)}" class="pitches-overview__popup-imagem" onerror="this.remove()" />`
-        : ''
+      // os pins caem do centro para fora, em onda
+      const centro = bounds.isEmpty() ? null : bounds.getCenter()
+      const distancia = (p) =>
+        centro ? Math.hypot(p.longitude - centro.lng, p.latitude - centro.lat) : 0
+      const ordem = [...comCoordenadas].sort((a, b) => distancia(a) - distancia(b))
+      const passo = Math.min(0.08, 1.4 / Math.max(ordem.length, 1))
 
-      const tipoLabel = TIPOS[pitch.type] ?? pitch.type
-      const acessoLabel = ACESSOS[pitch.pitchAccess] ?? pitch.pitchAccess
+      const pins = pinsRef.current
+      ordem.forEach((pitch, i) => {
+        const coordenadas = [pitch.longitude, pitch.latitude]
 
-      const popupHtml = `
-        <div class="pitches-overview__popup">
-          ${imagemHtml}
-          <div class="pitches-overview__popup-info">
-            <strong>${escapeHtml(pitch.name)}</strong>
-            <span>${escapeHtml(pitch.city)}</span>
-            <span class="pitches-overview__popup-meta">${escapeHtml(tipoLabel)} - ${escapeHtml(acessoLabel)}</span>
-            <a href="/pitches/${pitch.id}" class="pitches-overview__popup-btn">Ver campo</a>
+        const imagemHtml = pitch.imageUrl
+          ? `<img src="${escapeHtml(pitch.imageUrl)}" alt="${escapeHtml(pitch.name)}" class="pitches-overview__popup-imagem" onerror="this.remove()" />`
+          : ''
+
+        const tipoLabel = TIPOS[pitch.type] ?? pitch.type
+        const acessoLabel = ACESSOS[pitch.pitchAccess] ?? pitch.pitchAccess
+
+        const popupHtml = `
+          <div class="pitches-overview__popup">
+            ${imagemHtml}
+            <div class="pitches-overview__popup-info">
+              <strong>${escapeHtml(pitch.name)}</strong>
+              <span>${escapeHtml(pitch.city)}</span>
+              <span class="pitches-overview__popup-meta">${escapeHtml(tipoLabel)} - ${escapeHtml(acessoLabel)}</span>
+              <a href="/pitches/${pitch.id}" class="pitches-overview__popup-btn">Ver campo</a>
+            </div>
           </div>
-        </div>
-      `
+        `
 
-      const el = criarPin(pitch, 0.15 + i * passo)
-      pins.set(pitch.id, el)
+        const el = criarPin(pitch, 0.15 + i * passo)
+        pins.set(pitch.id, el)
 
-      new mapboxgl.Marker({ element: el, anchor: 'bottom' })
-        .setLngLat(coordenadas)
-        .setPopup(new mapboxgl.Popup({ offset: 40 }).setHTML(popupHtml))
-        .addTo(map)
+        new mapboxgl.Marker({ element: el, anchor: 'bottom' })
+          .setLngLat(coordenadas)
+          .setPopup(new mapboxgl.Popup({ offset: 40 }).setHTML(popupHtml))
+          .addTo(map)
+      })
+
+      if (limitesRef.current) {
+        map.fitBounds(limitesRef.current, { ...VISTA_GERAL, animate: false })
+      }
+
+      const pararTema = seguirTema(map)
+
+      limpar = () => {
+        pararTema()
+        clearTimeout(voarTimerRef.current)
+        pins.clear()
+        mapaRef.current = null
+        map.remove()
+      }
     })
-
-    if (limitesRef.current) {
-      map.fitBounds(limitesRef.current, { ...VISTA_GERAL, animate: false })
-    }
-
-    const pararTema = seguirTema(map)
 
     return () => {
-      pararTema()
-      clearTimeout(voarTimerRef.current)
-      pins.clear()
-      mapaRef.current = null
-      map.remove()
+      cancelado = true
+      limpar?.()
     }
   }, [mapPitches])
 

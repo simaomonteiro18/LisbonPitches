@@ -1,13 +1,12 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AnimatePresence, motion, useAnimate, useReducedMotion } from 'motion/react'
-import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { getPitchById } from '../api/pitches'
 import { createReservation } from '../api/reservations'
 import { getSession } from '../auth'
 import { durations, easings, stagger } from '../motion'
-import { criarPin, estiloMapa, seguirTema } from '../components/mapaPin'
+import { carregarMapbox, criarPin, estiloMapa, seguirTema } from '../components/mapaPin'
 import CheckAnimado from '../components/CheckAnimado'
 import './Pitch.css'
 
@@ -24,10 +23,6 @@ const ACESSOS = {
 }
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
-
-if (MAPBOX_TOKEN) {
-  mapboxgl.accessToken = MAPBOX_TOKEN
-}
 
 // tempo que a confirmacao fica no ecra antes de abrir a reserva
 const PAUSA_SUCESSO = 1600
@@ -169,26 +164,38 @@ function Pitch() {
       return
     }
 
-    const map = new mapboxgl.Map({
-      container: mapaContainerRef.current,
-      style: estiloMapa(),
-      center: [pitch.longitude, pitch.latitude],
-      zoom: 14,
+    let cancelado = false
+    let limpar = null
+
+    carregarMapbox().then((mapboxgl) => {
+      if (cancelado || !mapaContainerRef.current) return
+
+      const map = new mapboxgl.Map({
+        container: mapaContainerRef.current,
+        style: estiloMapa(),
+        center: [pitch.longitude, pitch.latitude],
+        zoom: 14,
+      })
+
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right')
+      map.on('load', () => setMapaCarregado(true))
+
+      new mapboxgl.Marker({ element: criarPin(pitch, 0.2), anchor: 'bottom' })
+        .setLngLat([pitch.longitude, pitch.latitude])
+        .addTo(map)
+
+      const pararTema = seguirTema(map)
+
+      limpar = () => {
+        pararTema()
+        setMapaCarregado(false)
+        map.remove()
+      }
     })
 
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right')
-    map.on('load', () => setMapaCarregado(true))
-
-    new mapboxgl.Marker({ element: criarPin(pitch, 0.2), anchor: 'bottom' })
-      .setLngLat([pitch.longitude, pitch.latitude])
-      .addTo(map)
-
-    const pararTema = seguirTema(map)
-
     return () => {
-      pararTema()
-      setMapaCarregado(false)
-      map.remove()
+      cancelado = true
+      limpar?.()
     }
   }, [pitch])
 
@@ -294,6 +301,7 @@ function Pitch() {
           {pitch.imageUrl && pitch.imageUrl !== imagemFalhada ? (
             <img
               className="pitch__imagem"
+              fetchPriority="high"
               src={pitch.imageUrl}
               alt={pitch.name}
               onError={() => setImagemFalhada(pitch.imageUrl)}

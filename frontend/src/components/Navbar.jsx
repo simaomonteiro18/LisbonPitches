@@ -74,6 +74,21 @@ function Navbar() {
       if (e.key === 'Escape') {
         setMenuAberto(false)
         botaoRef.current?.focus()
+        return
+      }
+
+      // o Tab circula entre o botao do menu e os links, sem fugir para a pagina por baixo
+      if (e.key === 'Tab') {
+        const focaveis = [botaoRef.current, ...document.querySelectorAll('#navbar-menu a')].filter(Boolean)
+        const primeiro = focaveis[0]
+        const ultimo = focaveis[focaveis.length - 1]
+        if (e.shiftKey && document.activeElement === primeiro) {
+          e.preventDefault()
+          ultimo.focus()
+        } else if (!e.shiftKey && document.activeElement === ultimo) {
+          e.preventDefault()
+          primeiro.focus()
+        }
       }
     }
 
