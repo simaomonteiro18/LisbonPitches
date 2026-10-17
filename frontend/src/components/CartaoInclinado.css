@@ -1,0 +1,20 @@
+.cartao-inclinado {
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.cartao-inclinado__brilho {
+  position: absolute;
+  top: -140px;
+  left: -140px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-glow-1), transparent 70%);
+  pointer-events: none;
+}
+
+.cartao-inclinado__conteudo {
+  position: relative;
+}
