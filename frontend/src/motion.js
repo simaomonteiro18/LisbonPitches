@@ -14,3 +14,15 @@ export const easings = {
 }
 
 export const stagger = 0.06
+
+// entradas ao fazer scroll, uma vez so e ja com o elemento bem dentro do ecra
+export const aoVer = { once: true, amount: 0.35, margin: '0px 0px -20% 0px' }
+
+export const revelar = {
+  escondido: { opacity: 0, y: 64 },
+  visivel: (atraso = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: durations.slower, ease: easings.out, delay: atraso },
+  }),
+}
