@@ -16,6 +16,17 @@
   --color-glow-1: rgba(63, 174, 74, 0.18);
   --color-glow-2: rgba(63, 174, 74, 0.1);
 
+  /* tokens de movimento, espelhados em src/motion.js */
+  --dur-instant: 100ms;
+  --dur-fast: 200ms;
+  --dur-base: 320ms;
+  --dur-slow: 560ms;
+  --dur-slower: 900ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --stagger: 60ms;
+
   font-family: 'Roboto', sans-serif;
   color-scheme: dark;
 }
@@ -34,6 +45,18 @@
   --color-glow-1: rgba(63, 174, 74, 0.2);
   --color-glow-2: rgba(63, 174, 74, 0.12);
   color-scheme: light;
+}
+
+/* 1ms e nao 0 para os eventos transitionend continuarem a disparar */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-instant: 1ms;
+    --dur-fast: 1ms;
+    --dur-base: 1ms;
+    --dur-slow: 1ms;
+    --dur-slower: 1ms;
+    --stagger: 0ms;
+  }
 }
 
 * {
@@ -109,7 +132,7 @@ button {
   padding: 14px 32px;
   border-radius: 999px;
   font-size: 1rem;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
 .btn-primary:hover {
