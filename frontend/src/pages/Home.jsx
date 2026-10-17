@@ -1,6 +1,23 @@
 import { Link, useLocation } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { Fragment, useState, useEffect } from 'react'
+import { motion, useReducedMotion } from 'motion/react'
+import HeroAnimation from '../components/HeroAnimation'
+import { durations, easings, stagger } from '../motion'
 import './Home.css'
+
+const TITULO = 'Cansado de perder horas à procura de campos de futebol?'
+const palavras = TITULO.split(' ')
+const ATRASO_TITULO = 0.2
+const fimTitulo = ATRASO_TITULO + palavras.length * stagger
+
+const entrar = {
+  escondido: { opacity: 0, y: 24 },
+  visivel: { opacity: 1, y: 0 },
+}
+
+function transicao(delay) {
+  return { duration: durations.slow, ease: easings.out, delay }
+}
 
 const CONTACT_EMAIL = 'sasmonteiro07@gmail.com'
 
@@ -24,6 +41,8 @@ const passos = [
 
 function Home() {
   const location = useLocation()
+  const reduzir = useReducedMotion()
+  const inicio = reduzir ? false : 'escondido'
   const [nomeCampo, setNomeCampo] = useState('')
   const [localizacao, setLocalizacao] = useState('')
   const [notas, setNotas] = useState('')
@@ -70,28 +89,79 @@ function Home() {
   return (
     <>
       <section className="hero">
+        <HeroAnimation />
         <div className="container hero__inner">
-          <span className="badge">LisbonPitches</span>
-          <h1>
-            Cansado de perder horas à procura de campos de futebol?
+          <motion.span
+            className="badge"
+            initial={inicio}
+            animate="visivel"
+            variants={entrar}
+            transition={transicao(0)}
+          >
+            LisbonPitches
+          </motion.span>
+          <h1 aria-label={TITULO}>
+            {palavras.map((palavra, i) => (
+              <Fragment key={i}>
+                <span className="hero__palavra-mascara" aria-hidden="true">
+                  <motion.span
+                    className="hero__palavra"
+                    initial={reduzir ? false : { y: '110%', opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={transicao(ATRASO_TITULO + i * stagger)}
+                  >
+                    {palavra}
+                  </motion.span>
+                </span>{' '}
+              </Fragment>
+            ))}
           </h1>
-          <p>
+          <motion.p
+            initial={inicio}
+            animate="visivel"
+            variants={entrar}
+            transition={transicao(fimTitulo + 0.1)}
+          >
             O LisbonPitches junta num só sítio os campos perto de ti, para
             nunca mais perderes tempo a mandar mensagens a perguntar onde é
             que se pode jogar.
-          </p>
+          </motion.p>
           <div className="hero__actions">
-            <Link to="/pitches" className="btn-primary">
-              Ver Campos
-            </Link>
-            <Link to="/iniciativa" className="btn-ghost">
-              Conhece a iniciativa
-            </Link>
+            <motion.div
+              initial={inicio}
+              animate="visivel"
+              variants={entrar}
+              transition={transicao(fimTitulo + 0.25)}
+            >
+              <Link to="/pitches" className="btn-primary">
+                Ver Campos
+              </Link>
+            </motion.div>
+            <motion.div
+              initial={inicio}
+              animate="visivel"
+              variants={entrar}
+              transition={transicao(fimTitulo + 0.25 + stagger * 2)}
+            >
+              <Link to="/iniciativa" className="btn-ghost">
+                Conhece a iniciativa
+              </Link>
+            </motion.div>
           </div>
         </div>
+        <motion.a
+          href="#como-funciona"
+          className="hero__scroll"
+          initial={reduzir ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: durations.slow, delay: 2.6 }}
+        >
+          <span>Descobre como funciona</span>
+          <span className="hero__scroll-seta" aria-hidden="true" />
+        </motion.a>
       </section>
 
-      <section className="como-funciona">
+      <section className="como-funciona" id="como-funciona">
         <div className="container">
           <h2>Como funciona</h2>
           <div className="como-funciona__grid">
