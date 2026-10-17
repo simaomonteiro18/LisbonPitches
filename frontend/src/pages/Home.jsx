@@ -3,7 +3,7 @@ import { Fragment, useState, useEffect, useRef } from 'react'
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import HeroAnimation from '../components/HeroAnimation'
 import CartaoInclinado from '../components/CartaoInclinado'
-import { durations, easings, stagger } from '../motion'
+import { aoVer, durations, easings, revelar, stagger } from '../motion'
 import './Home.css'
 
 const TITULO = 'Cansado de perder horas à procura de campos de futebol?'
@@ -18,18 +18,6 @@ const entrar = {
 
 function transicao(delay) {
   return { duration: durations.slow, ease: easings.out, delay }
-}
-
-// entradas ao fazer scroll, uma vez so e ja com a secao bem dentro do ecra
-const aoVer = { once: true, amount: 0.35, margin: '0px 0px -20% 0px' }
-
-const revelar = {
-  escondido: { opacity: 0, y: 64 },
-  visivel: (atraso = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: durations.slower, ease: easings.out, delay: atraso },
-  }),
 }
 
 const revelarLado = {

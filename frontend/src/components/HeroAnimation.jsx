@@ -28,10 +28,13 @@ const linhasCampo = [
   'M1280 378 A60 60 0 0 0 1280 482',
 ]
 
+// campo, brilho e bola deslocados para a direita para nao ficarem por baixo do texto
+const DESLOCAMENTO_CAMPO = 120
+
 const pins = [
-  { x: 1440, y: 250, tipo: 'publico' },
+  { x: 1555, y: 215, tipo: 'publico' },
   { x: 1230, y: 170, tipo: 'publico' },
-  { x: 1500, y: 560, tipo: 'privado' },
+  { x: 1565, y: 650, tipo: 'privado' },
   { x: 900, y: 700, tipo: 'publico' },
   { x: 1340, y: 700, tipo: 'privado' },
   { x: 650, y: 300, tipo: 'privado' },
@@ -147,7 +150,7 @@ function HeroAnimation() {
         </motion.g>
 
         <motion.ellipse
-          cx="1080"
+          cx={1080 + DESLOCAMENTO_CAMPO}
           cy="430"
           rx="420"
           ry="300"
@@ -189,79 +192,81 @@ function HeroAnimation() {
           </g>
         ))}
 
-        <g transform="rotate(-6 1080 430)">
-          {linhasCampo.map((d, i) => (
-            <motion.path
-              key={d}
-              className="hero-scene__linha"
-              d={d}
+        <g transform={`translate(${DESLOCAMENTO_CAMPO} 0)`}>
+          <g transform="rotate(-6 1080 430)">
+            {linhasCampo.map((d, i) => (
+              <motion.path
+                key={d}
+                className="hero-scene__linha"
+                d={d}
+                initial={inicio}
+                animate="visivel"
+                variants={{
+                  escondido: { pathLength: 0, opacity: 0 },
+                  visivel: { pathLength: 1, opacity: 1 },
+                }}
+                transition={{
+                  pathLength: { duration: 1.1, ease: easings.inOut, delay: T.linhas + i * 0.08 },
+                  opacity: { duration: durations.fast, delay: T.linhas + i * 0.08 },
+                }}
+              />
+            ))}
+            <motion.circle
+              className="hero-scene__marca"
+              cx="1080"
+              cy="430"
+              r="5"
               initial={inicio}
               animate="visivel"
-              variants={{
-                escondido: { pathLength: 0, opacity: 0 },
-                visivel: { pathLength: 1, opacity: 1 },
-              }}
-              transition={{
-                pathLength: { duration: 1.1, ease: easings.inOut, delay: T.linhas + i * 0.08 },
-                opacity: { duration: durations.fast, delay: T.linhas + i * 0.08 },
-              }}
+              variants={{ escondido: { opacity: 0 }, visivel: { opacity: 1 } }}
+              transition={{ delay: T.linhas + 0.6, duration: durations.base }}
             />
-          ))}
-          <motion.circle
-            className="hero-scene__marca"
-            cx="1080"
-            cy="430"
-            r="5"
-            initial={inicio}
-            animate="visivel"
-            variants={{ escondido: { opacity: 0 }, visivel: { opacity: 1 } }}
-            transition={{ delay: T.linhas + 0.6, duration: durations.base }}
-          />
 
-          {jogadores.map((j, i) => (
-            <g key={`${j.equipa}-${j.n}`} transform={`translate(${j.x} ${j.y})`}>
-              <motion.g
-                className={`hero-scene__jogador hero-scene__jogador--${j.equipa}`}
-                initial={reduzir ? false : { scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{
-                  scale: { type: 'spring', stiffness: 420, damping: 20, delay: T.jogadores + i * 0.03 },
-                  opacity: { duration: durations.fast, delay: T.jogadores + i * 0.03 },
-                }}
-              >
-                <circle r="14" />
-                <text dy="0.35em">{j.n}</text>
-              </motion.g>
-            </g>
-          ))}
+            {jogadores.map((j, i) => (
+              <g key={`${j.equipa}-${j.n}`} transform={`translate(${j.x} ${j.y})`}>
+                <motion.g
+                  className={`hero-scene__jogador hero-scene__jogador--${j.equipa}`}
+                  initial={reduzir ? false : { scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    scale: { type: 'spring', stiffness: 420, damping: 20, delay: T.jogadores + i * 0.03 },
+                    opacity: { duration: durations.fast, delay: T.jogadores + i * 0.03 },
+                  }}
+                >
+                  <circle r="14" />
+                  <text dy="0.35em">{j.n}</text>
+                </motion.g>
+              </g>
+            ))}
+          </g>
+
+          <motion.g
+            className="hero-scene__bola"
+            initial={
+              reduzir
+                ? false
+                : { x: trajetoria.xs[0], y: trajetoria.ys[0], opacity: 0, rotate: 0, scale: 1.2 }
+            }
+            animate={
+              reduzir
+                ? { x: 1080, y: 430, opacity: 1, scale: 0.6 }
+                : { x: trajetoria.xs, y: trajetoria.ys, opacity: 1, rotate: 540, scale: 0.6 }
+            }
+            transition={
+              reduzir
+                ? undefined
+                : {
+                    x: { duration: T.voo, ease: 'linear', delay: T.bola },
+                    y: { duration: T.voo, ease: 'linear', delay: T.bola },
+                    rotate: { duration: T.voo + 0.3, ease: easings.out, delay: T.bola },
+                    scale: { duration: T.voo, ease: 'linear', delay: T.bola },
+                    opacity: { duration: durations.fast, delay: T.bola },
+                  }
+            }
+          >
+            <Bola />
+          </motion.g>
         </g>
-
-        <motion.g
-          className="hero-scene__bola"
-          initial={
-            reduzir
-              ? false
-              : { x: trajetoria.xs[0], y: trajetoria.ys[0], opacity: 0, rotate: 0, scale: 1.2 }
-          }
-          animate={
-            reduzir
-              ? { x: 1080, y: 430, opacity: 1, scale: 0.6 }
-              : { x: trajetoria.xs, y: trajetoria.ys, opacity: 1, rotate: 540, scale: 0.6 }
-          }
-          transition={
-            reduzir
-              ? undefined
-              : {
-                  x: { duration: T.voo, ease: 'linear', delay: T.bola },
-                  y: { duration: T.voo, ease: 'linear', delay: T.bola },
-                  rotate: { duration: T.voo + 0.3, ease: easings.out, delay: T.bola },
-                  scale: { duration: T.voo, ease: 'linear', delay: T.bola },
-                  opacity: { duration: durations.fast, delay: T.bola },
-                }
-          }
-        >
-          <Bola />
-        </motion.g>
       </svg>
       <div className="hero-scene__veu" />
     </div>
