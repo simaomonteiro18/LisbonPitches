@@ -56,6 +56,10 @@
   color: var(--color-error);
 }
 
+.reserva__status--sucesso {
+  color: var(--color-accent-text);
+}
+
 .reserva__convites {
   list-style: none;
   margin: 0;
@@ -106,9 +110,25 @@
 .reserva__convidar {
   margin-top: 24px;
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reserva__convidar-linha {
+  display: flex;
   gap: 12px;
   flex-wrap: wrap;
   align-items: center;
+}
+
+.reserva__convidar .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reserva__convidar .reserva__status {
+  margin: 0;
 }
 
 .reserva__convidar input {
@@ -126,4 +146,101 @@
 .reserva__convidar input:focus {
   outline: none;
   border-color: var(--color-grass);
+}
+
+/* faixa de confirmacao para quem chega acabado de reservar */
+.reserva__confirmada {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding: 16px 20px;
+  border: 1px solid var(--color-grass);
+  border-radius: 16px;
+  background-color: var(--color-glow-2);
+}
+
+.reserva__confirmada strong {
+  font-size: 1.1rem;
+}
+
+.reserva__confirmada p {
+  margin: 2px 0 0;
+  color: var(--color-text-muted);
+}
+
+.reserva__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: reserva-rodar 0.7s linear infinite;
+}
+
+@keyframes reserva-rodar {
+  to { transform: rotate(360deg); }
+}
+
+/* esqueleto com a forma da pagina para nada saltar */
+.reserva__esqueleto {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 16px;
+  background-color: var(--color-surface-input);
+}
+
+.reserva__esqueleto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--color-glow-2), transparent);
+  transform: translateX(-100%);
+  animation: reserva-esqueleto 1.4s var(--ease-in-out) infinite;
+}
+
+@keyframes reserva-esqueleto {
+  to { transform: translateX(100%); }
+}
+
+.reserva__esqueleto--titulo {
+  width: min(70%, 380px);
+  height: 36px;
+  margin-bottom: 12px;
+  border-radius: 999px;
+}
+
+.reserva__esqueleto--cidade {
+  width: 140px;
+  height: 16px;
+  margin-bottom: 32px;
+  border-radius: 999px;
+}
+
+.reserva__esqueleto--cartao {
+  height: 300px;
+}
+
+.reserva__esqueleto--subtitulo {
+  width: 120px;
+  height: 22px;
+  margin: 40px 0 16px;
+  border-radius: 999px;
+}
+
+.reserva__esqueleto--convite {
+  height: 62px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reserva__esqueleto::after {
+    animation: none;
+  }
+
+  .reserva__spinner {
+    animation-duration: 2s;
+  }
 }

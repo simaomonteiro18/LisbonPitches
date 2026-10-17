@@ -4,10 +4,10 @@ import { motion, useInView, useReducedMotion } from 'motion/react'
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { getFeaturedPitches, getAllPitchesForMap } from '../api/pitches'
-import { getTheme } from '../theme'
 import { aoVer, revelar } from '../motion'
 import CartaoInclinado from '../components/CartaoInclinado'
 import Contador from '../components/Contador'
+import { criarPin, estiloMapa, seguirTema } from '../components/mapaPin'
 import './PitchesOverview.css'
 
 const TIPOS = {
@@ -28,35 +28,12 @@ if (MAPBOX_TOKEN) {
   mapboxgl.accessToken = MAPBOX_TOKEN
 }
 
-const ESTILOS_MAPA = {
-  dark: 'mapbox://styles/mapbox/dark-v11',
-  light: 'mapbox://styles/mapbox/light-v11',
-}
-
 const VISTA_GERAL = { padding: 60, maxZoom: 13 }
 
 function escapeHtml(texto) {
   const div = document.createElement('div')
   div.textContent = texto ?? ''
   return div.innerHTML
-}
-
-// pin igual ao do hero; a queda anima um elemento interior porque o mapbox usa o transform da raiz
-function criarPin(pitch, atraso) {
-  const el = document.createElement('div')
-  el.className = `mapa-pin mapa-pin--${pitch.pitchAccess === 'PRIVATE' ? 'privado' : 'publico'}`
-  el.style.setProperty('--atraso', `${atraso}s`)
-  el.setAttribute('aria-label', pitch.name ?? '')
-  el.innerHTML = `
-    <div class="mapa-pin__queda">
-      <span class="mapa-pin__anel"></span>
-      <svg class="mapa-pin__corpo" viewBox="-16 -44 32 46" width="32" height="46" aria-hidden="true">
-        <path d="M0 0 C -6 -10 -14 -16 -14 -26 A14 14 0 1 1 14 -26 C 14 -16 6 -10 0 0 Z" />
-        <circle cx="0" cy="-26" r="5" />
-      </svg>
-    </div>
-  `
-  return el
 }
 
 function PitchesOverview() {
@@ -96,7 +73,7 @@ function PitchesOverview() {
 
     const map = new mapboxgl.Map({
       container: mapaContainerRef.current,
-      style: ESTILOS_MAPA[getTheme()],
+      style: estiloMapa(),
       center: [mapPitches[0].longitude, mapPitches[0].latitude],
       zoom: 10,
     })
@@ -153,12 +130,10 @@ function PitchesOverview() {
       map.fitBounds(limitesRef.current, { ...VISTA_GERAL, animate: false })
     }
 
-    // o estilo do mapa segue o tema do site
-    const observador = new MutationObserver(() => map.setStyle(ESTILOS_MAPA[getTheme()]))
-    observador.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    const pararTema = seguirTema(map)
 
     return () => {
-      observador.disconnect()
+      pararTema()
       clearTimeout(voarTimerRef.current)
       pins.clear()
       mapaRef.current = null
@@ -279,7 +254,7 @@ function PitchesOverview() {
             {MAPBOX_TOKEN && !mapError && (
               <motion.div
                 ref={mapaWrapperRef}
-                className={`pitches-overview__mapa-wrapper${pinsACair ? ' pitches-overview__mapa-wrapper--pins' : ''}`}
+                className={`pitches-overview__mapa-wrapper${pinsACair ? ' mapa-pins--a-cair' : ''}`}
                 initial={inicio}
                 whileInView="visivel"
                 viewport={aoVer}
