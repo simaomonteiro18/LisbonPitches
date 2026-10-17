@@ -1,0 +1,11 @@
+.barra-progresso {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  height: 3px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--color-grass-dark), var(--color-grass), var(--color-grass-light));
+  pointer-events: none;
+}

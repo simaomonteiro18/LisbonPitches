@@ -3,6 +3,7 @@ import { Fragment, useState, useEffect, useRef } from 'react'
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import HeroAnimation from '../components/HeroAnimation'
 import CartaoInclinado from '../components/CartaoInclinado'
+import Logotipo from '../components/Logotipo'
 import { aoVer, durations, easings, revelar, stagger } from '../motion'
 import './Home.css'
 
@@ -138,13 +139,13 @@ function Home() {
           style={reduzir ? undefined : { y: textoY, opacity: textoOpacidade }}
         >
           <motion.span
-            className="badge"
+            className="hero__logotipo"
             initial={inicio}
             animate="visivel"
             variants={entrar}
             transition={transicao(0)}
           >
-            LisbonPitches
+            <Logotipo />
           </motion.span>
           <h1 aria-label={TITULO}>
             {palavras.map((palavra, i) => (

@@ -92,6 +92,13 @@ body {
 
 main {
   flex: 1;
+  /* o conteudo muda de tamanho ao trocar de pagina; sem isto o browser rola sozinho ao recarregar */
+  overflow-anchor: none;
+}
+
+/* a navbar e fixa: o conteudo comeca por baixo dela, exceto na Home onde flutua sobre o hero */
+.app:not(:has(.hero)) main {
+  padding-top: var(--altura-navbar, 100px);
 }
 
 h1, h2, h3 {
@@ -132,6 +139,7 @@ button {
   font-weight: 500;
 }
 
+/* botoes: sobem no hover, encolhem ao carregar */
 .btn-primary {
   display: inline-block;
   background-color: var(--color-grass);
@@ -143,12 +151,26 @@ button {
   transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background-color: var(--color-grass-light);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active:not(:disabled),
+.btn-ghost:active:not(:disabled) {
+  transform: scale(0.97);
+  transition-duration: var(--dur-instant);
+}
+
+.btn-primary:disabled,
+.btn-ghost:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .btn-ghost {
+  position: relative;
+  isolation: isolate;
   display: inline-block;
   background-color: transparent;
   color: var(--color-text);
@@ -157,8 +179,31 @@ button {
   border-radius: 999px;
   font-size: 1rem;
   border: 1px solid var(--color-border);
+  transition: border-color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 
-.btn-ghost:hover {
+/* fundo verde subtil numa camada propria para so animar opacidade */
+.btn-ghost::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: var(--color-glow-2);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.btn-ghost:hover:not(:disabled) {
   border-color: var(--color-grass);
+}
+
+.btn-ghost:hover:not(:disabled)::before {
+  opacity: 1;
+}
+
+/* contorno de foco igual em todo o lado, so para teclado */
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-grass);
+  outline-offset: 3px;
 }
