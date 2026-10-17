@@ -1,4 +1,4 @@
-/mvnw text eol=lf
+/backend/mvnw text eol=lf
 *.cmd text eol=crlf
 
 # o frontend nao entra nas estatisticas de linguagem do GitHub: o repositorio aparece como Java

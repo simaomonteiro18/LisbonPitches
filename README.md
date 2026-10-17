@@ -114,17 +114,27 @@ mais campos passarem a suportar reserva online real.
 - React Router
 - Mapbox GL JS (mapas interativos)
 
+## Estrutura do repositório
+
+```
+backend/             API em Java/Spring Boot (Maven, Dockerfile)
+docs/                diagramas e documentação
+frontend/            React/Vite
+docker-compose.yml   PostgreSQL e API para desenvolvimento local
+```
+
 ## Como correr localmente
 
 ### Backend (H2, sem dependências externas)
 
 1. Clona o repositório
 2. Tens de ter o Java 21 instalado
-3. A partir da raiz do projecto, corre:
+3. A partir de `backend/`, corre:
    ```
+   cd backend
    ./mvnw spring-boot:run
    ```
-   (ou abre o projecto numa IDE e corre a classe `LisbonPitchesApplication`)
+   (ou abre a pasta `backend/` numa IDE e corre a classe `LisbonPitchesApplication`)
 4. O perfil `test` já vem activo por defeito, com H2 em memória e dados de
    exemplo inseridos automaticamente (incluindo os campos reais do
    `pitches-import.csv`)
@@ -144,7 +154,7 @@ mais campos passarem a suportar reserva online real.
    ```
    docker run --name lisbonpitches-db -e POSTGRES_PASSWORD=<password> -e POSTGRES_DB=lisbonpitches -p 5433:5432 -v lisbonpitches-data:/var/lib/postgresql/data -d postgres:16
    ```
-2. Muda `spring.profiles.active` para `prod` no `application.properties`
+2. Muda `spring.profiles.active` para `prod` no `backend/src/main/resources/application.properties`
 3. Corre a aplicação
 
 ## Modelo de domínio
