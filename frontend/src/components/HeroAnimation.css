@@ -1,0 +1,113 @@
+.hero-scene {
+  --pin-publico: #3fae4a;
+  --pin-privado: #e0a05f;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero-scene svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-scene__tejo {
+  fill: var(--color-glow-2);
+}
+
+.hero-scene__rua {
+  fill: none;
+  stroke: var(--color-border);
+  stroke-width: 2;
+}
+
+.hero-scene__linha {
+  fill: none;
+  stroke: var(--color-grass);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.hero-scene__marca {
+  fill: var(--color-grass);
+}
+
+.hero-scene__pin--publico path {
+  fill: var(--pin-publico);
+}
+
+.hero-scene__pin--privado path {
+  fill: var(--pin-privado);
+}
+
+.hero-scene__pin-centro {
+  fill: var(--color-bg);
+}
+
+/* a bola mantem as cores reais nos dois temas */
+.hero-scene__bola-base {
+  fill: #f5f5f0;
+}
+
+.hero-scene__bola-manchas path {
+  fill: #16181b;
+}
+
+.hero-scene__bola-manchas .hero-scene__bola-costuras {
+  fill: none;
+  stroke: #16181b;
+  stroke-width: 1.2;
+}
+
+.hero-scene__bola-contorno {
+  fill: none;
+  stroke: #16181b;
+  stroke-width: 1.5;
+}
+
+.hero-scene__jogador text {
+  font-size: 13px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.hero-scene__jogador--casa circle {
+  fill: var(--color-grass);
+  stroke: var(--color-grass-dark);
+  stroke-width: 2.5;
+}
+
+.hero-scene__jogador--casa text {
+  fill: #05070a;
+}
+
+.hero-scene__jogador--fora circle {
+  fill: #f5f5f0;
+  stroke: #16181b;
+  stroke-width: 1.5;
+}
+
+.hero-scene__jogador--fora text {
+  fill: #16181b;
+}
+
+/* escurece o lado do texto para manter o contraste */
+.hero-scene__veu {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--color-bg) 0%, color-mix(in srgb, var(--color-bg) 70%, transparent) 38%, transparent 70%),
+    linear-gradient(0deg, var(--color-bg) 0%, transparent 22%);
+}
+
+@media (max-width: 768px) {
+  .hero-scene svg {
+    opacity: 0.6;
+  }
+
+  .hero-scene__veu {
+    background: linear-gradient(0deg, var(--color-bg) 10%, color-mix(in srgb, var(--color-bg) 75%, transparent) 55%, color-mix(in srgb, var(--color-bg) 30%, transparent) 100%);
+  }
+}

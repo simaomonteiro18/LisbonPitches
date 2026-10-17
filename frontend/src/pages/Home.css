@@ -1,27 +1,111 @@
+/* na Home a navbar flutua por cima do hero */
+.app:has(.hero) .navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+}
+
 .hero__inner {
-  padding: 120px 24px 96px;
+  width: 100%;
+  padding-top: 140px;
+  padding-bottom: 120px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 24px;
-  max-width: 720px;
+}
+
+.hero__inner > * {
+  max-width: 640px;
 }
 
 .hero h1 {
-  font-size: 2.6rem;
-  line-height: 1.25;
+  font-size: clamp(2.2rem, 5.5vw, 4rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   color: var(--color-text);
+}
+
+.hero__palavra-mascara {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.08em;
+}
+
+.hero__palavra {
+  display: inline-block;
 }
 
 .hero p {
   font-size: 1.1rem;
   margin: 0;
+  max-width: 520px;
 }
 
 .hero__actions {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
+}
+
+.hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.hero__scroll-seta {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  rotate: 45deg;
+  animation: hero-seta 1.6s var(--ease-in-out) infinite;
+}
+
+@keyframes hero-seta {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__scroll-seta {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero__inner {
+    padding-top: 120px;
+    padding-bottom: 110px;
+  }
+}
+
+@media (max-height: 640px) {
+  .hero__scroll {
+    display: none;
+  }
 }
 
 .como-funciona {
