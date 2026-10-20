@@ -27,4 +27,17 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("endTime") LocalDateTime endTime
     );
 
+    @Query("""
+    SELECT r
+    FROM Reservation r
+    WHERE r.pitch = :pitch
+      AND r.startTime < :endTime
+      AND r.endTime > :startTime
+    """)
+    List<Reservation> findOverlappingReservations(
+            @Param("pitch") Pitch pitch,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
+    );
+
 }
