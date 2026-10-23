@@ -1,9 +1,11 @@
 package com.simaomonteiro18.lisbonpitches.services;
 
 import com.simaomonteiro18.lisbonpitches.dtos.AvailabilityDTO;
+import com.simaomonteiro18.lisbonpitches.entities.OpeningHours;
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.Reservation;
 import com.simaomonteiro18.lisbonpitches.entities.enums.AvailabilityStatus;
+import com.simaomonteiro18.lisbonpitches.entities.enums.DayType;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
 import com.simaomonteiro18.lisbonpitches.exceptions.ResourceNotFoundException;
 import com.simaomonteiro18.lisbonpitches.repositories.OpeningHoursRepository;
@@ -30,6 +32,9 @@ public class AvailabilityService {
     @Autowired
     private ReservationRepository reservationRepository;
 
+    @Autowired
+    private OpeningHoursService openingHoursService;
+
     public Set<Integer> occupiedHours(List<Reservation> reservations, LocalDate date) {
         Set<Integer> occupied = new HashSet<>();
 
@@ -51,6 +56,14 @@ public class AvailabilityService {
 
         if (!(pitch.isReservable() && pitch.getPitchAccess() == PitchAccess.PRIVATE)) {
             return new AvailabilityDTO(AvailabilityStatus.NOT_BOOKABLE, List.of());
+        }
+
+        DayType dateType = openingHoursService.defineDayType(date);
+
+        Optional<OpeningHours> hours = openingHoursRepository.findByPitchAndDayType(pitch, dateType);
+
+        if (hours.isEmpty()) {
+            return new AvailabilityDTO(AvailabilityStatus.NO_SCHEDULE, List.of());
         }
 
         return null;

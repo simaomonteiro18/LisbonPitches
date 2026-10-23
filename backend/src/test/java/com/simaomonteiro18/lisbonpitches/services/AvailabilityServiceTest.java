@@ -4,6 +4,7 @@ import com.simaomonteiro18.lisbonpitches.dtos.AvailabilityDTO;
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.Reservation;
 import com.simaomonteiro18.lisbonpitches.entities.enums.AvailabilityStatus;
+import com.simaomonteiro18.lisbonpitches.entities.enums.DayType;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
 import com.simaomonteiro18.lisbonpitches.exceptions.ResourceNotFoundException;
 import com.simaomonteiro18.lisbonpitches.repositories.OpeningHoursRepository;
@@ -36,6 +37,9 @@ public class AvailabilityServiceTest {
 
     @Mock
     ReservationRepository reservationRepository;
+
+    @Mock
+    OpeningHoursService openingHoursService;
 
     @InjectMocks
     AvailabilityService availabilityService = new AvailabilityService();
@@ -106,6 +110,21 @@ public class AvailabilityServiceTest {
         AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 10, 24));
 
         assertEquals(AvailabilityStatus.NOT_BOOKABLE, result.getStatus());
+        assertEquals(List.of(), result.getFreeHours());
+    }
+
+    @Test
+    void noScheduleWhenThereAreNoOpeningHours() {
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(LocalDate.of(2026, 10, 24))).thenReturn(DayType.WEEKEND);
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND)).thenReturn(Optional.empty());
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 10, 24));
+
+        assertEquals(AvailabilityStatus.NO_SCHEDULE, result.getStatus());
         assertEquals(List.of(), result.getFreeHours());
     }
 
