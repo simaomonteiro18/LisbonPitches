@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class AvailabilityService {
@@ -66,7 +63,24 @@ public class AvailabilityService {
             return new AvailabilityDTO(AvailabilityStatus.NO_SCHEDULE, List.of());
         }
 
-        return null;
+        List<Reservation> reservations = reservationRepository.findOverlappingReservations(
+                pitch, date.atStartOfDay(), date.plusDays(1).atStartOfDay());
+
+        Set<Integer> occupied = occupiedHours(reservations, date);
+
+        List<Integer> freeHours = new ArrayList<>();
+
+        OpeningHours openingHours = hours.get();
+        int open = openingHours.getOpenHour();
+        int close = openingHours.getCloseHour();
+
+        for (int h = open; h < close; h++) {
+            if (!occupied.contains(h)) {
+                freeHours.add(h);
+            }
+        }
+
+        return new AvailabilityDTO(AvailabilityStatus.BOOKABLE, freeHours);
 
     }
 

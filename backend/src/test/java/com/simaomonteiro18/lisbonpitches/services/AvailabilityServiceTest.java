@@ -1,6 +1,7 @@
 package com.simaomonteiro18.lisbonpitches.services;
 
 import com.simaomonteiro18.lisbonpitches.dtos.AvailabilityDTO;
+import com.simaomonteiro18.lisbonpitches.entities.OpeningHours;
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.Reservation;
 import com.simaomonteiro18.lisbonpitches.entities.enums.AvailabilityStatus;
@@ -126,6 +127,37 @@ public class AvailabilityServiceTest {
 
         assertEquals(AvailabilityStatus.NO_SCHEDULE, result.getStatus());
         assertEquals(List.of(), result.getFreeHours());
+    }
+
+    @Test
+    void bookableWithFreeHoursWhenThereAreReservations() {
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+
+        OpeningHours openingHours = new OpeningHours();
+        openingHours.setOpenHour(18);
+        openingHours.setCloseHour(22);
+
+        LocalDate date = LocalDate.of(2026, 10, 24);
+
+        Reservation r = new Reservation(null, null, null,
+                LocalDateTime.of(2026, 10, 24, 19, 0),
+                LocalDateTime.of(2026, 10, 24, 20, 0));
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
+        when(reservationRepository.findOverlappingReservations(
+                pitch, date.atStartOfDay(), date.plusDays(1).atStartOfDay()))
+                .thenReturn(List.of(r));
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
+                .thenReturn(Optional.of(openingHours));
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
+
+        assertEquals(AvailabilityStatus.BOOKABLE, result.getStatus());
+        assertEquals(List.of(18, 20, 21), result.getFreeHours());
+
     }
 
 }
