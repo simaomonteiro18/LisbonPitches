@@ -1,9 +1,11 @@
 package com.simaomonteiro18.lisbonpitches.services;
 
+import com.simaomonteiro18.lisbonpitches.dtos.AvailabilityDTO;
 import com.simaomonteiro18.lisbonpitches.entities.Invitation;
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.Reservation;
 import com.simaomonteiro18.lisbonpitches.entities.User;
+import com.simaomonteiro18.lisbonpitches.entities.enums.AvailabilityStatus;
 import com.simaomonteiro18.lisbonpitches.entities.enums.InvitationStatus;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
 import com.simaomonteiro18.lisbonpitches.exceptions.*;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,6 +38,9 @@ public class ReservationService {
 
     @Autowired
     private InvitationRepository invitationRepository;
+
+    @Autowired
+    private AvailabilityService availabilityService;
 
     public Reservation createReservation(Long userId, Long pitchId, LocalDateTime startTime, LocalDateTime endTime) {
 
@@ -59,6 +65,32 @@ public class ReservationService {
             throw new InvalidTimeException("Tempo inferior a 1 hora!");
         } else if (minutes % 60 != 0) {
             throw new InvalidTimeException("Tempo inválido!");
+        }
+
+        if (!startTime.equals(startTime.truncatedTo(ChronoUnit.HOURS))) {
+            throw new InvalidTimeException("A reserva tem de começar à hora em ponto");
+        }
+
+        AvailabilityDTO availabilityDTO = availabilityService.getAvailabilityOfPitch(pitchId, startTime.toLocalDate());
+
+        if (availabilityDTO.getStatus() == AvailabilityStatus.NOT_BOOKABLE) {
+            throw new PitchNotBookableException("O campo não é reservável.");
+        }
+
+        if (availabilityDTO.getStatus() == AvailabilityStatus.NO_SCHEDULE) {
+            throw new PitchNotBookableException("O campo não tem horário definido para esse dia");
+        }
+
+        int endHour = endTime.toLocalDate().isAfter(startTime.toLocalDate()) ? 24 : endTime.getHour();
+
+        if (endTime.isAfter(startTime.toLocalDate().plusDays(1).atStartOfDay())) {
+            throw new InvalidTimeException("A reserva não pode passar da meia-noite");
+        }
+
+        for (int h = startTime.getHour(); h < endHour; h++) {
+            if (!availabilityDTO.getFreeHours().contains(h)) {
+                throw new InvalidTimeException("A hora não está disponível");
+            }
         }
 
         boolean exists = reservationRepository.existsOverlappingReservation(pitch, startTime, endTime);
