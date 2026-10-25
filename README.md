@@ -4,7 +4,7 @@
 
 Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana de Lisboa, construída em Java/Spring Boot no backend e React/Vite no frontend.
 
-**53 campos reais catalogados · 16 endpoints REST · 4 entidades · 39 testes (JUnit 5, Mockito, MockMvc, TestRestTemplate)**
+**53 campos reais catalogados · 17 endpoints REST · 5 entidades · 65 testes (JUnit 5, Mockito, MockMvc, TestRestTemplate)**
 
 🔗 **[API em produção](https://lisbonpitches-production.up.railway.app/pitches)**
 — `GET /pitches` devolve uma página de campos (parâmetros `page`, `size` e `sort`, com filtros opcionais por `city`, `name` e `pitchAccess`).
@@ -63,11 +63,18 @@ mais campos recolhidos à mão ou submissões de utilizadores.
 - **Reservas** com validação de sobreposição de horário (ao nível da base
   de dados) e blocos mínimos de 1 hora, convite de outros jogadores e
   divisão automática do custo pelos participantes que aceitaram (incluindo
-  o organizador).
+  o organizador). O pedido de reserva é validado contra a disponibilidade:
+  início à hora em ponto, dentro do horário do campo e só em horas livres.
+- **Disponibilidade** (`GET /pitches/{id}/availability?date=AAAA-MM-DD`,
+  público): devolve as horas de início livres de um campo num dia, a partir
+  do horário do campo (dia de semana ou fim de semana), das reservas
+  existentes e, se o dia for hoje, das horas que já passaram (hora de
+  Lisboa). O estado indica se o campo aceita reservas (`BOOKABLE`,
+  `NOT_BOOKABLE`) ou se ainda não tem horário definido (`NO_SCHEDULE`).
 - **Autenticação por JWT** (registo/login) com Spring Security aplicado a
-  todos os 16 endpoints exceto os públicos (`/pitches`, `/pitches/{id}`,
-  `/users`, `/login`), sem destaque na navegação por agora — ver nota
-  abaixo.
+  todos os 17 endpoints exceto os públicos (`/pitches`, `/pitches/{id}`,
+  `/pitches/{id}/availability`, `/users`, `/login`), sem destaque na
+  navegação por agora — ver nota abaixo.
 - **Rate limiting no login**: no máximo 5 tentativas falhadas por IP em 15
   minutos; à seguinte a API responde `429 Too Many Requests` com o header
   `Retry-After`. Implementado num filtro (`LoginRateLimitFilter`) com
@@ -92,6 +99,48 @@ https://lisbonpitches-production.up.railway.app/swagger-ui.html
 
 Os endpoints protegidos aceitam o token JWT através do botão "Authorize".
 
+### Endpoints
+
+Os endpoints públicos não precisam de token. Todos os outros exigem o
+header `Authorization: Bearer <jwt>`, obtido no login.
+
+#### Autenticação e utilizadores
+
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| POST | `/login` | Autenticar e receber o JWT | Público |
+| POST | `/users` | Registar um utilizador | Público |
+| GET | `/users/{id}` | Resumo de um utilizador | JWT |
+
+#### Campos
+
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| GET | `/pitches` | Página de campos (`page`, `size`, `sort`), com filtros opcionais `city`, `name` e `pitchAccess` | Público |
+| GET | `/pitches/{id}` | Detalhe de um campo | Público |
+| GET | `/pitches/featured` | Campos em destaque | Público |
+| GET | `/pitches/map` | Campos para o mapa (em cache) | Público |
+| GET | `/pitches/{id}/availability?date=AAAA-MM-DD` | Horas livres do campo nesse dia (`status` e `freeHours`) | Público |
+
+#### Reservas
+
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| POST | `/reservations` | Criar uma reserva, validada contra a disponibilidade | JWT |
+| GET | `/reservations?userId={id}` | Reservas de um utilizador | JWT |
+| GET | `/reservations/{id}` | Detalhe de uma reserva | JWT |
+
+#### Convites
+
+| Método | Endpoint | Descrição | Acesso |
+|--------|----------|-----------|--------|
+| POST | `/invitations` | Convidar um jogador para uma reserva | JWT |
+| GET | `/invitations?reservationId={id}` | Convites de uma reserva | JWT |
+| GET | `/invitations/me` | Os meus convites | JWT |
+| PATCH | `/invitations/{id}/accept` | Aceitar um convite | JWT |
+| PATCH | `/invitations/{id}/reject` | Recusar um convite | JWT |
+| DELETE | `/invitations/{id}` | Apagar um convite | JWT |
+
 ### Nota sobre o login
 
 Registo/login está implementado (Spring Security + JWT, password com
@@ -113,7 +162,7 @@ mais campos passarem a suportar reserva online real.
 - Caffeine (cache e rate limiting)
 - PostgreSQL (produção) e H2 (desenvolvimento)
 - Docker
-- JUnit 5, Mockito, MockMvc, TestRestTemplate — 39 testes em 13 classes,
+- JUnit 5, Mockito, MockMvc, TestRestTemplate — 65 testes em 16 classes,
   três camadas (unidade, mocks e integração HTTP, incluindo um teste com
   servidor real)
 - Maven
@@ -171,11 +220,13 @@ docker-compose.yml   PostgreSQL e API para desenvolvimento local
 
 ![Diagrama UML](docs/LisbonPitches%20Architecture.drawio.png)
 
-Quatro entidades principais: `User`, `Pitch`, `Reservation`, `Invitation`,
-expostas através de 16 endpoints REST e 7 DTOs. O convite (`Invitation`)
-é a entidade de ligação entre utilizador e reserva, e guarda o estado do
-convite. `Pitch` guarda tipo, acesso (público/privado), morada/coordenadas,
-preço, contacto e se suporta reserva online (`reservable`).
+Cinco entidades principais: `User`, `Pitch`, `Reservation`, `Invitation` e
+`OpeningHours`, expostas através de 17 endpoints REST e 8 DTOs. O convite
+(`Invitation`) é a entidade de ligação entre utilizador e reserva, e guarda
+o estado do convite. `Pitch` guarda tipo, acesso (público/privado), morada/coordenadas,
+preço, contacto e se suporta reserva online (`reservable`). `OpeningHours`
+guarda o horário de abertura de cada campo, por tipo de dia (dia de semana
+ou fim de semana).
 
 ## Fora do MVP
 
