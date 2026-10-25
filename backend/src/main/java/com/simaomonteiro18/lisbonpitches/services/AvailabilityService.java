@@ -14,7 +14,9 @@ import com.simaomonteiro18.lisbonpitches.repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -31,6 +33,9 @@ public class AvailabilityService {
 
     @Autowired
     private OpeningHoursService openingHoursService;
+
+    @Autowired
+    private Clock clock;
 
     public Set<Integer> occupiedHours(List<Reservation> reservations, LocalDate date) {
         Set<Integer> occupied = new HashSet<>();
@@ -68,6 +73,9 @@ public class AvailabilityService {
 
         Set<Integer> occupied = occupiedHours(reservations, date);
 
+        LocalDateTime now = LocalDateTime.now(clock);
+        boolean isToday = date.equals(now.toLocalDate());
+
         List<Integer> freeHours = new ArrayList<>();
 
         OpeningHours openingHours = hours.get();
@@ -75,7 +83,8 @@ public class AvailabilityService {
         int close = openingHours.getCloseHour();
 
         for (int h = open; h < close; h++) {
-            if (!occupied.contains(h)) {
+            boolean isPast = isToday && h <= now.getHour();
+            if (!occupied.contains(h) && !isPast) {
                 freeHours.add(h);
             }
         }

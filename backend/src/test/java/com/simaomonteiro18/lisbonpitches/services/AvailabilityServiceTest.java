@@ -11,14 +11,18 @@ import com.simaomonteiro18.lisbonpitches.exceptions.ResourceNotFoundException;
 import com.simaomonteiro18.lisbonpitches.repositories.OpeningHoursRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.PitchRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.ReservationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -44,6 +48,18 @@ public class AvailabilityServiceTest {
 
     @InjectMocks
     AvailabilityService availabilityService = new AvailabilityService();
+
+    private static final ZoneId LISBON = ZoneId.of("Europe/Lisbon");
+
+    private Clock clockAt(LocalDateTime dateTime) {
+        return Clock.fixed(dateTime.atZone(LISBON).toInstant(), LISBON);
+    }
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(availabilityService, "clock",
+                clockAt(LocalDateTime.of(2026, 10, 20, 12, 0)));
+    }
 
     @Test
     void occupiedHoursForTwoHourReservation() {
@@ -157,6 +173,33 @@ public class AvailabilityServiceTest {
 
         assertEquals(AvailabilityStatus.BOOKABLE, result.getStatus());
         assertEquals(List.of(18, 20, 21), result.getFreeHours());
+
+    }
+
+    @Test
+    void onlyFutureHoursWhenDateIsToday() {
+
+        ReflectionTestUtils.setField(availabilityService, "clock", clockAt(LocalDateTime.of(2026, 10, 24, 20, 30)));
+
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+
+        OpeningHours openingHours = new OpeningHours();
+        openingHours.setOpenHour(18);
+        openingHours.setCloseHour(22);
+
+        LocalDate date = LocalDate.of(2026, 10, 24);
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
+                .thenReturn(Optional.of(openingHours));
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
+
+        assertEquals(AvailabilityStatus.BOOKABLE, result.getStatus());
+        assertEquals(List.of(21), result.getFreeHours());
 
     }
 
