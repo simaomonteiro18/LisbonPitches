@@ -149,4 +149,24 @@ public class ReservationServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Teste de reserva que não começa a hora em ponto")
+    void startTimeNotOnTheHour() {
+
+        User user = new User("Simão", "12345", "sm18@gmail.com", "912345678", "Sintra");
+
+        user.setId(1L);
+
+        Pitch pitch = new Pitch("Real", "Massamá", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
+
+        pitch.setId(1L);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+
+        assertThrows(InvalidTimeException.class, () -> {reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-04T19:30:00"), LocalDateTime.parse("2026-09-04T20:30:00"));});
+
+    }
+
 }

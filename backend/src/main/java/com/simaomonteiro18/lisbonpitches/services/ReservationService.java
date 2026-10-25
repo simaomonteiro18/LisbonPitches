@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,6 +60,10 @@ public class ReservationService {
             throw new InvalidTimeException("Tempo inferior a 1 hora!");
         } else if (minutes % 60 != 0) {
             throw new InvalidTimeException("Tempo inválido!");
+        }
+
+        if (!startTime.equals(startTime.truncatedTo(ChronoUnit.HOURS))) {
+            throw new InvalidTimeException("A reserva tem de começar à hora em ponto");
         }
 
         boolean exists = reservationRepository.existsOverlappingReservation(pitch, startTime, endTime);
