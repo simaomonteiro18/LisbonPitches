@@ -292,4 +292,26 @@ public class ReservationServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Teste de reserva com final após a meia-noite")
+    void reservationEndingAfterNextMidnight() {
+
+        User user = new User("Simão", "12345", "sm18@gmail.com", "912345678", "Sintra");
+
+        user.setId(1L);
+
+        Pitch pitch = new Pitch("Real", "Massamá", BigDecimal.valueOf(25.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
+
+        pitch.setId(1L);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+
+        when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(23)));
+
+        assertThrows(InvalidTimeException.class, () -> {reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-04T23:00:00"), LocalDateTime.parse("2026-09-05T01:00:00"));});
+
+    }
+
 }

@@ -83,6 +83,10 @@ public class ReservationService {
 
         int endHour = endTime.toLocalDate().isAfter(startTime.toLocalDate()) ? 24 : endTime.getHour();
 
+        if (endTime.isAfter(startTime.toLocalDate().plusDays(1).atStartOfDay())) {
+            throw new InvalidTimeException("A reserva não pode passar da meia-noite");
+        }
+
         for (int h = startTime.getHour(); h < endHour; h++) {
             if (!availabilityDTO.getFreeHours().contains(h)) {
                 throw new InvalidTimeException("A hora não está disponível");
