@@ -203,4 +203,29 @@ public class AvailabilityServiceTest {
 
     }
 
+    @Test
+    void noFreeHoursWhenDateIsInThePast() {
+
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+
+        OpeningHours openingHours = new OpeningHours();
+        openingHours.setOpenHour(18);
+        openingHours.setCloseHour(22);
+
+        LocalDate date = LocalDate.of(2026, 10, 19);
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKDAY);
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKDAY))
+                .thenReturn(Optional.of(openingHours));
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
+
+        assertEquals(AvailabilityStatus.BOOKABLE, result.getStatus());
+        assertEquals(List.of(), result.getFreeHours());
+        
+    }
+
 }

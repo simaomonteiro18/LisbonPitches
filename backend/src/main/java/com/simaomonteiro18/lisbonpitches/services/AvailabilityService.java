@@ -83,7 +83,8 @@ public class AvailabilityService {
         int close = openingHours.getCloseHour();
 
         for (int h = open; h < close; h++) {
-            boolean isPast = isToday && h <= now.getHour();
+            boolean isPastDate = date.isBefore(now.toLocalDate());
+            boolean isPast = isPastDate || (isToday && h <= now.getHour());
             if (!occupied.contains(h) && !isPast) {
                 freeHours.add(h);
             }
