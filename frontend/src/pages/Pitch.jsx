@@ -276,6 +276,14 @@ function Pitch() {
 
   const hoje = formatarLocal(agora).slice(0, 10)
   const horasLivres = disponibilidade?.status === 'BOOKABLE' ? disponibilidade.freeHours : []
+  // todas as horas do horario do campo, as que nao estao livres ficam desativadas
+  const horasDoDia =
+    disponibilidade?.status === 'BOOKABLE' && disponibilidade.openHour != null
+      ? Array.from(
+          { length: disponibilidade.closeHour - disponibilidade.openHour },
+          (_, i) => disponibilidade.openHour + i,
+        )
+      : horasLivres
   const primeiraHora = selecionadas[0]
   const horaFim = selecionadas.length > 0 ? selecionadas[selecionadas.length - 1] + 1 : null
   const fimNoDiaSeguinte = horaFim === 24
@@ -507,18 +515,19 @@ function Pitch() {
                               </p>
                             )}
                             {avisoDisponibilidade && <p className="pitch__status">{avisoDisponibilidade}</p>}
-                            {horasLivres.length > 0 && (
+                            {horasDoDia.length > 0 && (
                               <>
                                 <p className="pitch__horas-titulo" id="pitch-horas-titulo">
                                   Escolhe as horas (seguidas)
                                 </p>
                                 <div className="pitch__horas-lista" role="group" aria-labelledby="pitch-horas-titulo">
-                                  {horasLivres.map((h) => (
+                                  {horasDoDia.map((h) => (
                                     <button
                                       key={h}
                                       type="button"
                                       className={`pitch__hora${selecionadas.includes(h) ? ' pitch__hora--ativa' : ''}`}
                                       aria-pressed={selecionadas.includes(h)}
+                                      disabled={!horasLivres.includes(h)}
                                       onClick={() => alternarHora(h)}
                                     >
                                       {doisDigitos(h)}:00
