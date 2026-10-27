@@ -1,9 +1,12 @@
 package com.simaomonteiro18.lisbonpitches.config;
 
+import com.simaomonteiro18.lisbonpitches.entities.OpeningHours;
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.User;
+import com.simaomonteiro18.lisbonpitches.entities.enums.DayType;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchType;
+import com.simaomonteiro18.lisbonpitches.repositories.OpeningHoursRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.PitchRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,9 @@ public class ProductionSeedConfig implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private OpeningHoursRepository openingHoursRepository;
+
     @Override
     public void run(String... args) throws Exception {
         if (pitchRepository.count() == 0) {
@@ -49,9 +55,23 @@ public class ProductionSeedConfig implements CommandLineRunner {
             p5.setLatitude(38.75753901531081);
             p5.setLongitude(-9.27677864288426);
 
+            OpeningHours oh1 = new OpeningHours();
+            oh1.setPitch(p4);
+            oh1.setDayType(DayType.WEEKDAY);
+            oh1.setOpenHour(10);
+            oh1.setCloseHour(24);
+
+            OpeningHours oh2 = new OpeningHours();
+            oh2.setPitch(p4);
+            oh2.setDayType(DayType.WEEKEND);
+            oh2.setOpenHour(19);
+            oh2.setCloseHour(24);
+
             userRepository.saveAll(List.of(user));
 
             pitchRepository.saveAll(Arrays.asList(p4, p5));
+
+            openingHoursRepository.saveAll(Arrays.asList(oh1, oh2));
 
         }
     }

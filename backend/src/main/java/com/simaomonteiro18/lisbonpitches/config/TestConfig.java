@@ -1,15 +1,10 @@
 package com.simaomonteiro18.lisbonpitches.config;
 
-import com.simaomonteiro18.lisbonpitches.entities.Invitation;
-import com.simaomonteiro18.lisbonpitches.entities.Pitch;
-import com.simaomonteiro18.lisbonpitches.entities.Reservation;
-import com.simaomonteiro18.lisbonpitches.entities.User;
+import com.simaomonteiro18.lisbonpitches.entities.*;
+import com.simaomonteiro18.lisbonpitches.entities.enums.DayType;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchType;
-import com.simaomonteiro18.lisbonpitches.repositories.InvitationRepository;
-import com.simaomonteiro18.lisbonpitches.repositories.PitchRepository;
-import com.simaomonteiro18.lisbonpitches.repositories.ReservationRepository;
-import com.simaomonteiro18.lisbonpitches.repositories.UserRepository;
+import com.simaomonteiro18.lisbonpitches.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +34,9 @@ public class TestConfig implements CommandLineRunner {
     private InvitationRepository invitationRepository;
 
     @Autowired
+    private OpeningHoursRepository openingHoursRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -64,6 +62,18 @@ public class TestConfig implements CommandLineRunner {
         p5.setLatitude(38.75753901531081);
         p5.setLongitude(-9.27677864288426);
 
+        OpeningHours oh1 = new OpeningHours();
+        oh1.setPitch(p4);
+        oh1.setDayType(DayType.WEEKDAY);
+        oh1.setOpenHour(10);
+        oh1.setCloseHour(24);
+
+        OpeningHours oh2 = new OpeningHours();
+        oh2.setPitch(p4);
+        oh2.setDayType(DayType.WEEKEND);
+        oh2.setOpenHour(19);
+        oh2.setCloseHour(24);
+
         Reservation r2 = new Reservation(u4, p4, Instant.now().minus(30, ChronoUnit.MINUTES), LocalDateTime.parse("2026-08-30T16:00:00"), LocalDateTime.parse("2026-08-30T17:00:00"));
 
         Invitation i2 = new Invitation(u1, r2, u1);
@@ -77,6 +87,8 @@ public class TestConfig implements CommandLineRunner {
         reservationRepository.saveAll(Arrays.asList(r2));
 
         invitationRepository.saveAll(Arrays.asList(i2));
+
+        openingHoursRepository.saveAll(Arrays.asList(oh1, oh2));
 
     }
 
