@@ -38,14 +38,16 @@ public class AvailabilityControllerTest {
     public void gettingAvailabilityFromABookablePitch() throws Exception {
 
         LocalDate date = LocalDate.of(2026, 10, 24);
-        AvailabilityDTO dto = new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(18, 20, 21));
+        AvailabilityDTO dto = new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(18, 20, 21), 18, 22);
 
         when(availabilityService.getAvailabilityOfPitch(1L, date)).thenReturn(dto);
 
         mockMvc.perform(get("/pitches/1/availability").param("date", "2026-10-24"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("BOOKABLE"))
-                .andExpect(jsonPath("$.freeHours").value(contains(18, 20, 21)));
+                .andExpect(jsonPath("$.freeHours").value(contains(18, 20, 21)))
+                .andExpect(jsonPath("$.openHour").value(18))
+                .andExpect(jsonPath("$.closeHour").value(22));
 
     }
 
