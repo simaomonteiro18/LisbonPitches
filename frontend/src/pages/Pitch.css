@@ -319,13 +319,18 @@
     color var(--dur-fast) var(--ease-out);
 }
 
-.pitch__hora:hover {
+.pitch__hora:not(:disabled):hover {
   border-color: var(--color-grass);
 }
 
 .pitch__hora:focus-visible {
   outline: 2px solid var(--color-grass);
   outline-offset: 2px;
+}
+
+.pitch__hora:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .pitch__hora--ativa {
