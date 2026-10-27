@@ -27,8 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -105,6 +104,8 @@ public class AvailabilityServiceTest {
 
         assertEquals(AvailabilityStatus.NOT_BOOKABLE, result.getStatus());
         assertEquals(List.of(), result.getFreeHours());
+        assertNull(result.getOpenHour());
+        assertNull(result.getCloseHour());
     }
 
     @Test
@@ -143,6 +144,8 @@ public class AvailabilityServiceTest {
 
         assertEquals(AvailabilityStatus.NO_SCHEDULE, result.getStatus());
         assertEquals(List.of(), result.getFreeHours());
+        assertNull(result.getOpenHour());
+        assertNull(result.getCloseHour());
     }
 
     @Test
@@ -173,6 +176,8 @@ public class AvailabilityServiceTest {
 
         assertEquals(AvailabilityStatus.BOOKABLE, result.getStatus());
         assertEquals(List.of(18, 20, 21), result.getFreeHours());
+        assertEquals(18, result.getOpenHour());
+        assertEquals(22, result.getCloseHour());
 
     }
 

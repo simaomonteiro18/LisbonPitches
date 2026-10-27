@@ -90,7 +90,7 @@ public class AvailabilityService {
             }
         }
 
-        return new AvailabilityDTO(AvailabilityStatus.BOOKABLE, freeHours);
+        return new AvailabilityDTO(AvailabilityStatus.BOOKABLE, freeHours, openingHours.getOpenHour(), openingHours.getCloseHour());
 
     }
 
