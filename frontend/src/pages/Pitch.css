@@ -286,6 +286,54 @@
   color: var(--color-accent-text);
 }
 
+.pitch__horas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pitch__horas-titulo {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.pitch__horas-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pitch__hora {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-input);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.pitch__hora:hover {
+  border-color: var(--color-grass);
+}
+
+.pitch__hora:focus-visible {
+  outline: 2px solid var(--color-grass);
+  outline-offset: 2px;
+}
+
+.pitch__hora--ativa {
+  background-color: var(--color-grass);
+  border-color: var(--color-grass);
+  color: var(--color-on-accent);
+}
+
 .pitch__form .btn-primary {
   display: inline-flex;
   align-items: center;

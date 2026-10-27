@@ -48,3 +48,13 @@ export async function getPitchById(id) {
 
   return response.json()
 }
+
+export async function getAvailability(pitchId, date) {
+  const response = await fetch(`${API_URL}/pitches/${pitchId}/availability?date=${date}`)
+
+  if (!response.ok) {
+    throw new Error('Não foi possível obter as horas livres.')
+  }
+
+  return response.json()
+}

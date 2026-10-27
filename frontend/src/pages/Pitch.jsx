@@ -2,7 +2,7 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AnimatePresence, motion, useAnimate, useReducedMotion } from 'motion/react'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { getPitchById } from '../api/pitches'
+import { getAvailability, getPitchById } from '../api/pitches'
 import { createReservation } from '../api/reservations'
 import { getSession } from '../auth'
 import { durations, easings, stagger } from '../motion'
@@ -57,11 +57,13 @@ function googleMapsUrl(latitude, longitude) {
   return `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
 }
 
-// as reservas sao sempre a horas certas e por horas inteiras
-const HORAS = Array.from({ length: 24 }, (_, h) => String(h).padStart(2, '0'))
-const DURACOES = [1, 2, 3, 4, 5]
-
 const doisDigitos = (n) => String(n).padStart(2, '0')
+
+// dia seguinte sem somar milissegundos, que falha nos dias de mudanca de hora
+function diaSeguinte(dia) {
+  const [ano, mes, numero] = dia.split('-').map(Number)
+  return formatarLocal(new Date(ano, mes - 1, numero + 1)).slice(0, 10)
+}
 
 // mesmo formato do input datetime-local que a API ja recebia
 function formatarLocal(data) {
@@ -135,8 +137,12 @@ function Pitch() {
 
   const [reserving, setReserving] = useState(false)
   const [dia, setDia] = useState('')
-  const [hora, setHora] = useState('')
-  const [duracao, setDuracao] = useState(1)
+  // horas de inicio escolhidas, sempre seguidas e por ordem
+  const [selecionadas, setSelecionadas] = useState([])
+  const [disponibilidade, setDisponibilidade] = useState(null)
+  const [disponibilidadeLoading, setDisponibilidadeLoading] = useState(false)
+  const [disponibilidadeError, setDisponibilidadeError] = useState(null)
+  const [recarregar, setRecarregar] = useState(0)
   // momento em que o formulario abriu, para bloquear horas que ja passaram
   const [agora, setAgora] = useState(() => new Date())
   const [reservaLoading, setReservaLoading] = useState(false)
@@ -158,6 +164,29 @@ function Pitch() {
   }, [id])
 
   useEffect(() => () => clearTimeout(sucessoTimerRef.current), [])
+
+  useEffect(() => {
+    if (!reserving || !dia || !pitch) return
+
+    let cancelado = false
+
+    getAvailability(pitch.id, dia)
+      .then((dados) => {
+        if (cancelado) return
+        setDisponibilidade(dados)
+        setDisponibilidadeError(null)
+      })
+      .catch((err) => {
+        if (!cancelado) setDisponibilidadeError(err.message)
+      })
+      .finally(() => {
+        if (!cancelado) setDisponibilidadeLoading(false)
+      })
+
+    return () => {
+      cancelado = true
+    }
+  }, [reserving, dia, pitch, recarregar])
 
   useEffect(() => {
     if (!pitch || !MAPBOX_TOKEN || pitch.latitude == null || pitch.longitude == null || !mapaContainerRef.current) {
@@ -206,8 +235,10 @@ function Pitch() {
     }
     setReservaError(null)
     setDia('')
-    setHora('')
-    setDuracao(1)
+    setSelecionadas([])
+    setDisponibilidade(null)
+    setDisponibilidadeLoading(false)
+    setDisponibilidadeError(null)
     setAgora(new Date())
     setReserving((prev) => !prev)
   }
@@ -218,16 +249,54 @@ function Pitch() {
     }
   }
 
+  function escolherDia(valor) {
+    setDia(valor)
+    setSelecionadas([])
+    setDisponibilidade(null)
+    setDisponibilidadeLoading(Boolean(valor))
+    setDisponibilidadeError(null)
+    setReservaError(null)
+  }
+
+  function alternarHora(hora) {
+    setReservaError(null)
+    setSelecionadas((atuais) => {
+      if (atuais.length === 0) return [hora]
+      const primeira = atuais[0]
+      const ultima = atuais[atuais.length - 1]
+      // so se tira uma hora das pontas, para as horas ficarem sempre seguidas
+      if (atuais.includes(hora)) {
+        return hora === primeira || hora === ultima ? atuais.filter((h) => h !== hora) : [hora]
+      }
+      if (hora === primeira - 1) return [hora, ...atuais]
+      if (hora === ultima + 1) return [...atuais, hora]
+      return [hora]
+    })
+  }
+
   const hoje = formatarLocal(agora).slice(0, 10)
-  const horaAtual = agora.getHours()
-  const inicioReserva = dia && hora !== '' ? new Date(`${dia}T${hora}:00`) : null
-  const fimReserva = inicioReserva ? new Date(inicioReserva.getTime() + duracao * 3600000) : null
-  const horarioPassado = inicioReserva != null && inicioReserva.getTime() <= agora.getTime()
-  const fimNoDiaSeguinte = fimReserva != null && formatarLocal(fimReserva).slice(0, 10) !== dia
+  const horasLivres = disponibilidade?.status === 'BOOKABLE' ? disponibilidade.freeHours : []
+  const primeiraHora = selecionadas[0]
+  const horaFim = selecionadas.length > 0 ? selecionadas[selecionadas.length - 1] + 1 : null
+  const fimNoDiaSeguinte = horaFim === 24
+  const inicioTexto = primeiraHora != null ? `${dia}T${doisDigitos(primeiraHora)}:00` : null
+  const fimTexto =
+    horaFim == null ? null : fimNoDiaSeguinte ? `${diaSeguinte(dia)}T00:00` : `${dia}T${doisDigitos(horaFim)}:00`
+
+  let avisoDisponibilidade = null
+  if (disponibilidade && !disponibilidadeLoading && !disponibilidadeError) {
+    if (disponibilidade.status === 'NOT_BOOKABLE') {
+      avisoDisponibilidade = 'Este campo não aceita reservas online.'
+    } else if (disponibilidade.status === 'NO_SCHEDULE') {
+      avisoDisponibilidade = 'Este campo ainda não tem horário definido para esse dia.'
+    } else if (horasLivres.length === 0) {
+      avisoDisponibilidade = 'Não há horas livres neste dia.'
+    }
+  }
 
   async function confirmarReserva(e) {
     e.preventDefault()
-    if (!inicioReserva || horarioPassado || inicioReserva <= new Date()) {
+    if (!inicioTexto || !fimTexto) {
       tremerFormulario()
       return
     }
@@ -238,8 +307,8 @@ function Pitch() {
     try {
       const reservation = await createReservation({
         pitchId: pitch.id,
-        startTime: formatarLocal(inicioReserva),
-        endTime: formatarLocal(fimReserva),
+        startTime: inicioTexto,
+        endTime: fimTexto,
       })
       const abrirReserva = () => navigate(`/reservas/${reservation.id}`, { state: { acabadaDeCriar: true } })
 
@@ -251,6 +320,9 @@ function Pitch() {
       sucessoTimerRef.current = setTimeout(abrirReserva, PAUSA_SUCESSO)
     } catch (err) {
       setReservaError(err.message)
+      setSelecionadas([])
+      setDisponibilidadeLoading(true)
+      setRecarregar((n) => n + 1)
       tremerFormulario()
     } finally {
       setReservaLoading(false)
@@ -420,62 +492,60 @@ function Pitch() {
                               type="date"
                               value={dia}
                               min={hoje}
-                              onChange={(e) => setDia(e.target.value)}
+                              onChange={(e) => escolherDia(e.target.value)}
                               required
                             />
                           </label>
-                          <label>
-                            Hora de início
-                            <select
-                              value={hora}
-                              onChange={(e) => setHora(e.target.value)}
-                              aria-invalid={horarioPassado}
-                              required
-                            >
-                              <option value="" disabled>
-                                Escolher
-                              </option>
-                              {HORAS.map((h) => (
-                                <option key={h} value={h} disabled={dia === hoje && Number(h) <= horaAtual}>
-                                  {h}:00
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                          <label>
-                            Duração
-                            <select value={duracao} onChange={(e) => setDuracao(Number(e.target.value))}>
-                              {DURACOES.map((d) => (
-                                <option key={d} value={d}>
-                                  {d} {d === 1 ? 'hora' : 'horas'}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
                         </div>
 
+                        {dia && (
+                          <div className="pitch__horas">
+                            {disponibilidadeLoading && <p className="pitch__status">A ver as horas livres...</p>}
+                            {disponibilidadeError && (
+                              <p className="pitch__status pitch__status--error" role="alert">
+                                {disponibilidadeError}
+                              </p>
+                            )}
+                            {avisoDisponibilidade && <p className="pitch__status">{avisoDisponibilidade}</p>}
+                            {horasLivres.length > 0 && (
+                              <>
+                                <p className="pitch__horas-titulo" id="pitch-horas-titulo">
+                                  Escolhe as horas (seguidas)
+                                </p>
+                                <div className="pitch__horas-lista" role="group" aria-labelledby="pitch-horas-titulo">
+                                  {horasLivres.map((h) => (
+                                    <button
+                                      key={h}
+                                      type="button"
+                                      className={`pitch__hora${selecionadas.includes(h) ? ' pitch__hora--ativa' : ''}`}
+                                      aria-pressed={selecionadas.includes(h)}
+                                      onClick={() => alternarHora(h)}
+                                    >
+                                      {doisDigitos(h)}:00
+                                    </button>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        )}
+
                         <AnimatePresence mode="wait" initial={false}>
-                          {horarioPassado && (
-                            <motion.p
-                              key="passado"
-                              className="pitch__status pitch__status--error"
-                              role="alert"
+                          {inicioTexto && (
+                            <motion.div
+                              key={`${dia}-${primeiraHora}-${selecionadas.length}`}
+                              className="pitch__resumo"
                               {...avisoForm}
                             >
-                              Escolhe uma hora que ainda não tenha passado.
-                            </motion.p>
-                          )}
-                          {inicioReserva && !horarioPassado && (
-                            <motion.div key={`${dia}-${hora}-${duracao}`} className="pitch__resumo" {...avisoForm}>
                               <span>
-                                Das <strong>{hora}:00</strong> às{' '}
-                                <strong>{doisDigitos(fimReserva.getHours())}:00</strong>
+                                Das <strong>{doisDigitos(primeiraHora)}:00</strong> às{' '}
+                                <strong>{doisDigitos(horaFim % 24)}:00</strong>
                                 {fimNoDiaSeguinte && ' do dia seguinte'}
                               </span>
                               {pitch.pricePerHour != null && (
                                 <span>
                                   Estimativa: a partir de{' '}
-                                  <strong>{formatarEuros(pitch.pricePerHour * duracao)} EUR</strong>
+                                  <strong>{formatarEuros(pitch.pricePerHour * selecionadas.length)} EUR</strong>
                                 </span>
                               )}
                             </motion.div>
@@ -490,7 +560,7 @@ function Pitch() {
                           )}
                         </AnimatePresence>
 
-                        <button type="submit" className="btn-primary" disabled={reservaLoading || reservaFeita}>
+                        <button type="submit" className="btn-primary" disabled={reservaLoading || reservaFeita || selecionadas.length === 0}>
                           {reservaLoading ? (
                             <>
                               <span className="pitch__spinner" aria-hidden="true" />
