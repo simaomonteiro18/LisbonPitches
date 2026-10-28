@@ -58,7 +58,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         assertThrows(InvalidTimeException.class, () -> {reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-04T21:00:00"), LocalDateTime.parse("2026-09-04T20:00:00"));});
 
@@ -78,7 +78,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         assertThrows(InvalidTimeException.class, () -> {reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-04T20:00:00"), LocalDateTime.parse("2026-09-04T20:30:00"));});
 
@@ -98,7 +98,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         assertThrows(InvalidTimeException.class, () -> {reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-04T20:00:00"), LocalDateTime.parse("2026-09-04T21:30:00"));});
 
@@ -118,7 +118,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(reservationRepository.existsOverlappingReservation(pitch, LocalDateTime.parse("2026-09-04T20:00:00"), LocalDateTime.parse("2026-09-04T22:00:00"))).thenReturn(true);
 
@@ -145,7 +145,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(reservationRepository.existsOverlappingReservation(pitch, LocalDateTime.parse("2026-09-05T20:00:00"), LocalDateTime.parse("2026-09-05T22:00:00"))).thenReturn(false);
 
@@ -176,7 +176,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         assertThrows(InvalidTimeException.class, () -> {reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-04T19:30:00"), LocalDateTime.parse("2026-09-04T20:30:00"));});
 
@@ -196,7 +196,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(20)));
 
@@ -218,7 +218,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.NOT_BOOKABLE, List.of()));
 
@@ -240,7 +240,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.NO_SCHEDULE, List.of()));
 
@@ -262,7 +262,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(21)));
 
@@ -284,7 +284,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of()));
 
@@ -306,7 +306,7 @@ public class ReservationServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(23)));
 
