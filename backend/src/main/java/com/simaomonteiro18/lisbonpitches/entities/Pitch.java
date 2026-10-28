@@ -3,6 +3,7 @@ package com.simaomonteiro18.lisbonpitches.entities;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchType;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -33,6 +34,8 @@ public class Pitch {
     private Double longitude;
     @Column(length = 1000)
     private String imageUrl;
+    @ColumnDefault("60")
+    private int slotMinutes = 60;
 
     public Pitch() {
 
@@ -156,6 +159,10 @@ public class Pitch {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public int getSlotMinutes() {
+        return slotMinutes;
     }
 
     @Override
