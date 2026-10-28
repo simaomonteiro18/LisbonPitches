@@ -13,6 +13,7 @@ import com.simaomonteiro18.lisbonpitches.repositories.InvitationRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.PitchRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.ReservationRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,12 +43,13 @@ public class ReservationService {
     @Autowired
     private AvailabilityService availabilityService;
 
+    @Transactional
     public Reservation createReservation(Long userId, Long pitchId, LocalDateTime startTime, LocalDateTime endTime) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(User.class, userId));
 
-        Pitch pitch = pitchRepository.findById(pitchId)
+        Pitch pitch = pitchRepository.findWithLockById(pitchId)
                 .orElseThrow(() -> new ResourceNotFoundException(Pitch.class, pitchId));
 
         if (pitch.getPitchAccess() == PitchAccess.PUBLIC) {

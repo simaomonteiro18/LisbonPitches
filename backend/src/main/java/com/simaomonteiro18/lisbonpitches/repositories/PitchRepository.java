@@ -2,13 +2,16 @@ package com.simaomonteiro18.lisbonpitches.repositories;
 
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PitchRepository extends JpaRepository<Pitch, Long> {
 
@@ -23,5 +26,8 @@ public interface PitchRepository extends JpaRepository<Pitch, Long> {
             "(:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(CAST(:name AS string)), '%')) AND " +
             "(:pitchAccess IS NULL OR p.pitchAccess = :pitchAccess)")
     Page<Pitch> search(@Param("city") String city, @Param("name") String name, @Param("pitchAccess") PitchAccess pitchAccess, Pageable pageable);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<Pitch> findWithLockById(Long id);
 
 }
