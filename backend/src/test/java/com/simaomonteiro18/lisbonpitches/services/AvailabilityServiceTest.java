@@ -19,10 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.Clock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -106,6 +103,8 @@ public class AvailabilityServiceTest {
         assertEquals(List.of(), result.getFreeHours());
         assertNull(result.getOpenHour());
         assertNull(result.getCloseHour());
+        assertEquals(List.of(), result.getSlots());
+        assertNull(result.getSlotMinutes());
     }
 
     @Test
@@ -146,6 +145,8 @@ public class AvailabilityServiceTest {
         assertEquals(List.of(), result.getFreeHours());
         assertNull(result.getOpenHour());
         assertNull(result.getCloseHour());
+        assertEquals(List.of(), result.getSlots());
+        assertNull(result.getSlotMinutes());
     }
 
     @Test
@@ -231,6 +232,186 @@ public class AvailabilityServiceTest {
         assertEquals(AvailabilityStatus.BOOKABLE, result.getStatus());
         assertEquals(List.of(), result.getFreeHours());
         
+    }
+
+    @Test
+    void firstSlotStartsAtOpeningTime() {
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+
+        OpeningHours openingHours = new OpeningHours();
+        openingHours.setOpenHour(18);
+        openingHours.setCloseHour(22);
+
+        LocalDate date = LocalDate.of(2026, 10, 24);
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
+                .thenReturn(Optional.of(openingHours));
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
+
+        assertEquals(date.atTime(18, 0), result.getSlots().get(0).getStart());
+    }
+
+    @Test
+    void lastSlotStartsAtTwentyThreeWhenPitchClosesAtMidnight() {
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+
+        OpeningHours openingHours = new OpeningHours();
+        openingHours.setOpenHour(18);
+        openingHours.setCloseHour(24);
+
+        LocalDate date = LocalDate.of(2026, 10, 24);
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
+                .thenReturn(Optional.of(openingHours));
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
+
+        assertEquals(6, result.getSlots().size());
+        assertEquals(date.atTime(23, 0), result.getSlots().get(result.getSlots().size() - 1).getStart());
+    }
+
+    @Test
+    void occupiedSlotIsNotFree() {
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+
+        OpeningHours openingHours = new OpeningHours();
+        openingHours.setOpenHour(18);
+        openingHours.setCloseHour(22);
+
+        LocalDate date = LocalDate.of(2026, 10, 24);
+
+        Reservation r = new Reservation(null, null, null,
+                LocalDateTime.of(2026, 10, 24, 19, 0),
+                LocalDateTime.of(2026, 10, 24, 20, 0));
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
+        when(reservationRepository.findOverlappingReservations(
+                pitch, date.atStartOfDay(), date.plusDays(1).atStartOfDay()))
+                .thenReturn(List.of(r));
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
+                .thenReturn(Optional.of(openingHours));
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
+
+        assertEquals(4, result.getSlots().size());
+        assertTrue(result.getSlots().get(0).isFree());
+        assertFalse(result.getSlots().get(1).isFree());
+        assertTrue(result.getSlots().get(2).isFree());
+        assertTrue(result.getSlots().get(3).isFree());
+
+    }
+
+    @Test
+    void pastSlotsAreNotListedWhenDateIsToday() {
+
+        ReflectionTestUtils.setField(availabilityService, "clock", clockAt(LocalDateTime.of(2026, 10, 24, 20, 30)));
+
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+
+        OpeningHours openingHours = new OpeningHours();
+        openingHours.setOpenHour(18);
+        openingHours.setCloseHour(22);
+
+        LocalDate date = LocalDate.of(2026, 10, 24);
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
+                .thenReturn(Optional.of(openingHours));
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
+
+        assertEquals(1, result.getSlots().size());
+        assertEquals(date.atTime(21, 0), result.getSlots().get(0).getStart());
+
+    }
+
+    @Test
+    void slotStartingExactlyNowIsNotListed() {
+
+        ReflectionTestUtils.setField(availabilityService, "clock", clockAt(LocalDateTime.of(2026, 10, 24, 21, 0)));
+
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+
+        OpeningHours openingHours = new OpeningHours();
+        openingHours.setOpenHour(18);
+        openingHours.setCloseHour(22);
+
+        LocalDate date = LocalDate.of(2026, 10, 24);
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
+                .thenReturn(Optional.of(openingHours));
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
+
+        assertEquals(0, result.getSlots().size());
+
+    }
+
+    @Test
+    void slotsFollowTheGridOfThirtyMinutes() {
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+        pitch.setSlotMinutes(30);
+
+        OpeningHours openingHours = new OpeningHours();
+        openingHours.setOpenHour(18);
+        openingHours.setCloseHour(22);
+
+        LocalDate date = LocalDate.of(2026, 10, 24);
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
+                .thenReturn(Optional.of(openingHours));
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
+
+        assertEquals(8, result.getSlots().size());
+        assertEquals(date.atTime(18, 30), result.getSlots().get(1).getStart());
+        assertEquals(date.atTime(21, 30), result.getSlots().get(7).getStart());
+    }
+
+    @Test
+    void availabilityReturnsSlotMinutesOfThePitch() {
+        Pitch pitch = new Pitch();
+        pitch.setPitchAccess(PitchAccess.PRIVATE);
+        pitch.setReservable(true);
+        pitch.setSlotMinutes(30);
+
+        OpeningHours openingHours = new OpeningHours();
+        openingHours.setOpenHour(18);
+        openingHours.setCloseHour(22);
+
+        LocalDate date = LocalDate.of(2026, 10, 24);
+
+        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
+        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
+        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
+                .thenReturn(Optional.of(openingHours));
+
+        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
+
+        assertEquals(30, result.getSlotMinutes());
     }
 
 }
