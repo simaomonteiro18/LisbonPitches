@@ -165,6 +165,10 @@ public class Pitch {
         return slotMinutes;
     }
 
+    public void setSlotMinutes(int slotMinutes) {
+        this.slotMinutes = slotMinutes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

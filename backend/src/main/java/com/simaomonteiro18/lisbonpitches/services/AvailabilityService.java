@@ -1,6 +1,7 @@
 package com.simaomonteiro18.lisbonpitches.services;
 
 import com.simaomonteiro18.lisbonpitches.dtos.AvailabilityDTO;
+import com.simaomonteiro18.lisbonpitches.dtos.SlotDTO;
 import com.simaomonteiro18.lisbonpitches.entities.OpeningHours;
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.Reservation;
@@ -90,7 +91,34 @@ public class AvailabilityService {
             }
         }
 
-        return new AvailabilityDTO(AvailabilityStatus.BOOKABLE, freeHours, openingHours.getOpenHour(), openingHours.getCloseHour());
+        List<SlotDTO> slots = new ArrayList<>();
+        LocalDateTime slotStart = date.atTime(openingHours.getOpenTime());
+        LocalDateTime windowEnd = date.atTime(openingHours.getCloseTime());
+        if (windowEnd.isBefore(slotStart)) {
+            windowEnd = windowEnd.plusDays(1);
+        }
+
+        int slotMinutes = pitch.getSlotMinutes();
+
+        while (!slotStart.plusMinutes(slotMinutes).isAfter(windowEnd)) {
+            LocalDateTime slotEnd = slotStart.plusMinutes(slotMinutes);
+
+            if (slotStart.isAfter(now)) {
+                boolean occupiedSlot = false;
+
+                for (Reservation r : reservations) {
+                    if (r.getStartTime().isBefore(slotEnd) && r.getEndTime().isAfter(slotStart)) {
+                        occupiedSlot = true;
+                    }
+                }
+
+                slots.add(new SlotDTO(slotStart, !occupiedSlot));
+            }
+
+            slotStart = slotEnd;
+        }
+
+        return new AvailabilityDTO(AvailabilityStatus.BOOKABLE, freeHours, openingHours.getOpenHour(), openingHours.getCloseHour(), slots, slotMinutes);
 
     }
 
