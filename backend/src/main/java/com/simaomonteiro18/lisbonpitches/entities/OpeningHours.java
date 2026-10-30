@@ -3,6 +3,8 @@ package com.simaomonteiro18.lisbonpitches.entities;
 import com.simaomonteiro18.lisbonpitches.entities.enums.DayType;
 import jakarta.persistence.*;
 
+import java.time.LocalTime;
+
 @Entity
 @Table(name = "opening_hours",
         uniqueConstraints = @UniqueConstraint(columnNames = {"pitch_id", "day_type"}))
@@ -20,6 +22,8 @@ public class OpeningHours {
 
     private int openHour;
     private int closeHour;
+    private LocalTime openTime;
+    private LocalTime closeTime;
 
     public Long getId() {
         return id;
@@ -47,6 +51,7 @@ public class OpeningHours {
 
     public void setOpenHour(int openHour) {
         this.openHour = openHour;
+        this.openTime = LocalTime.of(openHour, 0);
     }
 
     public int getCloseHour() {
@@ -55,6 +60,14 @@ public class OpeningHours {
 
     public void setCloseHour(int closeHour) {
         this.closeHour = closeHour;
+        this.closeTime = LocalTime.of(closeHour % 24, 0);
     }
 
+    public LocalTime getOpenTime() {
+        return openTime;
+    }
+
+    public LocalTime getCloseTime() {
+        return closeTime;
+    }
 }
