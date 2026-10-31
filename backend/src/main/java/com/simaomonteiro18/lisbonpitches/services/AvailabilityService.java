@@ -42,6 +42,9 @@ public class AvailabilityService {
         Set<Integer> occupied = new HashSet<>();
 
         for (Reservation r : reservations) {
+            if (r.getStartTime().toLocalDate().isAfter(date)) {
+                continue;
+            }
             int startHour = r.getStartTime().getHour();
             int endHour = r.getEndTime().toLocalDate().isAfter(date) ? 24 : r.getEndTime().getHour();
             for (int h = startHour; h < endHour; h++) {
@@ -69,8 +72,23 @@ public class AvailabilityService {
             return new AvailabilityDTO(AvailabilityStatus.NO_SCHEDULE, List.of());
         }
 
+        OpeningHours openingHours = hours.get();
+        int open = openingHours.getOpenHour();
+        int close = openingHours.getCloseHour();
+
+        LocalDateTime slotStart = date.atTime(openingHours.getOpenTime());
+        LocalDateTime windowEnd = date.atTime(openingHours.getCloseTime());
+        if (windowEnd.isBefore(slotStart)) {
+            windowEnd = windowEnd.plusDays(1);
+        }
+
+        LocalDateTime searchEnd = date.plusDays(1).atStartOfDay();
+        if (windowEnd.isAfter(searchEnd)) {
+            searchEnd = windowEnd;
+        }
+
         List<Reservation> reservations = reservationRepository.findOverlappingReservations(
-                pitch, date.atStartOfDay(), date.plusDays(1).atStartOfDay());
+                pitch, date.atStartOfDay(), searchEnd);
 
         Set<Integer> occupied = occupiedHours(reservations, date);
 
@@ -78,10 +96,6 @@ public class AvailabilityService {
         boolean isToday = date.equals(now.toLocalDate());
 
         List<Integer> freeHours = new ArrayList<>();
-
-        OpeningHours openingHours = hours.get();
-        int open = openingHours.getOpenHour();
-        int close = openingHours.getCloseHour();
 
         for (int h = open; h < close; h++) {
             boolean isPastDate = date.isBefore(now.toLocalDate());
@@ -92,11 +106,6 @@ public class AvailabilityService {
         }
 
         List<SlotDTO> slots = new ArrayList<>();
-        LocalDateTime slotStart = date.atTime(openingHours.getOpenTime());
-        LocalDateTime windowEnd = date.atTime(openingHours.getCloseTime());
-        if (windowEnd.isBefore(slotStart)) {
-            windowEnd = windowEnd.plusDays(1);
-        }
 
         int slotMinutes = pitch.getSlotMinutes();
 
