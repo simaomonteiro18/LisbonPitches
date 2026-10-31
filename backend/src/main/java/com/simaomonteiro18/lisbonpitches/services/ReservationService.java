@@ -1,6 +1,7 @@
 package com.simaomonteiro18.lisbonpitches.services;
 
 import com.simaomonteiro18.lisbonpitches.dtos.AvailabilityDTO;
+import com.simaomonteiro18.lisbonpitches.dtos.SlotDTO;
 import com.simaomonteiro18.lisbonpitches.entities.Invitation;
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.Reservation;
@@ -20,9 +21,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,6 +50,7 @@ public class ReservationService {
 
         Pitch pitch = pitchRepository.findWithLockById(pitchId)
                 .orElseThrow(() -> new ResourceNotFoundException(Pitch.class, pitchId));
+        int slotMinutes = pitch.getSlotMinutes();
 
         if (pitch.getPitchAccess() == PitchAccess.PUBLIC) {
             throw new PitchNotBookableException("O Campo é público");
@@ -63,14 +63,10 @@ public class ReservationService {
         Duration duration = Duration.between(startTime, endTime);
         long minutes = duration.toMinutes();
 
-        if (minutes < 60L) {
-            throw new InvalidTimeException("Tempo inferior a 1 hora!");
-        } else if (minutes % 60 != 0) {
+        if (minutes < slotMinutes) {
+            throw new InvalidTimeException("Tempo inferior à duração de um slot!");
+        } else if (minutes % slotMinutes != 0) {
             throw new InvalidTimeException("Tempo inválido!");
-        }
-
-        if (!startTime.equals(startTime.truncatedTo(ChronoUnit.HOURS))) {
-            throw new InvalidTimeException("A reserva tem de começar à hora em ponto");
         }
 
         AvailabilityDTO availabilityDTO = availabilityService.getAvailabilityOfPitch(pitchId, startTime.toLocalDate());
@@ -83,14 +79,30 @@ public class ReservationService {
             throw new PitchNotBookableException("O campo não tem horário definido para esse dia");
         }
 
-        int endHour = endTime.toLocalDate().isAfter(startTime.toLocalDate()) ? 24 : endTime.getHour();
+        List<SlotDTO> slots = availabilityDTO.getSlots();
 
-        if (endTime.isAfter(startTime.toLocalDate().plusDays(1).atStartOfDay())) {
-            throw new InvalidTimeException("A reserva não pode passar da meia-noite");
+        boolean startFound = false;
+        for (SlotDTO s : slots) {
+            if (s.getStart().equals(startTime)) {
+                startFound = true;
+            }
         }
 
-        for (int h = startTime.getHour(); h < endHour; h++) {
-            if (!availabilityDTO.getFreeHours().contains(h)) {
+        if (!startFound) {
+            AvailabilityDTO previousDay = availabilityService.getAvailabilityOfPitch(pitchId, startTime.toLocalDate().minusDays(1));
+            if (previousDay.getStatus() == AvailabilityStatus.BOOKABLE) {
+                slots = previousDay.getSlots();
+            }
+        }
+
+        for (LocalDateTime t = startTime; t.isBefore(endTime); t = t.plusMinutes(slotMinutes)) {
+            boolean freeSlot = false;
+            for (SlotDTO s : slots) {
+                if (s.getStart().equals(t) && s.isFree()) {
+                    freeSlot = true;
+                }
+            }
+            if (!freeSlot) {
                 throw new InvalidTimeException("A hora não está disponível");
             }
         }
