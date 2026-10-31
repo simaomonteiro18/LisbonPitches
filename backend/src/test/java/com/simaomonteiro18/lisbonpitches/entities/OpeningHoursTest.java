@@ -35,4 +35,25 @@ public class OpeningHoursTest {
         assertEquals(LocalTime.MIDNIGHT, openingHours.getCloseTime());
     }
 
+    @Test
+    public void guaranteeSetCloseTimeAfterMidnightKeepsCloseHourAtTwentyFour() {
+        openingHours.setOpenHour(10);
+        openingHours.setCloseTime(LocalTime.of(1, 0));
+        assertEquals(24, openingHours.getCloseHour());
+    }
+
+    @Test
+    public void guaranteeSetCloseTimeStoresCloseTime() {
+        openingHours.setOpenHour(10);
+        openingHours.setCloseTime(LocalTime.of(1, 0));
+        assertEquals(LocalTime.of(1, 0), openingHours.getCloseTime());
+    }
+
+    @Test
+    public void guaranteeSetCloseTimeBeforeMidnightSetsCloseHour() {
+        openingHours.setOpenHour(10);
+        openingHours.setCloseTime(LocalTime.of(22, 0));
+        assertEquals(22, openingHours.getCloseHour());
+    }
+
 }

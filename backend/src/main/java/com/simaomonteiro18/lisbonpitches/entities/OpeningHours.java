@@ -70,4 +70,13 @@ public class OpeningHours {
     public LocalTime getCloseTime() {
         return closeTime;
     }
+
+    public void setOpenTime(LocalTime openTime) {
+        this.openTime = openTime;
+    }
+
+    public void setCloseTime(LocalTime closeTime) {
+        this.closeTime = closeTime;
+        this.closeHour = !closeTime.isAfter(openTime) ? 24 : closeTime.getHour();
+    }
 }
