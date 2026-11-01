@@ -59,10 +59,22 @@ function googleMapsUrl(latitude, longitude) {
 
 const doisDigitos = (n) => String(n).padStart(2, '0')
 
-// dia seguinte sem somar milissegundos, que falha nos dias de mudanca de hora
-function diaSeguinte(dia) {
-  const [ano, mes, numero] = dia.split('-').map(Number)
-  return formatarLocal(new Date(ano, mes - 1, numero + 1)).slice(0, 10)
+const DIAS_SEMANA = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb']
+
+// soma minutos a um texto AAAA-MM-DDTHH:mm sem usar o fuso do browser, que falha nos dias de mudanca de hora
+function somarMinutos(texto, minutos) {
+  const [ano, mes, numero] = texto.slice(0, 10).split('-').map(Number)
+  const [hora, minuto] = texto.slice(11, 16).split(':').map(Number)
+  const d = new Date(Date.UTC(ano, mes - 1, numero, hora, minuto + minutos))
+  return `${d.getUTCFullYear()}-${doisDigitos(d.getUTCMonth() + 1)}-${doisDigitos(d.getUTCDate())}T${doisDigitos(d.getUTCHours())}:${doisDigitos(d.getUTCMinutes())}`
+}
+
+// hora de um slot, com o dia da semana quando ja nao e o dia escolhido (depois da meia-noite)
+function rotuloHora(texto, dia) {
+  const hora = texto.slice(11, 16)
+  if (texto.slice(0, 10) === dia) return hora
+  const [ano, mes, numero] = texto.slice(0, 10).split('-').map(Number)
+  return `${hora} (${DIAS_SEMANA[new Date(Date.UTC(ano, mes - 1, numero)).getUTCDay()]})`
 }
 
 // mesmo formato do input datetime-local que a API ja recebia
@@ -137,7 +149,7 @@ function Pitch() {
 
   const [reserving, setReserving] = useState(false)
   const [dia, setDia] = useState('')
-  // horas de inicio escolhidas, sempre seguidas e por ordem
+  // posicoes dos slots escolhidos na lista da disponibilidade, sempre seguidas e por ordem
   const [selecionadas, setSelecionadas] = useState([])
   const [disponibilidade, setDisponibilidade] = useState(null)
   const [disponibilidadeLoading, setDisponibilidadeLoading] = useState(false)
@@ -258,38 +270,31 @@ function Pitch() {
     setReservaError(null)
   }
 
-  function alternarHora(hora) {
+  function alternarSlot(indice) {
     setReservaError(null)
     setSelecionadas((atuais) => {
-      if (atuais.length === 0) return [hora]
+      if (atuais.length === 0) return [indice]
       const primeira = atuais[0]
       const ultima = atuais[atuais.length - 1]
-      // so se tira uma hora das pontas, para as horas ficarem sempre seguidas
-      if (atuais.includes(hora)) {
-        return hora === primeira || hora === ultima ? atuais.filter((h) => h !== hora) : [hora]
+      // so se tira um slot das pontas, para os slots ficarem sempre seguidos
+      if (atuais.includes(indice)) {
+        return indice === primeira || indice === ultima ? atuais.filter((i) => i !== indice) : [indice]
       }
-      if (hora === primeira - 1) return [hora, ...atuais]
-      if (hora === ultima + 1) return [...atuais, hora]
-      return [hora]
+      if (indice === primeira - 1) return [indice, ...atuais]
+      if (indice === ultima + 1) return [...atuais, indice]
+      return [indice]
     })
   }
 
   const hoje = formatarLocal(agora).slice(0, 10)
-  const horasLivres = disponibilidade?.status === 'BOOKABLE' ? disponibilidade.freeHours : []
-  // todas as horas do horario do campo, as que nao estao livres ficam desativadas
-  const horasDoDia =
-    disponibilidade?.status === 'BOOKABLE' && disponibilidade.openHour != null
-      ? Array.from(
-          { length: disponibilidade.closeHour - disponibilidade.openHour },
-          (_, i) => disponibilidade.openHour + i,
-        )
-      : horasLivres
-  const primeiraHora = selecionadas[0]
-  const horaFim = selecionadas.length > 0 ? selecionadas[selecionadas.length - 1] + 1 : null
-  const fimNoDiaSeguinte = horaFim === 24
-  const inicioTexto = primeiraHora != null ? `${dia}T${doisDigitos(primeiraHora)}:00` : null
-  const fimTexto =
-    horaFim == null ? null : fimNoDiaSeguinte ? `${diaSeguinte(dia)}T00:00` : `${dia}T${doisDigitos(horaFim)}:00`
+  // slots do horario do campo, os que nao estao livres ficam desativados
+  const slots = disponibilidade?.status === 'BOOKABLE' ? (disponibilidade.slots ?? []) : []
+  const slotMinutes = disponibilidade?.slotMinutes ?? 60
+  const primeiroSlot = selecionadas.length > 0 ? slots[selecionadas[0]] : null
+  const ultimoSlot = selecionadas.length > 0 ? slots[selecionadas[selecionadas.length - 1]] : null
+  const inicioTexto = primeiroSlot ? primeiroSlot.start.slice(0, 16) : null
+  const fimTexto = ultimoSlot ? somarMinutos(ultimoSlot.start, slotMinutes) : null
+  const minutosTotal = selecionadas.length * slotMinutes
 
   let avisoDisponibilidade = null
   if (disponibilidade && !disponibilidadeLoading && !disponibilidadeError) {
@@ -297,7 +302,7 @@ function Pitch() {
       avisoDisponibilidade = 'Este campo não aceita reservas online.'
     } else if (disponibilidade.status === 'NO_SCHEDULE') {
       avisoDisponibilidade = 'Este campo ainda não tem horário definido para esse dia.'
-    } else if (horasLivres.length === 0) {
+    } else if (!slots.some((s) => s.free)) {
       avisoDisponibilidade = 'Não há horas livres neste dia.'
     }
   }
@@ -515,22 +520,22 @@ function Pitch() {
                               </p>
                             )}
                             {avisoDisponibilidade && <p className="pitch__status">{avisoDisponibilidade}</p>}
-                            {horasDoDia.length > 0 && (
+                            {slots.length > 0 && (
                               <>
                                 <p className="pitch__horas-titulo" id="pitch-horas-titulo">
-                                  Escolhe as horas (seguidas)
+                                  Escolhe os horários (seguidos)
                                 </p>
                                 <div className="pitch__horas-lista" role="group" aria-labelledby="pitch-horas-titulo">
-                                  {horasDoDia.map((h) => (
+                                  {slots.map((slot, i) => (
                                     <button
-                                      key={h}
+                                      key={slot.start}
                                       type="button"
-                                      className={`pitch__hora${selecionadas.includes(h) ? ' pitch__hora--ativa' : ''}`}
-                                      aria-pressed={selecionadas.includes(h)}
-                                      disabled={!horasLivres.includes(h)}
-                                      onClick={() => alternarHora(h)}
+                                      className={`pitch__hora${selecionadas.includes(i) ? ' pitch__hora--ativa' : ''}`}
+                                      aria-pressed={selecionadas.includes(i)}
+                                      disabled={!slot.free}
+                                      onClick={() => alternarSlot(i)}
                                     >
-                                      {doisDigitos(h)}:00
+                                      {rotuloHora(slot.start, dia)}
                                     </button>
                                   ))}
                                 </div>
@@ -542,19 +547,18 @@ function Pitch() {
                         <AnimatePresence mode="wait" initial={false}>
                           {inicioTexto && (
                             <motion.div
-                              key={`${dia}-${primeiraHora}-${selecionadas.length}`}
+                              key={`${dia}-${selecionadas[0]}-${selecionadas.length}`}
                               className="pitch__resumo"
                               {...avisoForm}
                             >
                               <span>
-                                Das <strong>{doisDigitos(primeiraHora)}:00</strong> às{' '}
-                                <strong>{doisDigitos(horaFim % 24)}:00</strong>
-                                {fimNoDiaSeguinte && ' do dia seguinte'}
+                                Das <strong>{rotuloHora(inicioTexto, dia)}</strong> às{' '}
+                                <strong>{rotuloHora(fimTexto, dia)}</strong>
                               </span>
                               {pitch.pricePerHour != null && (
                                 <span>
                                   Estimativa: a partir de{' '}
-                                  <strong>{formatarEuros(pitch.pricePerHour * selecionadas.length)} EUR</strong>
+                                  <strong>{formatarEuros((pitch.pricePerHour * minutosTotal) / 60)} EUR</strong>
                                 </span>
                               )}
                             </motion.div>
