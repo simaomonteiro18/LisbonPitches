@@ -6,7 +6,7 @@ import { getAvailability, getPitchById } from '../api/pitches'
 import { createReservation } from '../api/reservations'
 import { getSession } from '../auth'
 import { durations, easings, stagger } from '../motion'
-import { carregarMapbox, criarPin, estiloMapa, seguirTema } from '../components/mapaPin'
+import { carregarMapbox, criarPin, estiloMapa, imagemSatelite, seguirTema } from '../components/mapaPin'
 import CheckAnimado from '../components/CheckAnimado'
 import './Pitch.css'
 
@@ -143,8 +143,8 @@ function Pitch() {
   const [pitch, setPitch] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  // guarda o url que falhou, assim outro campo volta a tentar a sua imagem
-  const [imagemFalhada, setImagemFalhada] = useState(null)
+  // guarda os urls que falharam, assim outro campo volta a tentar as suas imagens
+  const [imagensFalhadas, setImagensFalhadas] = useState([])
   const [mapaCarregado, setMapaCarregado] = useState(false)
 
   const [reserving, setReserving] = useState(false)
@@ -358,6 +358,10 @@ function Pitch() {
   }
 
   const temMapa = Boolean(MAPBOX_TOKEN) && pitch.latitude != null && pitch.longitude != null
+  // a fotografia do campo e, se nao houver ou falhar, o satelite
+  const imagemUrl = [pitch.imageUrl, imagemSatelite(pitch.latitude, pitch.longitude, pitch.type)].find(
+    (url) => url && !imagensFalhadas.includes(url),
+  )
   const palavras = pitch.name.split(' ')
   const fimTitulo = 0.15 + palavras.length * stagger
   const linhas = [
@@ -383,13 +387,13 @@ function Pitch() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: durations.slower, ease: easings.out }}
         >
-          {pitch.imageUrl && pitch.imageUrl !== imagemFalhada ? (
+          {imagemUrl ? (
             <img
               className="pitch__imagem"
               fetchPriority="high"
-              src={pitch.imageUrl}
+              src={imagemUrl}
               alt={pitch.name}
-              onError={() => setImagemFalhada(pitch.imageUrl)}
+              onError={() => setImagensFalhadas((atuais) => [...atuais, imagemUrl])}
             />
           ) : (
             <ImagemSubstituta />
