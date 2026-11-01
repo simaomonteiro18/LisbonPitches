@@ -6,7 +6,7 @@ import { getFeaturedPitches, getAllPitchesForMap } from '../api/pitches'
 import { aoVer, revelar } from '../motion'
 import CartaoInclinado from '../components/CartaoInclinado'
 import Contador from '../components/Contador'
-import { carregarMapbox, criarPin, estiloMapa, seguirTema } from '../components/mapaPin'
+import { carregarMapbox, criarPin, estiloMapa, imagemSatelite, seguirTema } from '../components/mapaPin'
 import './PitchesOverview.css'
 
 const TIPOS = {
@@ -99,8 +99,12 @@ function PitchesOverview() {
       ordem.forEach((pitch, i) => {
         const coordenadas = [pitch.longitude, pitch.latitude]
 
-        const imagemHtml = pitch.imageUrl
-          ? `<img src="${escapeHtml(pitch.imageUrl)}" alt="${escapeHtml(pitch.name)}" class="pitches-overview__popup-imagem" onerror="this.remove()" />`
+        // fotografia do campo e, se nao houver ou falhar, o satelite
+        const satelite = imagemSatelite(pitch.latitude, pitch.longitude, pitch.type)
+        const imagemPopup = pitch.imageUrl || satelite
+        const alternativa = satelite && imagemPopup !== satelite ? ` data-alternativa="${escapeHtml(satelite)}"` : ''
+        const imagemHtml = imagemPopup
+          ? `<img src="${escapeHtml(imagemPopup)}"${alternativa} alt="${escapeHtml(pitch.name)}" class="pitches-overview__popup-imagem" onerror="const alt=this.dataset.alternativa;if(alt){delete this.dataset.alternativa;this.src=alt}else{this.remove()}" />`
           : ''
 
         const tipoLabel = TIPOS[pitch.type] ?? pitch.type
