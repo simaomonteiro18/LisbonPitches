@@ -53,7 +53,7 @@ public class TestConfig implements CommandLineRunner {
         p4.setAddress("Mem-Martins, Sintra");
         p4.setLatitude(38.78195225049205);
         p4.setLongitude(-9.350182383227262);
-        p4.setImageUrl("https://www.aircourts.com/uploads/courts/courts_1639_1540486381.JPG");
+        p4.setImageUrl("/campos/infoot.jpg");
         p4.setContactPhone("966 629 383");
         p4.setContactEmail("geral@infoot.pt");
         p4.setReservable(true);
