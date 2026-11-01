@@ -1,6 +1,6 @@
 name;city;address;latitude;longitude;pitchType;imageUrl;featured;pitchAccess;pricePerHour;contactPhone;contactEmail
-Polidesportivo da Rua Pedro de Freitas Branco;Massamá;Massamá, Sintra;38.750699808315204;-9.276110399743404;FIVE;https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=sX2Ja5x4koYp-Io-kIPIhA&cb_client=search.gws-prod.gps&w=408&h=240&yaw=92.73388&pitch=0&thumbfov=100;true
-Polidesportivo da Praceta dos Reformados;Massamá;Massamá, Sintra;38.75823353555749;-9.272577002959201;FIVE;https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=gGClUMwhRH2mxTRh7c0gBg&cb_client=search.gws-prod.gps&w=408&h=240&yaw=83.42931&pitch=0&thumbfov=100;false
+Polidesportivo da Rua Pedro de Freitas Branco;Massamá;Massamá, Sintra;38.750699808315204;-9.276110399743404;FIVE;;true
+Polidesportivo da Praceta dos Reformados;Massamá;Massamá, Sintra;38.75823353555749;-9.272577002959201;FIVE;;false
 Polidesportivo do Bairro 1º de Maio;Monte Abraão;Monte Abraão, Sintra;38.762930427852346;-9.266207550919878;FIVE;https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=_PYuKQ6Fc9TWkHVBwBnPMQ&cb_client=search.gws-prod.gps&w=408&h=240&yaw=175.40475&pitch=0&thumbfov=100;false
 Polidesportivo da Praceta António Sérgio;Monte Abraão;Monte Abraão, Sintra;38.75813364594415;-9.267272190025857;FIVE;;false
 Campo Polidesportivo ABC;Amadora;Amadora;38.7623782309454;-9.251937259120782;FIVE;https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=2i4h_TAEPm_hD60j3Foeww&cb_client=search.gws-prod.gps&w=408&h=240&yaw=245.46141&pitch=0&thumbfov=100;false
