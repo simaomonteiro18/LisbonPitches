@@ -27,8 +27,8 @@ export function estiloMapa() {
 export function imagemSatelite(latitude, longitude, tipo) {
   const token = import.meta.env.VITE_MAPBOX_TOKEN
   if (!token || latitude == null || longitude == null) return null
-  // o futebol 11 e maior, por isso um zoom mais aberto
-  const zoom = tipo === 'ELEVEN' ? 18 : 19
+  // os campos maiores precisam de um zoom mais aberto
+  const zoom = tipo === 'ELEVEN' || tipo === 'SEVEN' ? 18 : 19
   return `https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/${longitude},${latitude},${zoom},0/640x360@2x?access_token=${token}`
 }
 
