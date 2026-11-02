@@ -38,30 +38,13 @@ public class AvailabilityService {
     @Autowired
     private Clock clock;
 
-    public Set<Integer> occupiedHours(List<Reservation> reservations, LocalDate date) {
-        Set<Integer> occupied = new HashSet<>();
-
-        for (Reservation r : reservations) {
-            if (r.getStartTime().toLocalDate().isAfter(date)) {
-                continue;
-            }
-            int startHour = r.getStartTime().getHour();
-            int endHour = r.getEndTime().toLocalDate().isAfter(date) ? 24 : r.getEndTime().getHour();
-            for (int h = startHour; h < endHour; h++) {
-                occupied.add(h);
-            }
-        }
-
-        return occupied;
-    }
-
     public AvailabilityDTO getAvailabilityOfPitch(Long pitchId, LocalDate date) {
 
         Pitch pitch = pitchRepository.findById(pitchId)
                 .orElseThrow(() -> new ResourceNotFoundException(Pitch.class, pitchId));
 
         if (!(pitch.isReservable() && pitch.getPitchAccess() == PitchAccess.PRIVATE)) {
-            return new AvailabilityDTO(AvailabilityStatus.NOT_BOOKABLE, List.of());
+            return new AvailabilityDTO(AvailabilityStatus.NOT_BOOKABLE);
         }
 
         DayType dateType = openingHoursService.defineDayType(date);
@@ -69,12 +52,10 @@ public class AvailabilityService {
         Optional<OpeningHours> hours = openingHoursRepository.findByPitchAndDayType(pitch, dateType);
 
         if (hours.isEmpty()) {
-            return new AvailabilityDTO(AvailabilityStatus.NO_SCHEDULE, List.of());
+            return new AvailabilityDTO(AvailabilityStatus.NO_SCHEDULE);
         }
 
         OpeningHours openingHours = hours.get();
-        int open = openingHours.getOpenHour();
-        int close = openingHours.getCloseHour();
 
         LocalDateTime slotStart = date.atTime(openingHours.getOpenTime());
         LocalDateTime windowEnd = date.atTime(openingHours.getCloseTime());
@@ -90,20 +71,7 @@ public class AvailabilityService {
         List<Reservation> reservations = reservationRepository.findOverlappingReservations(
                 pitch, date.atStartOfDay(), searchEnd);
 
-        Set<Integer> occupied = occupiedHours(reservations, date);
-
         LocalDateTime now = LocalDateTime.now(clock);
-        boolean isToday = date.equals(now.toLocalDate());
-
-        List<Integer> freeHours = new ArrayList<>();
-
-        for (int h = open; h < close; h++) {
-            boolean isPastDate = date.isBefore(now.toLocalDate());
-            boolean isPast = isPastDate || (isToday && h <= now.getHour());
-            if (!occupied.contains(h) && !isPast) {
-                freeHours.add(h);
-            }
-        }
 
         List<SlotDTO> slots = new ArrayList<>();
 
@@ -127,7 +95,7 @@ public class AvailabilityService {
             slotStart = slotEnd;
         }
 
-        return new AvailabilityDTO(AvailabilityStatus.BOOKABLE, freeHours, openingHours.getOpenHour(), openingHours.getCloseHour(), slots, slotMinutes);
+        return new AvailabilityDTO(AvailabilityStatus.BOOKABLE, slots, slotMinutes);
 
     }
 

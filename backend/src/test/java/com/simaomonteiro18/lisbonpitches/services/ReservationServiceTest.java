@@ -124,7 +124,7 @@ public class ReservationServiceTest {
         when(reservationRepository.existsOverlappingReservation(pitch, LocalDateTime.parse("2026-09-04T20:00:00"), LocalDateTime.parse("2026-09-04T22:00:00"))).thenReturn(true);
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-04T20:00:00"), true),
                                 new SlotDTO(LocalDateTime.parse("2026-09-04T21:00:00"), true)), 60));
 
@@ -155,7 +155,7 @@ public class ReservationServiceTest {
         when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 5)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-05T20:00:00"), true),
                                 new SlotDTO(LocalDateTime.parse("2026-09-05T21:00:00"), true)), 60));
 
@@ -184,12 +184,12 @@ public class ReservationServiceTest {
         when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-04T20:00:00"), true),
                                 new SlotDTO(LocalDateTime.parse("2026-09-04T21:00:00"), true)), 60));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 3)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.NO_SCHEDULE, List.of()));
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.NO_SCHEDULE));
 
         assertThrows(InvalidTimeException.class, () -> {reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-04T19:30:00"), LocalDateTime.parse("2026-09-04T20:30:00"));});
 
@@ -212,7 +212,7 @@ public class ReservationServiceTest {
         when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-04T20:00:00"), true),
                                 new SlotDTO(LocalDateTime.parse("2026-09-04T21:00:00"), false)), 60));
 
@@ -236,7 +236,7 @@ public class ReservationServiceTest {
 
         when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
-        when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.NOT_BOOKABLE, List.of()));
+        when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.NOT_BOOKABLE));
 
         assertThrows(PitchNotBookableException.class, () -> {reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-04T20:00:00"), LocalDateTime.parse("2026-09-04T22:00:00"));});
 
@@ -258,7 +258,7 @@ public class ReservationServiceTest {
 
         when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
-        when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.NO_SCHEDULE, List.of()));
+        when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4))).thenReturn(new AvailabilityDTO(AvailabilityStatus.NO_SCHEDULE));
 
         assertThrows(PitchNotBookableException.class, () -> {reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-04T20:00:00"), LocalDateTime.parse("2026-09-04T22:00:00"));});
 
@@ -281,7 +281,7 @@ public class ReservationServiceTest {
         when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-04T20:00:00"), false),
                                 new SlotDTO(LocalDateTime.parse("2026-09-04T21:00:00"), true)), 60));
 
@@ -306,7 +306,7 @@ public class ReservationServiceTest {
         when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-04T20:00:00"), false),
                                 new SlotDTO(LocalDateTime.parse("2026-09-04T21:00:00"), false)), 60));
 
@@ -331,7 +331,7 @@ public class ReservationServiceTest {
         when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-04T23:00:00"), true)), 60));
 
         assertThrows(InvalidTimeException.class, () -> {reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-04T23:00:00"), LocalDateTime.parse("2026-09-05T01:00:00"));});
@@ -361,7 +361,7 @@ public class ReservationServiceTest {
         when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 5)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-05T20:00:00"), true)), 30));
 
         Reservation resultado = reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-05T20:00:00"), LocalDateTime.parse("2026-09-05T20:30:00"));
@@ -415,7 +415,7 @@ public class ReservationServiceTest {
         when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 5)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-05T20:30:00"), true)), 30));
 
         Reservation resultado = reservationService.createReservation(1L, 1L, LocalDateTime.parse("2026-09-05T20:30:00"), LocalDateTime.parse("2026-09-05T21:00:00"));
@@ -442,7 +442,7 @@ public class ReservationServiceTest {
         when(pitchRepository.findWithLockById(1L)).thenReturn(Optional.of(pitch));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-04T20:00:00"), true),
                                 new SlotDTO(LocalDateTime.parse("2026-09-04T21:00:00"), true)), 60));
 
@@ -472,7 +472,7 @@ public class ReservationServiceTest {
         when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-04T23:00:00"), true),
                                 new SlotDTO(LocalDateTime.parse("2026-09-05T00:00:00"), true)), 60));
 
@@ -506,11 +506,11 @@ public class ReservationServiceTest {
         when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 5)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-05T20:00:00"), true)), 60));
 
         when(availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 9, 4)))
-                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(), null, null,
+                .thenReturn(new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
                         List.of(new SlotDTO(LocalDateTime.parse("2026-09-04T23:00:00"), true),
                                 new SlotDTO(LocalDateTime.parse("2026-09-05T00:00:00"), true)), 60));
 

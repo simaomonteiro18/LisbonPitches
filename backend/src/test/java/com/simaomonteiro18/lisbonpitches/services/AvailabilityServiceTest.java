@@ -22,7 +22,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -58,39 +57,6 @@ public class AvailabilityServiceTest {
     }
 
     @Test
-    void occupiedHoursForTwoHourReservation() {
-        LocalDate date = LocalDate.of(2026, 10, 24);
-        Reservation r = new Reservation(null, null, null,
-                LocalDateTime.of(2026, 10, 24, 20, 0),
-                LocalDateTime.of(2026, 10, 24, 22, 0));
-
-        Set<Integer> result = availabilityService.occupiedHours(List.of(r), date);
-
-        assertEquals(Set.of(20, 21), result);
-    }
-
-    @Test
-    void occupiedHoursForReservationEndingAtMidnight() {
-        LocalDate date = LocalDate.of(2026, 10, 24);
-        Reservation r = new Reservation(null, null, null,
-                LocalDateTime.of(2026, 10, 24, 23, 0),
-                LocalDateTime.of(2026, 10, 25, 0, 0));
-
-        Set<Integer> result = availabilityService.occupiedHours(List.of(r), date);
-
-        assertEquals(Set.of(23), result);
-    }
-
-    @Test
-    void occupiedHoursWithNoReservations() {
-        LocalDate date = LocalDate.of(2026, 10, 24);
-
-        Set<Integer> result = availabilityService.occupiedHours(List.of(), date);
-
-        assertEquals(Set.of(), result);
-    }
-
-    @Test
     void notBookableWhenPitchIsNotReservable() {
         Pitch pitch = new Pitch();
         pitch.setPitchAccess(PitchAccess.PRIVATE);
@@ -100,9 +66,6 @@ public class AvailabilityServiceTest {
         AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 10, 24));
 
         assertEquals(AvailabilityStatus.NOT_BOOKABLE, result.getStatus());
-        assertEquals(List.of(), result.getFreeHours());
-        assertNull(result.getOpenHour());
-        assertNull(result.getCloseHour());
         assertEquals(List.of(), result.getSlots());
         assertNull(result.getSlotMinutes());
     }
@@ -127,7 +90,6 @@ public class AvailabilityServiceTest {
         AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 10, 24));
 
         assertEquals(AvailabilityStatus.NOT_BOOKABLE, result.getStatus());
-        assertEquals(List.of(), result.getFreeHours());
     }
 
     @Test
@@ -142,75 +104,12 @@ public class AvailabilityServiceTest {
         AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, LocalDate.of(2026, 10, 24));
 
         assertEquals(AvailabilityStatus.NO_SCHEDULE, result.getStatus());
-        assertEquals(List.of(), result.getFreeHours());
-        assertNull(result.getOpenHour());
-        assertNull(result.getCloseHour());
         assertEquals(List.of(), result.getSlots());
         assertNull(result.getSlotMinutes());
     }
 
     @Test
-    void bookableWithFreeHoursWhenThereAreReservations() {
-        Pitch pitch = new Pitch();
-        pitch.setPitchAccess(PitchAccess.PRIVATE);
-        pitch.setReservable(true);
-
-        OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(18);
-        openingHours.setCloseHour(22);
-
-        LocalDate date = LocalDate.of(2026, 10, 24);
-
-        Reservation r = new Reservation(null, null, null,
-                LocalDateTime.of(2026, 10, 24, 19, 0),
-                LocalDateTime.of(2026, 10, 24, 20, 0));
-
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
-        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
-        when(reservationRepository.findOverlappingReservations(
-                pitch, date.atStartOfDay(), date.plusDays(1).atStartOfDay()))
-                .thenReturn(List.of(r));
-        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
-                .thenReturn(Optional.of(openingHours));
-
-        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
-
-        assertEquals(AvailabilityStatus.BOOKABLE, result.getStatus());
-        assertEquals(List.of(18, 20, 21), result.getFreeHours());
-        assertEquals(18, result.getOpenHour());
-        assertEquals(22, result.getCloseHour());
-
-    }
-
-    @Test
-    void onlyFutureHoursWhenDateIsToday() {
-
-        ReflectionTestUtils.setField(availabilityService, "clock", clockAt(LocalDateTime.of(2026, 10, 24, 20, 30)));
-
-        Pitch pitch = new Pitch();
-        pitch.setPitchAccess(PitchAccess.PRIVATE);
-        pitch.setReservable(true);
-
-        OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(18);
-        openingHours.setCloseHour(22);
-
-        LocalDate date = LocalDate.of(2026, 10, 24);
-
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
-        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
-        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
-                .thenReturn(Optional.of(openingHours));
-
-        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
-
-        assertEquals(AvailabilityStatus.BOOKABLE, result.getStatus());
-        assertEquals(List.of(21), result.getFreeHours());
-
-    }
-
-    @Test
-    void noFreeHoursWhenDateIsInThePast() {
+    void noSlotsWhenDateIsInThePast() {
 
         Pitch pitch = new Pitch();
         pitch.setPitchAccess(PitchAccess.PRIVATE);
@@ -230,7 +129,7 @@ public class AvailabilityServiceTest {
         AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
 
         assertEquals(AvailabilityStatus.BOOKABLE, result.getStatus());
-        assertEquals(List.of(), result.getFreeHours());
+        assertEquals(List.of(), result.getSlots());
         
     }
 
@@ -444,37 +343,6 @@ public class AvailabilityServiceTest {
         assertEquals(15, result.getSlots().size());
         assertEquals(date.plusDays(1).atStartOfDay(), result.getSlots().get(14).getStart());
         assertFalse(result.getSlots().get(14).isFree());
-
-    }
-
-    @Test
-    void freeHoursIgnoreReservationsOfTheNextDay() {
-        Pitch pitch = new Pitch();
-        pitch.setPitchAccess(PitchAccess.PRIVATE);
-        pitch.setReservable(true);
-        pitch.setSlotMinutes(60);
-
-        OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(10);
-        openingHours.setCloseTime(LocalTime.of(1, 0));
-
-        LocalDate date = LocalDate.of(2026, 10, 24);
-
-        Reservation r = new Reservation(null, null, null,
-                LocalDateTime.of(2026, 10, 25, 0, 0),
-                LocalDateTime.of(2026, 10, 25, 1, 0));
-
-        when(pitchRepository.findById(1L)).thenReturn(Optional.of(pitch));
-        when(openingHoursService.defineDayType(date)).thenReturn(DayType.WEEKEND);
-        when(openingHoursRepository.findByPitchAndDayType(pitch, DayType.WEEKEND))
-                .thenReturn(Optional.of(openingHours));
-        when(reservationRepository.findOverlappingReservations(
-                pitch, date.atStartOfDay(), date.plusDays(1).atTime(1, 0)))
-                .thenReturn(List.of(r));
-
-        AvailabilityDTO result = availabilityService.getAvailabilityOfPitch(1L, date);
-
-        assertEquals(14, result.getFreeHours().size());
 
     }
 
