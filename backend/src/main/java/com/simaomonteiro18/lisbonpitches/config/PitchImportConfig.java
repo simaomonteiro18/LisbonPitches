@@ -7,6 +7,7 @@ import com.simaomonteiro18.lisbonpitches.repositories.PitchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
@@ -29,6 +30,7 @@ import java.nio.charset.StandardCharsets;
  * preciso mexer neste ficheiro.
  */
 @Configuration
+@Order(2)
 public class PitchImportConfig implements CommandLineRunner {
 
     @Autowired
