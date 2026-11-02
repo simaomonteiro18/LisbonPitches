@@ -1,6 +1,7 @@
 package com.simaomonteiro18.lisbonpitches.controllers;
 
 import com.simaomonteiro18.lisbonpitches.dtos.AvailabilityDTO;
+import com.simaomonteiro18.lisbonpitches.dtos.SlotDTO;
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.enums.AvailabilityStatus;
 import com.simaomonteiro18.lisbonpitches.exceptions.ResourceNotFoundException;
@@ -14,9 +15,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hamcrest.Matchers.contains;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -38,16 +39,20 @@ public class AvailabilityControllerTest {
     public void gettingAvailabilityFromABookablePitch() throws Exception {
 
         LocalDate date = LocalDate.of(2026, 10, 24);
-        AvailabilityDTO dto = new AvailabilityDTO(AvailabilityStatus.BOOKABLE, List.of(18, 20, 21), 18, 22);
+        AvailabilityDTO dto = new AvailabilityDTO(AvailabilityStatus.BOOKABLE,
+                List.of(new SlotDTO(LocalDateTime.of(2026, 10, 24, 18, 0), true)), 60);
 
         when(availabilityService.getAvailabilityOfPitch(1L, date)).thenReturn(dto);
 
         mockMvc.perform(get("/pitches/1/availability").param("date", "2026-10-24"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("BOOKABLE"))
-                .andExpect(jsonPath("$.freeHours").value(contains(18, 20, 21)))
-                .andExpect(jsonPath("$.openHour").value(18))
-                .andExpect(jsonPath("$.closeHour").value(22));
+                .andExpect(jsonPath("$.slots.length()").value(1))
+                .andExpect(jsonPath("$.slots[0].free").value(true))
+                .andExpect(jsonPath("$.slotMinutes").value(60))
+                .andExpect(jsonPath("$.freeHours").doesNotExist())
+                .andExpect(jsonPath("$.openHour").doesNotExist())
+                .andExpect(jsonPath("$.closeHour").doesNotExist());
 
     }
 
