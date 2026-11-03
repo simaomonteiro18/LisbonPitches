@@ -116,8 +116,8 @@ public class AvailabilityServiceTest {
         pitch.setReservable(true);
 
         OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(18);
-        openingHours.setCloseHour(22);
+        openingHours.setOpenTime(LocalTime.of(18, 0));
+        openingHours.setCloseTime(LocalTime.of(22, 0));
 
         LocalDate date = LocalDate.of(2026, 10, 19);
 
@@ -140,8 +140,8 @@ public class AvailabilityServiceTest {
         pitch.setReservable(true);
 
         OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(18);
-        openingHours.setCloseHour(22);
+        openingHours.setOpenTime(LocalTime.of(18, 0));
+        openingHours.setCloseTime(LocalTime.of(22, 0));
 
         LocalDate date = LocalDate.of(2026, 10, 24);
 
@@ -162,8 +162,8 @@ public class AvailabilityServiceTest {
         pitch.setReservable(true);
 
         OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(18);
-        openingHours.setCloseHour(24);
+        openingHours.setOpenTime(LocalTime.of(18, 0));
+        openingHours.setCloseTime(LocalTime.of(0, 0));
 
         LocalDate date = LocalDate.of(2026, 10, 24);
 
@@ -185,8 +185,8 @@ public class AvailabilityServiceTest {
         pitch.setReservable(true);
 
         OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(18);
-        openingHours.setCloseHour(22);
+        openingHours.setOpenTime(LocalTime.of(18, 0));
+        openingHours.setCloseTime(LocalTime.of(22, 0));
 
         LocalDate date = LocalDate.of(2026, 10, 24);
 
@@ -222,8 +222,8 @@ public class AvailabilityServiceTest {
         pitch.setReservable(true);
 
         OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(18);
-        openingHours.setCloseHour(22);
+        openingHours.setOpenTime(LocalTime.of(18, 0));
+        openingHours.setCloseTime(LocalTime.of(22, 0));
 
         LocalDate date = LocalDate.of(2026, 10, 24);
 
@@ -249,8 +249,8 @@ public class AvailabilityServiceTest {
         pitch.setReservable(true);
 
         OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(18);
-        openingHours.setCloseHour(22);
+        openingHours.setOpenTime(LocalTime.of(18, 0));
+        openingHours.setCloseTime(LocalTime.of(22, 0));
 
         LocalDate date = LocalDate.of(2026, 10, 24);
 
@@ -273,8 +273,8 @@ public class AvailabilityServiceTest {
         pitch.setSlotMinutes(30);
 
         OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(18);
-        openingHours.setCloseHour(22);
+        openingHours.setOpenTime(LocalTime.of(18, 0));
+        openingHours.setCloseTime(LocalTime.of(22, 0));
 
         LocalDate date = LocalDate.of(2026, 10, 24);
 
@@ -298,8 +298,8 @@ public class AvailabilityServiceTest {
         pitch.setSlotMinutes(30);
 
         OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(18);
-        openingHours.setCloseHour(22);
+        openingHours.setOpenTime(LocalTime.of(18, 0));
+        openingHours.setCloseTime(LocalTime.of(22, 0));
 
         LocalDate date = LocalDate.of(2026, 10, 24);
 
@@ -321,7 +321,7 @@ public class AvailabilityServiceTest {
         pitch.setSlotMinutes(60);
 
         OpeningHours openingHours = new OpeningHours();
-        openingHours.setOpenHour(10);
+        openingHours.setOpenTime(LocalTime.of(10, 0));
         openingHours.setCloseTime(LocalTime.of(1, 0));
 
         LocalDate date = LocalDate.of(2026, 10, 24);
