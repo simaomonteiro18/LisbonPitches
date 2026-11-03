@@ -17,6 +17,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,14 +61,14 @@ public class ProductionSeedConfig implements CommandLineRunner {
             OpeningHours oh1 = new OpeningHours();
             oh1.setPitch(p4);
             oh1.setDayType(DayType.WEEKDAY);
-            oh1.setOpenHour(10);
-            oh1.setCloseHour(24);
+            oh1.setOpenTime(LocalTime.of(10, 0));
+            oh1.setCloseTime(LocalTime.of(0, 0));
 
             OpeningHours oh2 = new OpeningHours();
             oh2.setPitch(p4);
             oh2.setDayType(DayType.WEEKEND);
-            oh2.setOpenHour(19);
-            oh2.setCloseHour(24);
+            oh2.setOpenTime(LocalTime.of(19, 0));
+            oh2.setCloseTime(LocalTime.of(0, 0));
 
             userRepository.saveAll(List.of(user));
 

@@ -20,8 +20,6 @@ public class OpeningHours {
     @Enumerated(EnumType.STRING)
     private DayType dayType;
 
-    private int openHour;
-    private int closeHour;
     private LocalTime openTime;
     private LocalTime closeTime;
 
@@ -45,24 +43,6 @@ public class OpeningHours {
         this.dayType = dayType;
     }
 
-    public int getOpenHour() {
-        return openHour;
-    }
-
-    public void setOpenHour(int openHour) {
-        this.openHour = openHour;
-        this.openTime = LocalTime.of(openHour, 0);
-    }
-
-    public int getCloseHour() {
-        return closeHour;
-    }
-
-    public void setCloseHour(int closeHour) {
-        this.closeHour = closeHour;
-        this.closeTime = LocalTime.of(closeHour % 24, 0);
-    }
-
     public LocalTime getOpenTime() {
         return openTime;
     }
@@ -77,6 +57,5 @@ public class OpeningHours {
 
     public void setCloseTime(LocalTime closeTime) {
         this.closeTime = closeTime;
-        this.closeHour = !closeTime.isAfter(openTime) ? 24 : closeTime.getHour();
     }
 }

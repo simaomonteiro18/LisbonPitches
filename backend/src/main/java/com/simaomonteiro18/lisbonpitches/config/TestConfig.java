@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
@@ -67,14 +68,14 @@ public class TestConfig implements CommandLineRunner {
         OpeningHours oh1 = new OpeningHours();
         oh1.setPitch(p4);
         oh1.setDayType(DayType.WEEKDAY);
-        oh1.setOpenHour(10);
-        oh1.setCloseHour(24);
+        oh1.setOpenTime(LocalTime.of(10, 0));
+        oh1.setCloseTime(LocalTime.of(0, 0));
 
         OpeningHours oh2 = new OpeningHours();
         oh2.setPitch(p4);
         oh2.setDayType(DayType.WEEKEND);
-        oh2.setOpenHour(19);
-        oh2.setCloseHour(24);
+        oh2.setOpenTime(LocalTime.of(19, 0));
+        oh2.setCloseTime(LocalTime.of(0, 0));
 
         Reservation r2 = new Reservation(u4, p4, Instant.now().minus(30, ChronoUnit.MINUTES), LocalDateTime.parse("2026-08-30T16:00:00"), LocalDateTime.parse("2026-08-30T17:00:00"));
 
