@@ -44,6 +44,7 @@ const surgir = {
   visivel: (atraso = 0) => ({
     opacity: 1,
     scale: 1,
+    y: 0,
     transition: { duration: durations.slow, ease: easings.out, delay: atraso },
   }),
 }
@@ -111,7 +112,7 @@ function Pitches() {
 
           const modo = primeiraCargaRef.current ? 'scroll' : 'filtro'
           primeiraCargaRef.current = false
-          setEntradas((anteriores) => new Map(data.content.map((p) => [p.id, anteriores.get(p.id) ?? modo])))
+          setEntradas(new Map(data.content.map((p) => [p.id, modo])))
 
           setPitches(data.content)
           setTotal(data.page.totalElements)
