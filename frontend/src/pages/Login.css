@@ -110,3 +110,9 @@
 .login__requisitos li.ok::before {
   content: '✓ ';
 }
+
+.login__nota {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}

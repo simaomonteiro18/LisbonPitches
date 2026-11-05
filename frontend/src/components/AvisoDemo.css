@@ -1,0 +1,41 @@
+/* canto inferior esquerdo; deixa espaco a direita para o botao do tema */
+.aviso-demo {
+  position: fixed;
+  left: 16px;
+  right: 84px;
+  bottom: 16px;
+  z-index: 999;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 360px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background-color: var(--color-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.aviso-demo p {
+  margin: 0;
+}
+
+.aviso-demo__fechar {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.aviso-demo__fechar:hover {
+  color: var(--color-grass);
+}
