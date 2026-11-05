@@ -6,8 +6,8 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  min-height: 100vh;
-  min-height: 100svh;
+  min-height: calc(100vh / var(--escala));
+  min-height: calc(100svh / var(--escala));
   display: flex;
   align-items: center;
 }
