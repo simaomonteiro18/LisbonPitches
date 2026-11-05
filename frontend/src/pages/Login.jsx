@@ -159,6 +159,10 @@ function Login() {
               </ul>
             )}
 
+            {modo === 'registo' && (
+              <p className="login__nota">Isto é uma demonstração: podes usar dados fictícios.</p>
+            )}
+
             {error && <p className="login__error">{error}</p>}
 
             <button

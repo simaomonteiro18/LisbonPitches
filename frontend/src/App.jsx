@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ThemeToggle from './components/ThemeToggle'
+import AvisoDemo from './components/AvisoDemo'
 import BarraProgresso from './components/BarraProgresso'
 import { durations, easings } from './motion'
 import Home from './pages/Home'
@@ -128,6 +129,7 @@ function App() {
       </main>
       <Footer />
       <ThemeToggle />
+      <AvisoDemo />
     </div>
   )
 }

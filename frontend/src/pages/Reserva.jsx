@@ -196,6 +196,7 @@ function Reserva() {
             <div>
               <strong>Reserva confirmada</strong>
               <p>Agora convida os teus amigos para o jogo.</p>
+              <p>Reserva de demonstração: não chega ao campo.</p>
             </div>
           </motion.div>
         )}

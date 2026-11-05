@@ -497,6 +497,9 @@ function Pitch() {
                 >
                   {reserving ? 'Cancelar' : 'Reservar'}
                 </button>
+                <p className="pitch__status pitch__nota-demo">
+                  Demonstração: esta reserva é fictícia e não chega ao campo.
+                </p>
 
                 <AnimatePresence initial={false}>
                   {reserving && (
