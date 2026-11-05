@@ -13,7 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.simaomonteiro18.lisbonpitches.exceptions.UserPermissionException;
+import java.util.Optional;
 
+import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -71,6 +74,28 @@ public class UserServiceTest {
         assertThrows(WeakPasswordException.class, () -> userService.create(requestTemplate));
 
         verify(userRepository, never()).save(any());
+
+    }
+
+    @Test
+    @DisplayName("Utilizador não pode ver os dados de outro utilizador")
+    public void findByIdOfAnotherUserIsForbidden() throws Exception {
+
+        assertThrows(UserPermissionException.class, () -> userService.findById(2L, 1L));
+
+        verify(userRepository, never()).findById(any());
+
+    }
+
+    @Test
+    @DisplayName("Utilizador consegue ver os seus próprios dados")
+    public void findByIdOfOwnUserReturnsUser() throws Exception {
+
+        User user = new User("Simão", "simaom", "Abcdef1!", "sasm07@gmail.com", "912345678", "Sintra");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        assertSame(user, userService.findById(1L, 1L));
 
     }
 

@@ -5,6 +5,7 @@ import com.simaomonteiro18.lisbonpitches.entities.User;
 import com.simaomonteiro18.lisbonpitches.mappers.UserMapper;
 import com.simaomonteiro18.lisbonpitches.requests.CreateUserRequest;
 import com.simaomonteiro18.lisbonpitches.services.UserService;
+import com.simaomonteiro18.lisbonpitches.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,10 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserSummaryDTO> findById(@PathVariable Long id) {
 
-        User user = userService.findById(id);
-        
+        Long callerId = AuthUtils.getAuthenticatedUserId();
+
+        User user = userService.findById(callerId, id);
+
         UserSummaryDTO userSummaryDTO = UserMapper.toDTO(user);
 
         return ResponseEntity.ok().body(userSummaryDTO);

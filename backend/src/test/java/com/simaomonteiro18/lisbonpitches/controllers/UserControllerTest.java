@@ -12,6 +12,11 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import com.simaomonteiro18.lisbonpitches.exceptions.UserPermissionException;
+import org.junit.jupiter.api.AfterEach;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -35,7 +40,9 @@ public class UserControllerTest {
     @DisplayName("Teste a sucesso de pesquisa de User via UserController")
     public void testSuccessOfUserControllerFindingUser() throws Exception {
 
-        when(userService.findById(1L)).thenReturn(user);
+        authenticateAs(1L);
+
+        when(userService.findById(1L, 1L)).thenReturn(user);
 
         mockMvc.perform(get("/users/1")).andExpect(status().isOk());
 
@@ -45,10 +52,37 @@ public class UserControllerTest {
     @DisplayName("Teste a insucesso de pesquisa de User via UserController")
     public void testFailOfUserControllerFindingUser() throws Exception {
 
-        when(userService.findById(999L)).thenThrow(ResourceNotFoundException.class);
+        authenticateAs(999L);
+
+        when(userService.findById(999L, 999L)).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(get("/users/999")).andExpect(status().isNotFound());
 
+    }
+
+    @Test
+    @DisplayName("Teste a pesquisa dos dados de outro User via UserController")
+    public void testUserControllerFindingAnotherUserIsForbidden() throws Exception {
+
+        authenticateAs(2L);
+
+        when(userService.findById(2L, 1L)).thenThrow(UserPermissionException.class);
+
+        mockMvc.perform(get("/users/1")).andExpect(status().isForbidden());
+
+    }
+
+    private void authenticateAs(Long userId) {
+
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(userId, null, List.of());
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    }
+
+    @AfterEach
+    public void cleanAfterTests() {
+        SecurityContextHolder.clearContext();
     }
 
 }
