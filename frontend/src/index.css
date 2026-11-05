@@ -82,8 +82,23 @@ body {
   color: var(--color-text);
 }
 
+/* em ecras grandes o desenho fica a 81%, o tamanho em que foi pensado */
+:root {
+  --escala: 1;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --escala: 0.81;
+  }
+
+  .app {
+    zoom: var(--escala);
+  }
+}
+
 .app {
-  min-height: 100vh;
+  min-height: calc(100vh / var(--escala));
   display: flex;
   flex-direction: column;
   /* entradas laterais nao podem alargar a pagina no telemovel */
@@ -122,7 +137,7 @@ main:focus {
 
 /* reserva o espaco enquanto o codigo da pagina chega; o footer so aparece com a pagina na posicao final */
 .pagina__a-carregar {
-  min-height: 100vh;
+  min-height: calc(100vh / var(--escala));
 }
 
 .app:has(.pagina__a-carregar) .footer {
