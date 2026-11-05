@@ -4,7 +4,7 @@
 
 Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana de Lisboa, construída em Java/Spring Boot no backend e React/Vite no frontend.
 
-**53 campos reais catalogados · 17 endpoints REST · 5 entidades · 77 testes (JUnit 5, Mockito, MockMvc, TestRestTemplate)**
+**53 campos reais catalogados · 17 endpoints REST · 5 entidades · 79 testes (JUnit 5, Mockito, MockMvc, TestRestTemplate)**
 
 🔗 **[API em produção](https://lisbonpitches-production.up.railway.app/pitches)**
 — `GET /pitches` devolve uma página de campos (parâmetros `page`, `size` e `sort`, com filtros opcionais por `city`, `name` e `pitchAccess`).
@@ -162,7 +162,7 @@ mais campos passarem a suportar reserva online real.
 - Caffeine (cache e rate limiting)
 - PostgreSQL (produção) e H2 (desenvolvimento)
 - Docker
-- JUnit 5, Mockito, MockMvc, TestRestTemplate — 77 testes em 18 classes,
+- JUnit 5, Mockito, MockMvc, TestRestTemplate — 79 testes em 19 classes,
   três camadas (unidade, mocks e integração HTTP, incluindo um teste com
   servidor real)
 - Maven
