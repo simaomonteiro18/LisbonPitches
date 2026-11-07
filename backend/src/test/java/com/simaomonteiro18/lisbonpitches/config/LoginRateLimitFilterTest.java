@@ -148,4 +148,66 @@ public class LoginRateLimitFilterTest {
 
     }
 
+    @Test
+    @DisplayName("Mudar o início do X-Forwarded-For não contorna o limite de tentativas")
+    public void changingForwardedForPrefixDoesNotBypassLimit() throws Exception {
+
+        FilterChain chain = (req, res) -> {
+            ((HttpServletResponse) res).setStatus(401);
+        };
+
+        for (int i = 0; i < 5; i++) {
+            sendLogin("9.9.9." + i + ", 5.5.5.5", chain);
+        }
+
+        MockHttpServletResponse response = sendLogin("9.9.9.99, 5.5.5.5", chain);
+
+        assertEquals(429, response.getStatus());
+
+    }
+
+    @Test
+    @DisplayName("X-Forwarded-For só com vírgulas não rebenta o filtro")
+    public void forwardedForWithOnlyCommasDoesNotBreakFilter() throws Exception {
+
+        FilterChain chain = (req, res) -> {
+            ((HttpServletResponse) res).setStatus(401);
+        };
+
+        MockHttpServletResponse response = sendLogin(",", chain);
+
+        assertEquals(401, response.getStatus());
+
+    }
+
+    @Test
+    @DisplayName("X-Forwarded-For sem entradas utilizáveis usa o IP da ligação")
+    public void forwardedForWithBlankEntriesFallsBackToRemoteAddr() throws Exception {
+
+        FilterChain chain = (req, res) -> {
+            ((HttpServletResponse) res).setStatus(401);
+        };
+
+        for (int i = 0; i < 5; i++) {
+            sendLoginWith(", ,", "10.0.0.5", chain);
+        }
+
+        MockHttpServletResponse response = sendLoginWith(", ,", "10.0.0.6", chain);
+
+        assertEquals(401, response.getStatus());
+
+    }
+
+    private MockHttpServletResponse sendLoginWith(String forwarded, String remoteAddr, FilterChain chain) throws Exception {
+
+        MockHttpServletRequest request = new MockHttpServletRequest("POST", "/login");
+        request.addHeader("X-Forwarded-For", forwarded);
+        request.setRemoteAddr(remoteAddr);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        filter.doFilter(request, response, chain);
+
+        return response;
+
+    }
+
 }
