@@ -1,6 +1,7 @@
 package com.simaomonteiro18.lisbonpitches.config;
 
 import com.simaomonteiro18.lisbonpitches.services.JwtService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,12 +30,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String token = authHeader.substring(7);
 
-            Long userId = jwtService.extractUserId(token);
+            try {
+                Long userId = jwtService.extractUserId(token);
 
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(userId, null, List.of());
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userId, null, List.of());
 
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            } catch (JwtException | IllegalArgumentException e) {
+                // token invalido: segue sem autenticacao, o Spring Security decide
+            }
 
         }
 
