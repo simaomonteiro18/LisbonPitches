@@ -1,4 +1,4 @@
-import { authHeaders, parseErrorMessage } from './http'
+import { authHeaders, parseErrorMessage, RESERVA_NAO_ENCONTRADA } from './http'
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -21,11 +21,26 @@ export async function getReservationById(id) {
     headers: { ...authHeaders() },
   })
 
+  if (response.status === 404) {
+    throw new Error(RESERVA_NAO_ENCONTRADA)
+  }
+
   if (!response.ok) {
     throw new Error(await parseErrorMessage(response))
   }
 
   return response.json()
+}
+
+export async function cancelReservation(id) {
+  const response = await fetch(`${API_URL}/reservations/${id}`, {
+    method: 'DELETE',
+    headers: { ...authHeaders() },
+  })
+
+  if (!response.ok) {
+    throw new Error(await parseErrorMessage(response))
+  }
 }
 
 export async function getMyReservations(userId) {

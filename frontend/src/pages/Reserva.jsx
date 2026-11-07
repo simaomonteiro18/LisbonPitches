@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AnimatePresence, motion, useAnimate, useReducedMotion } from 'motion/react'
-import { getReservationById } from '../api/reservations'
+import { cancelReservation, getReservationById } from '../api/reservations'
 import {
   acceptInvitation,
   cancelInvitation,
@@ -84,6 +84,10 @@ function Reserva() {
 
   const [actionError, setActionError] = useState(null)
 
+  const [aConfirmarCancelamento, setAConfirmarCancelamento] = useState(false)
+  const [cancelarReservaLoading, setCancelarReservaLoading] = useState(false)
+  const [cancelarReservaError, setCancelarReservaError] = useState(null)
+
   const enviadoTimerRef = useRef(null)
   const [formConvidar, animarFormConvidar] = useAnimate()
 
@@ -137,6 +141,7 @@ function Reserva() {
   const isOrganizer = reservation.organizerId === userId
   const isAcceptedGuest = invitations.some((i) => i.guestId === userId && i.status === 'ACCEPTED')
   const podeConvidar = isOrganizer || isAcceptedGuest
+  const podeCancelarReserva = isOrganizer && new Date(reservation.startTime) > new Date()
 
   async function handleConvidar(e) {
     e.preventDefault()
@@ -168,6 +173,18 @@ function Reserva() {
       carregar({ silencioso: true })
     } catch (err) {
       setActionError(err.message)
+    }
+  }
+
+  async function handleCancelarReserva() {
+    setCancelarReservaLoading(true)
+    setCancelarReservaError(null)
+    try {
+      await cancelReservation(Number(id))
+      navigate('/perfil')
+    } catch (err) {
+      setCancelarReservaError(err.message)
+      setCancelarReservaLoading(false)
     }
   }
 
@@ -343,6 +360,48 @@ function Reserva() {
             </form>
           )}
         </motion.div>
+
+        {podeCancelarReserva && (
+          <div className="reserva__cancelar">
+            {!aConfirmarCancelamento ? (
+              <button
+                type="button"
+                className="btn-ghost reserva__cancelar-botao"
+                onClick={() => setAConfirmarCancelamento(true)}
+              >
+                Cancelar reserva
+              </button>
+            ) : (
+              <div className="reserva__cancelar-confirmar">
+                <p>Isto cancela a reserva e apaga todos os convites. Não dá para desfazer.</p>
+                <div className="reserva__cancelar-acoes">
+                  <button
+                    type="button"
+                    className="btn-ghost reserva__cancelar-botao"
+                    onClick={handleCancelarReserva}
+                    disabled={cancelarReservaLoading}
+                  >
+                    {cancelarReservaLoading ? 'A cancelar...' : 'Sim, cancelar reserva'}
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() => setAConfirmarCancelamento(false)}
+                    disabled={cancelarReservaLoading}
+                  >
+                    Voltar
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {cancelarReservaError && (
+              <p className="reserva__status reserva__status--error" role="alert">
+                {cancelarReservaError}
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </section>
   )

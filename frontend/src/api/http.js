@@ -5,6 +5,8 @@ export function authHeaders() {
   return session ? { Authorization: `Bearer ${session.token}` } : {}
 }
 
+export const RESERVA_NAO_ENCONTRADA = 'Esta reserva não existe ou foi cancelada pelo organizador.'
+
 export async function parseErrorMessage(response) {
   try {
     const data = await response.json()
