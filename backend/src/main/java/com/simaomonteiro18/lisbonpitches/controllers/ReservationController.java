@@ -38,11 +38,13 @@ public class ReservationController {
     @GetMapping(params = "userId")
     public ResponseEntity<MyReservationsDTO> reservationsByUser(@RequestParam("userId") Long userId) {
 
-        List<ReservationDTO> organized = reservationService.findOrganizedReservations(userId).stream()
+        Long callerId = AuthUtils.getAuthenticatedUserId();
+
+        List<ReservationDTO> organized = reservationService.findOrganizedReservations(callerId, userId).stream()
                 .map(ReservationMapper::toDTO)
                 .collect(Collectors.toList());
 
-        List<ReservationDTO> participating = reservationService.findParticipatingReservations(userId).stream()
+        List<ReservationDTO> participating = reservationService.findParticipatingReservations(callerId, userId).stream()
                 .map(ReservationMapper::toDTO)
                 .collect(Collectors.toList());
 

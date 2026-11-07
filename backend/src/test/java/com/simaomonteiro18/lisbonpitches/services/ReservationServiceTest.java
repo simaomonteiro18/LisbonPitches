@@ -2,15 +2,19 @@ package com.simaomonteiro18.lisbonpitches.services;
 
 import com.simaomonteiro18.lisbonpitches.dtos.AvailabilityDTO;
 import com.simaomonteiro18.lisbonpitches.dtos.SlotDTO;
+import com.simaomonteiro18.lisbonpitches.entities.Invitation;
 import com.simaomonteiro18.lisbonpitches.entities.Pitch;
 import com.simaomonteiro18.lisbonpitches.entities.Reservation;
 import com.simaomonteiro18.lisbonpitches.entities.User;
 import com.simaomonteiro18.lisbonpitches.entities.enums.AvailabilityStatus;
+import com.simaomonteiro18.lisbonpitches.entities.enums.InvitationStatus;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchType;
 import com.simaomonteiro18.lisbonpitches.exceptions.InvalidTimeException;
 import com.simaomonteiro18.lisbonpitches.exceptions.PitchNotBookableException;
 import com.simaomonteiro18.lisbonpitches.exceptions.ReservationConflictException;
+import com.simaomonteiro18.lisbonpitches.exceptions.UserPermissionException;
+import com.simaomonteiro18.lisbonpitches.repositories.InvitationRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.PitchRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.ReservationRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.UserRepository;
@@ -30,7 +34,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ReservationServiceTest {
@@ -42,6 +46,8 @@ public class ReservationServiceTest {
     @Mock PitchRepository pitchRepository;
 
     @Mock AvailabilityService availabilityService;
+
+    @Mock InvitationRepository invitationRepository;
 
     @InjectMocks private ReservationService reservationService;
 
@@ -519,6 +525,60 @@ public class ReservationServiceTest {
         assertNotNull(resultado);
         assertEquals(LocalDateTime.parse("2026-09-05T00:00:00"), resultado.getStartTime());
         assertEquals(LocalDateTime.parse("2026-09-05T01:00:00"), resultado.getEndTime());
+
+    }
+
+    @Test
+    @DisplayName("Teste aos id's de reservas que o utilizador organizou")
+    void testIdsOfReservationsOrganized() throws Exception {
+
+        assertThrows(UserPermissionException.class, () -> reservationService.findOrganizedReservations(2L, 1L));
+        verify(userRepository, never()).findById(any());
+
+    }
+
+    @Test
+    @DisplayName("Teste aos id's de reservas que o utilizador participará")
+    void testIdsOfReservationsToAttend() throws Exception {
+
+        assertThrows(UserPermissionException.class, () -> reservationService.findParticipatingReservations(2L, 1L));
+        verify(userRepository, never()).findById(any());
+
+    }
+
+    @Test
+    @DisplayName("Utilizador vê as suas próprias reservas organizadas")
+    void ownOrganizedReservations() throws Exception {
+
+        User user = new User("Simão", "Teste321%", "lisbon@gmail.com", "123456789", "Lisboa");
+        Pitch pitch = new Pitch("Campo das Cebolas", "Lisboa", BigDecimal.valueOf(50.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Reservation reservation = new Reservation(user, pitch, Instant.now(), LocalDateTime.parse("2026-11-10T20:00:00"), LocalDateTime.parse("2026-11-10T21:00:00"));
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(reservationRepository.findByOrganizer(user)).thenReturn(List.of(reservation));
+
+        List<Reservation> reservations = reservationService.findOrganizedReservations(1L, 1L);
+
+        assertEquals(List.of(reservation), reservations);
+
+    }
+
+    @Test
+    @DisplayName("Utilizador vê as reservas em que participa")
+    void seeParticipatingReservations() throws Exception {
+
+        User u1 = new User("Simão", "Teste321%", "lisbon@gmail.com", "123456789", "Lisboa");
+        User u2 = new User("Leonor", "Teste123&", "leonor@gmail.com", "912345678", "Mem-Martins");
+        Pitch pitch = new Pitch("Campo das Cebolas", "Lisboa", BigDecimal.valueOf(50.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Reservation reservation = new Reservation(u1, pitch, Instant.now(), LocalDateTime.parse("2026-11-10T20:00:00"), LocalDateTime.parse("2026-11-10T21:00:00"));
+        Invitation invitation = new Invitation(u2, reservation, u1);
+
+        when(userRepository.findById(2L)).thenReturn(Optional.of(u2));
+        when(invitationRepository.findByGuestAndStatus(u2, InvitationStatus.ACCEPTED)).thenReturn(List.of(invitation));
+
+        List<Reservation> reservations = reservationService.findParticipatingReservations(2L, 2L);
+
+        assertEquals(List.of(reservation), reservations);
 
     }
 
