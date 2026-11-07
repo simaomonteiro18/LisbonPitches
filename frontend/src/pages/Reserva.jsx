@@ -362,7 +362,13 @@ function Reserva() {
         </motion.div>
 
         {podeCancelarReserva && (
-          <div className="reserva__cancelar">
+          <motion.div
+            className="reserva__cancelar"
+            variants={aparecer}
+            custom={atrasoConvites + 0.15}
+            initial={inicio}
+            animate="visivel"
+          >
             {!aConfirmarCancelamento ? (
               <button
                 type="button"
@@ -400,7 +406,7 @@ function Reserva() {
                 {cancelarReservaError}
               </p>
             )}
-          </div>
+          </motion.div>
         )}
       </div>
     </section>
