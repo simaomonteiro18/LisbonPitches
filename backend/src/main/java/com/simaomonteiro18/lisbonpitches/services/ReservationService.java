@@ -119,7 +119,11 @@ public class ReservationService {
 
     }
 
-    public List<Reservation> findOrganizedReservations(Long userId) {
+    public List<Reservation> findOrganizedReservations(Long callerId, Long userId) {
+
+        if (!callerId.equals(userId)) {
+            throw new UserPermissionException("Não tem permissões para realizar esta ação.");
+        }
 
         User user = userRepository.findById(userId)
                         .orElseThrow(() -> new ResourceNotFoundException(User.class, userId));
@@ -128,7 +132,11 @@ public class ReservationService {
 
     }
 
-    public List<Reservation> findParticipatingReservations(Long userId) {
+    public List<Reservation> findParticipatingReservations(Long callerId, Long userId) {
+
+        if (!callerId.equals(userId)) {
+            throw new UserPermissionException("Não tem permissões para realizar esta ação.");
+        }
 
         User user = userRepository.findById(userId)
                         .orElseThrow(() -> new ResourceNotFoundException(User.class, userId));
