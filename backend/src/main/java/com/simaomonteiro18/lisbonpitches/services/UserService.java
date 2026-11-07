@@ -21,7 +21,11 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User findById(Long id) {
+    public User findById(Long callerId, Long id) {
+
+        if (!callerId.equals(id)) {
+            throw new UserPermissionException("Não tem permissões para realizar esta ação.");
+        }
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(User.class, id));
