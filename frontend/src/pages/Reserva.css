@@ -148,6 +148,49 @@
   border-color: var(--color-grass);
 }
 
+/* cancelar reserva: acao destrutiva separada do resto, com confirmacao */
+.reserva__cancelar {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reserva__cancelar .reserva__status {
+  margin: 0;
+}
+
+.reserva__cancelar-botao {
+  align-self: flex-start;
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+.reserva__cancelar-confirmar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reserva__cancelar-confirmar p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.reserva__cancelar-acoes {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.reserva__cancelar-acoes .btn-primary,
+.reserva__cancelar-acoes .btn-ghost {
+  padding: 8px 18px;
+  font-size: 0.85rem;
+}
+
 /* faixa de confirmacao para quem chega acabado de reservar */
 .reserva__confirmada {
   display: flex;
