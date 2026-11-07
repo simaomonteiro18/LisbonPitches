@@ -6,6 +6,8 @@ Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana d
 
 **53 campos reais catalogados · 18 endpoints REST · 5 entidades · 100 testes (JUnit 5, Mockito, MockMvc, TestRestTemplate)**
 
+🌐 **[Demo online](https://lisbonpitches.vercel.app)**
+
 🔗 **[API em produção](https://lisbonpitches-production.up.railway.app/pitches)**
 — `GET /pitches` devolve uma página de campos (parâmetros `page`, `size` e `sort`, com filtros opcionais por `city`, `name` e `pitchAccess`).
 
