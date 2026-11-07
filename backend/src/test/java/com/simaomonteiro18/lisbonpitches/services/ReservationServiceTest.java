@@ -10,10 +10,7 @@ import com.simaomonteiro18.lisbonpitches.entities.enums.AvailabilityStatus;
 import com.simaomonteiro18.lisbonpitches.entities.enums.InvitationStatus;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchAccess;
 import com.simaomonteiro18.lisbonpitches.entities.enums.PitchType;
-import com.simaomonteiro18.lisbonpitches.exceptions.InvalidTimeException;
-import com.simaomonteiro18.lisbonpitches.exceptions.PitchNotBookableException;
-import com.simaomonteiro18.lisbonpitches.exceptions.ReservationConflictException;
-import com.simaomonteiro18.lisbonpitches.exceptions.UserPermissionException;
+import com.simaomonteiro18.lisbonpitches.exceptions.*;
 import com.simaomonteiro18.lisbonpitches.repositories.InvitationRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.PitchRepository;
 import com.simaomonteiro18.lisbonpitches.repositories.ReservationRepository;
@@ -21,6 +18,7 @@ import com.simaomonteiro18.lisbonpitches.repositories.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -579,6 +577,76 @@ public class ReservationServiceTest {
         List<Reservation> reservations = reservationService.findParticipatingReservations(2L, 2L);
 
         assertEquals(List.of(reservation), reservations);
+
+    }
+
+    @Test
+    @DisplayName("Teste a cancelamento de reserva sem ser organizador")
+    void cancelReservationNotOrganizer() throws Exception {
+
+        User u1 = new User("Simão", "Teste321%", "lisbon@gmail.com", "123456789", "Lisboa");
+        u1.setId(1L);
+        Pitch pitch = new Pitch("Campo das Cebolas", "Lisboa", BigDecimal.valueOf(50.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Reservation reservation = new Reservation(u1, pitch, Instant.now(), LocalDateTime.parse("2026-11-10T20:00:00"), LocalDateTime.parse("2026-11-10T21:00:00"));
+
+        when(reservationRepository.findById(10L)).thenReturn(Optional.of(reservation));
+
+        assertThrows(UserPermissionException.class, () -> reservationService.cancelReservation(2L, 10L));
+        verify(reservationRepository, never()).delete(any());
+
+    }
+
+    @Test
+    @DisplayName("Organizador cancela a reserva e os convites são apagados primeiro")
+    void cancelReservationAsOrganizer() {
+
+        User u1 = new User("Simão", "Teste321%", "lisbon@gmail.com", "123456789", "Lisboa");
+        u1.setId(1L);
+        User u2 = new User("Leonor", "Teste123&", "leonor@gmail.com", "912345678", "Mem-Martins");
+        u2.setId(2L);
+        Pitch pitch = new Pitch("Campo das Cebolas", "Lisboa", BigDecimal.valueOf(50.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Reservation reservation = new Reservation(u1, pitch, Instant.now(), LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(2).plusHours(1));
+        Invitation invitation = new Invitation(u2, reservation, u1);
+        reservation.getInviteList().add(invitation);
+
+        when(reservationRepository.findById(10L)).thenReturn(Optional.of(reservation));
+
+        reservationService.cancelReservation(1L, 10L);
+
+        InOrder inOrder = inOrder(invitationRepository, reservationRepository);
+        inOrder.verify(invitationRepository).deleteAll(reservation.getInviteList());
+        inOrder.verify(reservationRepository).delete(reservation);
+
+    }
+
+    @Test
+    @DisplayName("Cancelar reserva inexistente dá erro e não apaga nada")
+    void cancelReservationNotFound() {
+
+        when(reservationRepository.findById(10L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> reservationService.cancelReservation(1L, 10L));
+
+        verify(reservationRepository, never()).delete(any());
+        verify(invitationRepository, never()).deleteAll(any());
+
+    }
+
+    @Test
+    @DisplayName("Cancelar reserva que já começou dá erro e não apaga nada")
+    void cancelReservationAlreadyStarted() {
+
+        User u1 = new User("Simão", "Teste321%", "lisbon@gmail.com", "123456789", "Lisboa");
+        u1.setId(1L);
+        Pitch pitch = new Pitch("Campo das Cebolas", "Lisboa", BigDecimal.valueOf(50.0), PitchAccess.PRIVATE, PitchType.ELEVEN);
+        Reservation reservation = new Reservation(u1, pitch, Instant.now(), LocalDateTime.now().minusHours(2), LocalDateTime.now().minusHours(1));
+
+        when(reservationRepository.findById(10L)).thenReturn(Optional.of(reservation));
+
+        assertThrows(InvalidTimeException.class, () -> reservationService.cancelReservation(1L, 10L));
+
+        verify(reservationRepository, never()).delete(any());
+        verify(invitationRepository, never()).deleteAll(any());
 
     }
 

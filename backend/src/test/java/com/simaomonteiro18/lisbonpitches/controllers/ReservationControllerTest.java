@@ -10,6 +10,7 @@ import com.simaomonteiro18.lisbonpitches.exceptions.UserPermissionException;
 import com.simaomonteiro18.lisbonpitches.requests.CreateReservationRequest;
 import com.simaomonteiro18.lisbonpitches.services.JwtService;
 import com.simaomonteiro18.lisbonpitches.services.ReservationService;
+import com.simaomonteiro18.lisbonpitches.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @WebMvcTest(ReservationController.class)
 public class ReservationControllerTest {
@@ -111,6 +114,42 @@ public class ReservationControllerTest {
         when(reservationService.findOrganizedReservations(2L, 1L)).thenThrow(UserPermissionException.class);
 
         mockMvc.perform(get("/reservations?userId=1")).andExpect(status().isForbidden());
+
+    }
+
+    @Test
+    @DisplayName("Teste a cancelReservation() com sucesso")
+    public void testCancelReservationWithSuccess() throws Exception {
+
+        authenticateAs(1L);
+
+        mockMvc.perform(delete("/reservations/10")).andExpect(status().isNoContent());
+
+        verify(reservationService).cancelReservation(1L, 10L);
+
+    }
+
+    @Test
+    @DisplayName("Teste a cancelReservation() de uma reserva de outro utilizador")
+    public void testCancelReservationOfAnotherUserIsForbidden() throws Exception {
+
+        authenticateAs(2L);
+
+        doThrow(UserPermissionException.class).when(reservationService).cancelReservation(2L, 10L);
+
+        mockMvc.perform(delete("/reservations/10")).andExpect(status().isForbidden());
+
+    }
+
+    @Test
+    @DisplayName("Teste a cancelReservation() de uma reserva inexistente")
+    public void testCancelReservationNotFound() throws Exception {
+
+        authenticateAs(1L);
+
+        doThrow(ResourceNotFoundException.class).when(reservationService).cancelReservation(1L, 10L);
+
+        mockMvc.perform(delete("/reservations/10")).andExpect(status().isNotFound());
 
     }
 

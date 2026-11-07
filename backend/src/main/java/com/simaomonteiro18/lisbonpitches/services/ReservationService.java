@@ -164,4 +164,21 @@ public class ReservationService {
 
     }
 
+    @Transactional
+    public void cancelReservation(Long callerId, Long reservationId) {
+
+        Reservation reservation = reservationRepository.findById(reservationId).orElseThrow(() -> new ResourceNotFoundException(Reservation.class, reservationId));
+        if (!reservation.getOrganizer().getId().equals(callerId)) {
+            throw new UserPermissionException("Não tem permissões para realizar esta ação.");
+        }
+
+        if (reservation.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new InvalidTimeException("Não é possível cancelar uma reserva que já começou.");
+        }
+
+        invitationRepository.deleteAll(reservation.getInviteList());
+        reservationRepository.delete(reservation);
+
+    }
+
 }

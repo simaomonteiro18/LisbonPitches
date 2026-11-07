@@ -65,4 +65,15 @@ public class ReservationController {
 
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> cancelReservationById(@PathVariable Long id) {
+
+        Long callerId = AuthUtils.getAuthenticatedUserId();
+
+        reservationService.cancelReservation(callerId, id);
+
+        return ResponseEntity.noContent().build();
+
+    }
+
 }
