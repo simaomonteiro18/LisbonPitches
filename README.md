@@ -4,7 +4,7 @@
 
 Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana de Lisboa, construída em Java/Spring Boot no backend e React/Vite no frontend.
 
-**53 campos reais catalogados · 17 endpoints REST · 5 entidades · 79 testes (JUnit 5, Mockito, MockMvc, TestRestTemplate)**
+**53 campos reais catalogados · 18 endpoints REST · 5 entidades · 100 testes (JUnit 5, Mockito, MockMvc, TestRestTemplate)**
 
 🔗 **[API em produção](https://lisbonpitches-production.up.railway.app/pitches)**
 — `GET /pitches` devolve uma página de campos (parâmetros `page`, `size` e `sort`, com filtros opcionais por `city`, `name` e `pitchAccess`).
@@ -72,7 +72,7 @@ mais campos recolhidos à mão ou submissões de utilizadores.
   Lisboa). O estado indica se o campo aceita reservas (`BOOKABLE`,
   `NOT_BOOKABLE`) ou se ainda não tem horário definido (`NO_SCHEDULE`).
 - **Autenticação por JWT** (registo/login) com Spring Security aplicado a
-  todos os 17 endpoints exceto os públicos (`/pitches`, `/pitches/{id}`,
+  todos os 18 endpoints exceto os públicos (`/pitches`, `/pitches/{id}`,
   `/pitches/{id}/availability`, `/users`, `/login`), sem destaque na
   navegação por agora — ver nota abaixo.
 - **Rate limiting no login**: no máximo 5 tentativas falhadas por IP em 15
@@ -129,6 +129,7 @@ header `Authorization: Bearer <jwt>`, obtido no login.
 | POST | `/reservations` | Criar uma reserva, validada contra a disponibilidade | JWT |
 | GET | `/reservations?userId={id}` | Reservas de um utilizador | JWT |
 | GET | `/reservations/{id}` | Detalhe de uma reserva | JWT |
+| DELETE | `/reservations/{id}` | Cancelar uma reserva (só o organizador, antes de começar) | JWT |
 
 #### Convites
 
@@ -162,7 +163,7 @@ mais campos passarem a suportar reserva online real.
 - Caffeine (cache e rate limiting)
 - PostgreSQL (produção) e H2 (desenvolvimento)
 - Docker
-- JUnit 5, Mockito, MockMvc, TestRestTemplate — 79 testes em 19 classes,
+- JUnit 5, Mockito, MockMvc, TestRestTemplate — 100 testes em 20 classes,
   três camadas (unidade, mocks e integração HTTP, incluindo um teste com
   servidor real)
 - Maven
@@ -221,7 +222,7 @@ docker-compose.yml   PostgreSQL e API para desenvolvimento local
 ![Diagrama UML](docs/LisbonPitches%20Architecture.drawio.png)
 
 Cinco entidades principais: `User`, `Pitch`, `Reservation`, `Invitation` e
-`OpeningHours`, expostas através de 17 endpoints REST e 9 DTOs. O convite
+`OpeningHours`, expostas através de 18 endpoints REST e 9 DTOs. O convite
 (`Invitation`) é a entidade de ligação entre utilizador e reserva, e guarda
 o estado do convite. `Pitch` guarda tipo, acesso (público/privado), morada/coordenadas,
 preço, contacto e se suporta reserva online (`reservable`). `OpeningHours`
