@@ -2,7 +2,6 @@ package com.simaomonteiro18.lisbonpitches.controllers;
 
 import com.simaomonteiro18.lisbonpitches.dtos.InvitationDTO;
 import com.simaomonteiro18.lisbonpitches.entities.Invitation;
-import com.simaomonteiro18.lisbonpitches.entities.Reservation;
 import com.simaomonteiro18.lisbonpitches.mappers.InvitationMapper;
 import com.simaomonteiro18.lisbonpitches.requests.CreateInvitationRequest;
 import com.simaomonteiro18.lisbonpitches.services.InvitationService;
