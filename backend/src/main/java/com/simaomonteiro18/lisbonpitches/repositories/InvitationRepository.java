@@ -5,8 +5,6 @@ import com.simaomonteiro18.lisbonpitches.entities.Reservation;
 import com.simaomonteiro18.lisbonpitches.entities.User;
 import com.simaomonteiro18.lisbonpitches.entities.enums.InvitationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
