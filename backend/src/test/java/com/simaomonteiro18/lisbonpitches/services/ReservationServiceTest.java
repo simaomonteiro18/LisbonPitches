@@ -201,7 +201,7 @@ public class ReservationServiceTest {
 
     @Test
     @DisplayName("Teste de reserva em horas ocupadas")
-    void requestedHourMissingFromFreeHours() {
+    void rejectsReservationWhenALaterSlotIsOccupied() {
 
         User user = new User("Simão", "12345", "sm18@gmail.com", "912345678", "Sintra");
 
@@ -270,7 +270,7 @@ public class ReservationServiceTest {
 
     @Test
     @DisplayName("Teste de reserva com a primeira hora ocupada")
-    void firstRequestedHourMissingFromFreeHours() {
+    void rejectsReservationWhenTheFirstSlotIsOccupied() {
 
         User user = new User("Simão", "12345", "sm18@gmail.com", "912345678", "Sintra");
 
