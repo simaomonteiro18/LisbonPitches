@@ -9,7 +9,9 @@ import com.simaomonteiro18.lisbonpitches.repositories.PitchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +25,15 @@ public class PitchService {
     private PitchRepository pitchRepository;
 
     public Page<Pitch> search(String city, String name, PitchAccess pitchAccess, Pageable pageable) {
-        return pitchRepository.search(city, name, pitchAccess, pageable);
+        return pitchRepository.search(city, name, pitchAccess, withNullsLast(pageable));
+    }
+
+    // Postgres puts NULLs first in DESC order, so pitches without a price would come first
+    private Pageable withNullsLast(Pageable pageable) {
+        List<Sort.Order> orders = pageable.getSort().stream()
+                .map(Sort.Order::nullsLast)
+                .toList();
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(orders));
     }
 
     public Pitch findById(Long id) {
