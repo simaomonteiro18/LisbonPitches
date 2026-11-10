@@ -4,7 +4,7 @@
 
 Plataforma de descoberta e reserva de campos de futebol na Área Metropolitana de Lisboa, construída em Java/Spring Boot no backend e React/Vite no frontend.
 
-**53 campos reais catalogados · 18 endpoints REST · 5 entidades · 100 testes (JUnit 5, Mockito, MockMvc, TestRestTemplate)**
+**53 campos reais catalogados · 18 endpoints REST · 5 entidades · 102 testes (JUnit 5, Mockito, MockMvc, TestRestTemplate)**
 
 🌐 **[Demo online](https://lisbonpitches.vercel.app)**
 
@@ -63,20 +63,21 @@ mais campos recolhidos à mão ou submissões de utilizadores.
   (quando aplicável), mapa interativo e contacto direto para campos
   privados sem reserva online.
 - **Reservas** com validação de sobreposição de horário (ao nível da base
-  de dados) e blocos mínimos de 1 hora, convite de outros jogadores e
-  divisão automática do custo pelos participantes que aceitaram (incluindo
-  o organizador). O pedido de reserva é validado contra a disponibilidade:
-  início à hora em ponto, dentro do horário do campo e só em horas livres.
+  de dados) e slots definidos por campo (30 ou 60 minutos), convite de
+  outros jogadores e divisão automática do custo pelos participantes que
+  aceitaram (incluindo o organizador). O pedido de reserva é validado contra
+  a disponibilidade: início alinhado com os slots do campo, dentro do
+  horário do campo e só em slots livres.
 - **Disponibilidade** (`GET /pitches/{id}/availability?date=AAAA-MM-DD`,
-  público): devolve as horas de início livres de um campo num dia, a partir
-  do horário do campo (dia de semana ou fim de semana), das reservas
-  existentes e, se o dia for hoje, das horas que já passaram (hora de
-  Lisboa). O estado indica se o campo aceita reservas (`BOOKABLE`,
-  `NOT_BOOKABLE`) ou se ainda não tem horário definido (`NO_SCHEDULE`).
+  público): devolve os slots de um campo num dia, cada um com a hora de
+  início e se está livre, a partir do horário do campo (dia de semana ou
+  fim de semana), das reservas existentes e, se o dia for hoje, dos slots
+  que já passaram (hora de Lisboa). O estado indica se o campo aceita
+  reservas (`BOOKABLE`, `NOT_BOOKABLE`) ou se ainda não tem horário
+  definido (`NO_SCHEDULE`).
 - **Autenticação por JWT** (registo/login) com Spring Security aplicado a
   todos os 18 endpoints exceto os públicos (`/pitches`, `/pitches/{id}`,
-  `/pitches/{id}/availability`, `/users`, `/login`), sem destaque na
-  navegação por agora — ver nota abaixo.
+  `/pitches/{id}/availability`, `/users`, `/login`).
 - **Rate limiting no login**: no máximo 5 tentativas falhadas por IP em 15
   minutos; à seguinte a API responde `429 Too Many Requests` com o header
   `Retry-After`. Implementado num filtro (`LoginRateLimitFilter`) com
@@ -112,7 +113,7 @@ header `Authorization: Bearer <jwt>`, obtido no login.
 |--------|----------|-----------|--------|
 | POST | `/login` | Autenticar e receber o JWT | Público |
 | POST | `/users` | Registar um utilizador | Público |
-| GET | `/users/{id}` | Resumo de um utilizador | JWT |
+| GET | `/users/{id}` | Resumo do próprio utilizador | JWT |
 
 #### Campos
 
@@ -122,14 +123,14 @@ header `Authorization: Bearer <jwt>`, obtido no login.
 | GET | `/pitches/{id}` | Detalhe de um campo | Público |
 | GET | `/pitches/featured` | Campos em destaque | Público |
 | GET | `/pitches/map` | Campos para o mapa (em cache) | Público |
-| GET | `/pitches/{id}/availability?date=AAAA-MM-DD` | Horas livres do campo nesse dia (`status` e `freeHours`) | Público |
+| GET | `/pitches/{id}/availability?date=AAAA-MM-DD` | Slots do campo nesse dia (`status`, `slots` e `slotMinutes`) | Público |
 
 #### Reservas
 
 | Método | Endpoint | Descrição | Acesso |
 |--------|----------|-----------|--------|
 | POST | `/reservations` | Criar uma reserva, validada contra a disponibilidade | JWT |
-| GET | `/reservations?userId={id}` | Reservas de um utilizador | JWT |
+| GET | `/reservations?userId={id}` | Reservas do próprio utilizador | JWT |
 | GET | `/reservations/{id}` | Detalhe de uma reserva | JWT |
 | DELETE | `/reservations/{id}` | Cancelar uma reserva (só o organizador, antes de começar) | JWT |
 
@@ -146,14 +147,11 @@ header `Authorization: Bearer <jwt>`, obtido no login.
 
 ### Nota sobre o login
 
-Registo/login está implementado (Spring Security + JWT, password com
-hash BCrypt), mas não tem link em destaque na navegação. É uma decisão
-deliberada, não uma funcionalidade em falta: hoje só um campo de
-demonstração (InFoot) suporta reserva online de ponta a ponta, por isso
-expor login/registo em destaque seria superfície de autenticação sem
-benefício real para a maioria dos visitantes. A rota `/login` continua
-acessível e funcional; o link volta a aparecer na navegação à medida que
-mais campos passarem a suportar reserva online real.
+Registo e login estão implementados (Spring Security + JWT, password com
+hash BCrypt) e acessíveis em "Entrar ou registar", na navegação. Hoje só
+quatro campos (InFoot, Arena PlaySports Mem Martins, Beloura Soccer e
+Quantum Park) suportam reserva online de ponta a ponta; nos restantes
+mostra-se o contacto direto do campo.
 
 ## Stack
 
@@ -165,7 +163,7 @@ mais campos passarem a suportar reserva online real.
 - Caffeine (cache e rate limiting)
 - PostgreSQL (produção) e H2 (desenvolvimento)
 - Docker
-- JUnit 5, Mockito, MockMvc, TestRestTemplate — 100 testes em 20 classes,
+- JUnit 5, Mockito, MockMvc, TestRestTemplate — 102 testes em 21 classes,
   três camadas (unidade, mocks e integração HTTP, incluindo um teste com
   servidor real)
 - Maven
@@ -212,12 +210,15 @@ docker-compose.yml   PostgreSQL e API para desenvolvimento local
 
 ### Produção (PostgreSQL via Docker)
 
-1. Com o Docker a correr, arranca um container de PostgreSQL:
+1. Com o Docker a correr, copia `.env.example` para `.env` na raiz e
+   preenche `POSTGRES_PASSWORD` e `JWT_SECRET`
+2. Na raiz do repositório, corre:
    ```
-   docker run --name lisbonpitches-db -e POSTGRES_PASSWORD=<password> -e POSTGRES_DB=lisbonpitches -p 5433:5432 -v lisbonpitches-data:/var/lib/postgresql/data -d postgres:16
+   docker compose up --build
    ```
-2. Muda `spring.profiles.active` para `prod` no `backend/src/main/resources/application.properties`
-3. Corre a aplicação
+3. O Docker Compose arranca o PostgreSQL 18 e a API com o perfil `prod`; o
+   Flyway aplica as migrações no arranque
+4. A API sobe em `http://localhost:8080`
 
 ## Modelo de domínio
 
